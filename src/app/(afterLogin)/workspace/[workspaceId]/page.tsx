@@ -8,10 +8,8 @@ import mainLogo0 from "@/../public/svgs/mainLogo0.svg";
 import mainLogo25 from "@/../public/svgs/mainLogo25.svg";
 import mainLogo50 from "@/../public/svgs/mainLogo50.svg";
 import mainLogo75 from "@/../public/svgs/mainLogo75.svg";
-import settings from "@/../public/svgs/workspace/settings.svg";
 import fire from "@/../public/svgs/fire.svg";
 import chart from "@/../public/svgs/chart.svg";
-// import greyChart from '@/../public/svgs/greyChart.svg';
 
 import noImage from "@/../public/images/deafultProfile.png";
 
@@ -45,8 +43,6 @@ import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { imageLoader } from "@/utils/image";
-
-// import { Divide } from 'lucide-react';
 
 type MissonData = {
   id: number;
@@ -192,12 +188,6 @@ export default function Page() {
 
   return (
     <div className="h-screen">
-      <Link href={`/workspaceDetail/${workspaceId}`}>
-        <div className="absolute right-5 top-14">
-          <Image className="w-6 h-6" src={settings} alt="settings" />
-        </div>
-      </Link>
-
       <Dialog open={isOpen} onOpenChange={handleModalChange}>
         <DialogContent className="w-4/6 rounded-lg">
           <DialogDescription>
@@ -227,7 +217,7 @@ export default function Page() {
         <div className="flex items-end mb-11">
           <h1 className="font-galmuri text-[28px] ml-2">{data?.data.name}</h1>
         </div>
-        <div className=" flex items-center justify-center mb-11 flex-col">
+        <div className=" flex items-center justify-center mb-5 flex-col">
           {percent < 25 && percent >= 0 ? (
             <Image src={mainLogo0} alt="mainLogo0" />
           ) : null}
