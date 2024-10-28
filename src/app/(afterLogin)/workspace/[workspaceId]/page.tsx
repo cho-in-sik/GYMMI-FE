@@ -3,6 +3,7 @@
 import minus from "@/../public/svgs/workspace/minus.svg";
 import plus from "@/../public/svgs/workspace/plus.svg";
 import check from "@/../public/svgs/workspace/check.svg";
+import verticalLine from "@/../public/svgs/workspace/verticalLine.svg";
 
 import mainLogo0 from "@/../public/svgs/mainLogo0.svg";
 import mainLogo25 from "@/../public/svgs/mainLogo25.svg";
@@ -231,146 +232,212 @@ export default function Page() {
             <Image src={mainLogo75} alt="mainLogo75" />
           ) : null}
         </div>
-        <div className="flex flex-col mb-5">
-          <div className="text-[10px] text-[#4B5563] mb-3.5">목표 달성률</div>
-          <Progress
-            indicatorColor="bg-main"
-            className="h-1.5 bg-[#ffff] mb-1"
-            value={percent}
-          />
-          <div className="text-[10px] text-[#4B5563] text-right">{`${data?.data.achievementScore}/${data?.data.goalScore}점`}</div>
-        </div>
 
+        {/* 회원 클릭 전 */}
         {!workout ? (
           <div>
+            <div className="flex flex-col mb-5">
+              <div className="text-[10px] text-[#4B5563] mb-3.5">
+                목표 달성률
+              </div>
+              <Progress
+                indicatorColor="bg-main"
+                className="h-1.5 bg-[#ffff] mb-1"
+                value={percent}
+              />
+              <div className="text-[10px] text-[#4B5563] text-right">{`${data?.data.achievementScore}/${data?.data.goalScore}점`}</div>
+            </div>
             <div className="flex items-center mb-2">
               <Image src={good} alt="good" className="w-5 h-5 mr-1.5" />
               <span className="text-xs text-[#4B5563]">획득 점수</span>
             </div>
             {/* 여기에 유저들 매핑해주기 */}
             <div className="overflow-auto">
-              {data?.data.workers
-                // .sort((a: any, b: any) => (b.isMyself ? 1 : -1))
-                .map((user: any) => {
-                  return (
+              {data?.data.workers.map((user: any) => {
+                return (
+                  <div
+                    className="mb-4 text-[#4B5563]"
+                    key={user.id}
+                    onClick={() =>
+                      handleWorkout({
+                        userId: user.id,
+                        isMyself: user.isMyself,
+                      })
+                    }
+                  >
                     <div
-                      className="mb-4 text-[#4B5563]"
-                      key={user.id}
-                      onClick={() =>
-                        handleWorkout({
-                          userId: user.id,
-                          isMyself: user.isMyself,
-                        })
-                      }
+                      className={`w-full h-16 ${
+                        user.isMyself ? "bg-[#C8F68B]" : "bg-[#DBEAFE] "
+                      } rounded-xl flex items-center justify-between px-3.5`}
                     >
-                      <div
-                        className={`w-full h-16 ${
-                          user.isMyself ? "bg-[#C8F68B]" : "bg-[#DBEAFE] "
-                        } rounded-xl flex items-center justify-between px-3.5`}
-                      >
-                        <div className="h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative">
-                          {user.isCreator && (
-                            <Image
-                              src={creator}
-                              alt="creator"
-                              className="absolute -top-1 -left-1 z-10"
-                            />
-                          )}
-                          {user.profileImage === "default.png" ? (
-                            <Image src={noImage} alt="no-image" />
-                          ) : (
-                            <Image
-                              className="rounded-full"
-                              src={user.profileImage}
-                              alt="profil-image"
-                              layout="fill"
-                              loader={() => imageLoader(user.profileImage)}
-                            />
-                          )}
-                        </div>
-                        <div className="flex-1">{user.name}</div>
-                        <div>{`${user.contributeScore} P`}</div>
+                      <div className="h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative">
+                        {user.isCreator && (
+                          <Image
+                            src={creator}
+                            alt="creator"
+                            className="absolute -top-1 -left-1 z-10"
+                          />
+                        )}
+                        {user.profileImage === "default.png" ? (
+                          <Image src={noImage} alt="no-image" />
+                        ) : (
+                          <Image
+                            className="rounded-full"
+                            src={user.profileImage}
+                            alt="profil-image"
+                            layout="fill"
+                            loader={() => imageLoader(user.profileImage)}
+                          />
+                        )}
                       </div>
+                      <div className="flex-1">{user.name}</div>
+                      <div>{`${user.contributeScore} P`}</div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ) : (
-          <div className="bg-white max-h-screen rounded-2xl relative pb-10 min-h-80">
-            <Tabs
-              className="w-full"
-              defaultValue={isMyself ? "workout" : "myRecord"}
-            >
-              <TabsList className="px-1 pt-2 pb-1">
+          // 회원 클릭 후
+          <div>
+            <div className=" h-[50px] bg-white rounded-lg mb-4">
+              <Tabs className="w-full" defaultValue="totalScore">
                 {isMyself && (
+                  <TabsContent value="totalScore">
+                    <div className="flex gap-x-6 pl-7 pt-2 justify-items-center">
+                      <div className="flex flex-col items-center">
+                        <span className="text-[#9C9EA3] text-[8px]">
+                          총 점수
+                        </span>
+                        <span className="text-[#1F2937]">230점</span>
+                      </div>
+                      <Image src={verticalLine} alt="verticalLine" />
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="text-[#9C9EA3] text-[8px]">
+                          일일 최고 운동점수
+                        </span>
+                        <span className="text-[#1F2937] text-xs pt-1">
+                          110점
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="text-[#9C9EA3] text-[8px]">
+                          누적 운동 기록 횟수
+                        </span>
+                        <span className="text-[#1F2937] text-xs pt-1">
+                          15회
+                        </span>
+                      </div>
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="text-[#9C9EA3] text-[8px]">
+                          1등과의 격차
+                        </span>
+                        <span className="text-[#1F2937] text-xs pt-1">
+                          50점
+                        </span>
+                      </div>
+                    </div>
+                  </TabsContent>
+                )}
+              </Tabs>
+            </div>
+            <div className="bg-white max-h-screen rounded-lg relative pb-10 min-h-80">
+              <Tabs
+                className="w-full"
+                defaultValue={isMyself ? "workout" : "myRecord"}
+              >
+                <TabsList className="px-1 pt-2 pb-1">
+                  {isMyself && (
+                    <TabsTrigger
+                      value="workout"
+                      className="flex justify-center items-center"
+                    >
+                      <Image src={fire} alt="fire" />
+                      <span>운동하기</span>
+                    </TabsTrigger>
+                  )}
                   <TabsTrigger
-                    value="workout"
+                    value="myRecord"
                     className="flex justify-center items-center"
                   >
-                    <Image src={fire} alt="fire" />
-                    <span>운동하기</span>
+                    <Image src={chart} alt="chart" className="mr-1" />
+                    <span>운동현황</span>
                   </TabsTrigger>
+                </TabsList>
+                {isMyself && (
+                  <TabsContent value="workout">
+                    {missionData?.map((mission: MissonData, i) => (
+                      <div
+                        className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563] "
+                        key={mission.id}
+                      >
+                        <div className="w-full flex justify-between text-xs">
+                          <span>{`${mission.mission} / ${mission.score}점`}</span>
+
+                          <div className="flex justify-center items-center">
+                            <button
+                              disabled={
+                                data?.data.status === "PREPARING" ? true : false
+                              }
+                              className="text-lg"
+                              onClick={() => minusCount(mission.id)}
+                            >
+                              <Image src={minus} alt="minus" />
+                            </button>
+                            <span className="mx-1">
+                              {count.find((item) => item.id === mission.id)
+                                ?.count || 0}
+                            </span>
+
+                            <button
+                              disabled={
+                                data?.data.status === "PREPARING" ? true : false
+                              }
+                              onClick={() => addCount(mission.id)}
+                            >
+                              <Image src={plus} alt="plus" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    <div className="flex justify-center items-center absolute bottom-2 right-2">
+                      <button
+                        disabled={
+                          data?.data.status === "PREPARING" ? true : false
+                        }
+                        className={`w-14 h-6 bg-[#60A5FA] flex items-center justify-center rounded-md ${
+                          data?.data.status === "PREPARING" && "opacity-50"
+                        }`}
+                        onClick={handleMissions}
+                      >
+                        <Image src={check} alt="check" />
+                      </button>
+                    </div>
+                    <div className="flex justify-center items-center absolute bottom-2 left-2">
+                      <button
+                        className="w-14 h-6 flex items-center justify-center rounded-md"
+                        onClick={handleBack}
+                      >
+                        <Image src={backBlue} alt="backButton" />
+                      </button>
+                    </div>
+                  </TabsContent>
                 )}
-                <TabsTrigger
-                  value="myRecord"
-                  className="flex justify-center items-center"
-                >
-                  <Image src={chart} alt="chart" className="mr-1" />
-                  <span>운동현황</span>
-                </TabsTrigger>
-              </TabsList>
-              {isMyself && (
-                <TabsContent value="workout">
-                  {missionData?.map((mission: MissonData, i) => (
+                <TabsContent value="myRecord">
+                  {worksoutRecord.map((record: any) => (
                     <div
-                      className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563] "
-                      key={mission.id}
+                      className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563]"
+                      key={record.id}
                     >
                       <div className="w-full flex justify-between text-xs">
-                        <span>{`${mission.mission} / ${mission.score}점`}</span>
-
-                        <div className="flex justify-center items-center">
-                          <button
-                            disabled={
-                              data?.data.status === "PREPARING" ? true : false
-                            }
-                            className="text-lg"
-                            onClick={() => minusCount(mission.id)}
-                          >
-                            <Image src={minus} alt="minus" />
-                          </button>
-                          <span className="mx-1">
-                            {count.find((item) => item.id === mission.id)
-                              ?.count || 0}
-                          </span>
-
-                          <button
-                            disabled={
-                              data?.data.status === "PREPARING" ? true : false
-                            }
-                            onClick={() => addCount(mission.id)}
-                          >
-                            <Image src={plus} alt="plus" />
-                          </button>
-                        </div>
+                        <span className="">{record.mission}</span>
+                        <div className="flex justify-center items-center pr-1">{`${record.totalCount}회/${record.totalContributedScore}점`}</div>
                       </div>
                     </div>
                   ))}
-
-                  <div className="flex justify-center items-center absolute bottom-2 right-2">
-                    <button
-                      disabled={
-                        data?.data.status === "PREPARING" ? true : false
-                      }
-                      className={`w-14 h-6 bg-[#60A5FA] flex items-center justify-center rounded-md ${
-                        data?.data.status === "PREPARING" && "opacity-50"
-                      }`}
-                      onClick={handleMissions}
-                    >
-                      <Image src={check} alt="check" />
-                    </button>
-                  </div>
                   <div className="flex justify-center items-center absolute bottom-2 left-2">
                     <button
                       className="w-14 h-6 flex items-center justify-center rounded-md"
@@ -380,29 +447,8 @@ export default function Page() {
                     </button>
                   </div>
                 </TabsContent>
-              )}
-              <TabsContent value="myRecord">
-                {worksoutRecord.map((record: any) => (
-                  <div
-                    className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563]"
-                    key={record.id}
-                  >
-                    <div className="w-full flex justify-between text-xs">
-                      <span className="">{record.mission}</span>
-                      <div className="flex justify-center items-center pr-1">{`${record.totalCount}회/${record.totalContributedScore}점`}</div>
-                    </div>
-                  </div>
-                ))}
-                <div className="flex justify-center items-center absolute bottom-2 left-2">
-                  <button
-                    className="w-14 h-6 flex items-center justify-center rounded-md"
-                    onClick={handleBack}
-                  >
-                    <Image src={backBlue} alt="backButton" />
-                  </button>
-                </div>
-              </TabsContent>
-            </Tabs>
+              </Tabs>
+            </div>
           </div>
         )}
       </div>
