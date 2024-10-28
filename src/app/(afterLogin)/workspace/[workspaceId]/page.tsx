@@ -365,28 +365,7 @@ export default function Page() {
               </Tabs>
             </div>
             <div className="bg-white max-h-screen rounded-lg relative pb-10 min-h-80">
-              <Tabs
-                className="w-full"
-                defaultValue={isMyself ? "workout" : "myRecord"}
-              >
-                <TabsList className="px-1 pt-2 pb-1">
-                  {isMyself && (
-                    <TabsTrigger
-                      value="workout"
-                      className="flex justify-center items-center"
-                    >
-                      <Image src={fire} alt="fire" />
-                      <span>운동하기</span>
-                    </TabsTrigger>
-                  )}
-                  <TabsTrigger
-                    value="myRecord"
-                    className="flex justify-center items-center"
-                  >
-                    <Image src={chart} alt="chart" className="mr-1" />
-                    <span>운동현황</span>
-                  </TabsTrigger>
-                </TabsList>
+              <Tabs className="w-full" defaultValue="myHistory">
                 {isMyself && (
                   <TabsContent value="workout">
                     {missionData?.map((mission: MissonData, i) => (
@@ -448,7 +427,7 @@ export default function Page() {
                     </div>
                   </TabsContent>
                 )}
-                <TabsContent value="myRecord">
+                <TabsContent value="myHistory">
                   {worksoutRecord.map((record: any) => (
                     <div
                       className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563]"
