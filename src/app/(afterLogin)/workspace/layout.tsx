@@ -14,6 +14,27 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   const workspaceId = useSelectedLayoutSegment();
+
+  const navItems = [
+    // nav 값들 임의로 정의
+    { name: "그룹홈", path: `/workspace/${workspaceId}`, segment: workspaceId },
+    {
+      name: "운동하기",
+      path: `/workspace/${workspaceId}/exercise`,
+      segment: "exercise",
+    },
+    {
+      name: "그룹채팅",
+      path: `/workspace/${workspaceId}/chat`,
+      segment: "chat",
+    },
+    {
+      name: "운동인증",
+      path: `/workspace/${workspaceId}/auth`,
+      segment: "auth",
+    },
+  ];
+
   return (
     <div className="px-4 py-12 bg-custom-gradient2 h-full">
       <div className="flex justify-between">
@@ -26,14 +47,20 @@ export default function Layout({ children }: Props) {
       </div>
       <nav className="my-3">
         <hr className="border w-screen -mx-4" />
-        {/* 사용자가 현재 들어가 있는 화면에 대해서 네브바 글자 색을 다르게 하려면 어떤 값으로 구별하지? */}
         <ul className="flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]">
-          <Link href={`/workspace/${workspaceId}`}>
-            <li>그룹홈</li>
-          </Link>
-          <li>운동하기</li>
-          <li>그룹채팅</li>
-          <li>운동인증</li>
+          {navItems.map((navItem) => (
+            <Link href={navItem.path} key={navItem.name}>
+              <li
+                className={`${
+                  navItem.segment === workspaceId
+                    ? "text-[#4B5563]"
+                    : "text-[#E5E7EB]"
+                }`}
+              >
+                {navItem.name}
+              </li>
+            </Link>
+          ))}
         </ul>
         <hr className="border w-screen -mx-4" />
       </nav>
