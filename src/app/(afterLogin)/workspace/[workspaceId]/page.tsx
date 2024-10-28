@@ -4,6 +4,9 @@ import minus from "@/../public/svgs/workspace/minus.svg";
 import plus from "@/../public/svgs/workspace/plus.svg";
 import check from "@/../public/svgs/workspace/check.svg";
 import verticalLine from "@/../public/svgs/workspace/verticalLine.svg";
+import speechBubble1 from "@/../public/svgs/workspace/speechBubble/speechBubble1.svg";
+import speechBubble2 from "@/../public/svgs/workspace/speechBubble/speechBubble2.svg";
+import speechBubble3_1 from "@/../public/svgs/workspace/speechBubble/speechBubble3_1.svg";
 
 import mainLogo0 from "@/../public/svgs/mainLogo0.svg";
 import mainLogo25 from "@/../public/svgs/mainLogo25.svg";
@@ -215,22 +218,41 @@ export default function Page() {
       </Dialog>
 
       <div className="mb-14">
-        <div className="flex items-end mb-11">
+        <div className={`flex items-end ${!workout ? "mb-8" : "mb-3"}`}>
           <h1 className="font-galmuri text-[28px] ml-2">{data?.data.name}</h1>
         </div>
-        <div className=" flex items-center justify-center mb-5 flex-col">
-          {percent < 25 && percent >= 0 ? (
-            <Image src={mainLogo0} alt="mainLogo0" />
-          ) : null}
-          {percent < 50 && percent >= 25 ? (
-            <Image src={mainLogo25} alt="mainLogo25" />
-          ) : null}
-          {percent < 75 && percent >= 50 ? (
-            <Image src={mainLogo50} alt="mainLogo50" />
-          ) : null}
-          {percent <= 100 && percent >= 75 ? (
-            <Image src={mainLogo75} alt="mainLogo75" />
-          ) : null}
+        <div
+          className={`flex justify-center items-end gap-x-6 ${
+            !workout ? "h-48 mb-9" : "h-52 mb-5"
+          }`}
+        >
+          <div className={`${!workout ? "w-48" : "w-[136px]"}`}>
+            {percent < 25 && percent >= 0 ? (
+              <Image src={mainLogo0} alt="mainLogo0" />
+            ) : null}
+            {percent < 50 && percent >= 25 ? (
+              <Image src={mainLogo25} alt="mainLogo25" />
+            ) : null}
+            {percent < 75 && percent >= 50 ? (
+              <Image src={mainLogo50} alt="mainLogo50" />
+            ) : null}
+            {percent <= 100 && percent >= 75 ? (
+              <Image src={mainLogo75} alt="mainLogo75" />
+            ) : null}
+          </div>
+          {!workout ? (
+            <></>
+          ) : (
+            <div className="pb-28">
+              <Image src={speechBubble3_1} alt="speechBubble3" />
+              <Image
+                className="ml-3 my-2"
+                src={speechBubble2}
+                alt="speechBubble2"
+              />
+              <Image src={speechBubble1} alt="speechBubble1" />
+            </div>
+          )}
         </div>
 
         {/* 회원 클릭 전 */}
