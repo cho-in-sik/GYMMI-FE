@@ -249,51 +249,49 @@ export default function Page() {
             </div>
             {/* 여기에 유저들 매핑해주기 */}
             <div className="overflow-auto">
-              {data?.data.workers
-                // .sort((a: any, b: any) => (b.isMyself ? 1 : -1))
-                .map((user: any) => {
-                  return (
+              {data?.data.workers.map((user: any) => {
+                return (
+                  <div
+                    className="mb-4 text-[#4B5563]"
+                    key={user.id}
+                    onClick={() =>
+                      handleWorkout({
+                        userId: user.id,
+                        isMyself: user.isMyself,
+                      })
+                    }
+                  >
                     <div
-                      className="mb-4 text-[#4B5563]"
-                      key={user.id}
-                      onClick={() =>
-                        handleWorkout({
-                          userId: user.id,
-                          isMyself: user.isMyself,
-                        })
-                      }
+                      className={`w-full h-16 ${
+                        user.isMyself ? "bg-[#C8F68B]" : "bg-[#DBEAFE] "
+                      } rounded-lg flex items-center justify-between px-3.5`}
                     >
-                      <div
-                        className={`w-full h-16 ${
-                          user.isMyself ? "bg-[#C8F68B]" : "bg-[#DBEAFE] "
-                        } rounded-xl flex items-center justify-between px-3.5`}
-                      >
-                        <div className="h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative">
-                          {user.isCreator && (
-                            <Image
-                              src={creator}
-                              alt="creator"
-                              className="absolute -top-1 -left-1 z-10"
-                            />
-                          )}
-                          {user.profileImage === "default.png" ? (
-                            <Image src={noImage} alt="no-image" />
-                          ) : (
-                            <Image
-                              className="rounded-full"
-                              src={user.profileImage}
-                              alt="profil-image"
-                              layout="fill"
-                              loader={() => imageLoader(user.profileImage)}
-                            />
-                          )}
-                        </div>
-                        <div className="flex-1">{user.name}</div>
-                        <div>{`${user.contributeScore} P`}</div>
+                      <div className="h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative">
+                        {user.isCreator && (
+                          <Image
+                            src={creator}
+                            alt="creator"
+                            className="absolute -top-1 -left-1 z-10"
+                          />
+                        )}
+                        {user.profileImage === "default.png" ? (
+                          <Image src={noImage} alt="no-image" />
+                        ) : (
+                          <Image
+                            className="rounded-full"
+                            src={user.profileImage}
+                            alt="profil-image"
+                            layout="fill"
+                            loader={() => imageLoader(user.profileImage)}
+                          />
+                        )}
                       </div>
+                      <div className="flex-1">{user.name}</div>
+                      <div>{`${user.contributeScore} P`}</div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ) : (
