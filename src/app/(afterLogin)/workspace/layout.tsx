@@ -7,7 +7,7 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   return (
-    <div className="px-6 py-12 bg-custom-gradient2 h-full">
+    <div className="px-6 py-12 h-full">
       <BackArrow />
       {children}
     </div>
