@@ -14,23 +14,29 @@ type Props = {
 
 export default function Layout({ children }: Props) {
   const workspaceId = useSelectedLayoutSegment();
+  const workspaceIdNumber = Number(workspaceId);
+
+  const isActiveSegment = useSelectedLayoutSegment();
 
   const navItems = [
-    // nav 값들 임의로 정의
-    { name: "그룹홈", path: `/workspace/${workspaceId}`, segment: workspaceId },
+    {
+      name: "그룹홈",
+      path: `/workspace/${workspaceIdNumber}`,
+      segment: workspaceIdNumber,
+    },
     {
       name: "운동하기",
-      path: `/workspace/${workspaceId}/exercise`,
+      path: `/workspace/${workspaceIdNumber}/exercise`,
       segment: "exercise",
     },
     {
       name: "그룹채팅",
-      path: `/workspace/${workspaceId}/chat`,
+      path: `/workspace/${workspaceIdNumber}/chat`,
       segment: "chat",
     },
     {
       name: "운동인증",
-      path: `/workspace/${workspaceId}/auth`,
+      path: `/workspace/${workspaceIdNumber}/auth`,
       segment: "auth",
     },
   ];
@@ -39,7 +45,7 @@ export default function Layout({ children }: Props) {
     <div className="px-4 py-12 bg-custom-gradient2 h-full">
       <div className="flex justify-between">
         <BackArrow />
-        <Link href={`/workspaceDetail/${workspaceId}`}>
+        <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
           <div>
             <Image className="w-6 h-6" src={settings} alt="settings" />
           </div>
@@ -52,7 +58,7 @@ export default function Layout({ children }: Props) {
             <Link href={navItem.path} key={navItem.name}>
               <li
                 className={`${
-                  navItem.segment === workspaceId
+                  navItem.segment == isActiveSegment
                     ? "text-[#4B5563]"
                     : "text-[#E5E7EB]"
                 }`}
