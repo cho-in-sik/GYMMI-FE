@@ -1,26 +1,24 @@
-'use client';
+"use client";
 
-import minus from '@/../public/svgs/workspace/minus.svg';
-import plus from '@/../public/svgs/workspace/plus.svg';
-import check from '@/../public/svgs/workspace/check.svg';
+import minus from "@/../public/svgs/workspace/minus.svg";
+import plus from "@/../public/svgs/workspace/plus.svg";
+import check from "@/../public/svgs/workspace/check.svg";
 
-import mainLogo0 from '@/../public/svgs/mainLogo0.svg';
-import mainLogo25 from '@/../public/svgs/mainLogo25.svg';
-import mainLogo50 from '@/../public/svgs/mainLogo50.svg';
-import mainLogo75 from '@/../public/svgs/mainLogo75.svg';
-import settings from '@/../public/svgs/workspace/settings.svg';
-import fire from '@/../public/svgs/fire.svg';
-import chart from '@/../public/svgs/chart.svg';
-// import greyChart from '@/../public/svgs/greyChart.svg';
+import mainLogo0 from "@/../public/svgs/mainLogo0.svg";
+import mainLogo25 from "@/../public/svgs/mainLogo25.svg";
+import mainLogo50 from "@/../public/svgs/mainLogo50.svg";
+import mainLogo75 from "@/../public/svgs/mainLogo75.svg";
+import fire from "@/../public/svgs/fire.svg";
+import chart from "@/../public/svgs/chart.svg";
 
-import noImage from '@/../public/images/deafultProfile.png';
+import noImage from "@/../public/images/deafultProfile.png";
 
-import good from '@/../public/svgs/good.svg';
-import creator from '@/../public/svgs/creator.svg';
-import backBlue from '@/../public/svgs/workspace/backBlue.svg';
+import good from "@/../public/svgs/good.svg";
+import creator from "@/../public/svgs/creator.svg";
+import backBlue from "@/../public/svgs/workspace/backBlue.svg";
 
-import { Progress } from '@/components/ui/progress';
-import Image from 'next/image';
+import { Progress } from "@/components/ui/progress";
+import Image from "next/image";
 
 import {
   Dialog,
@@ -29,7 +27,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from "@/components/ui/dialog";
 import {
   infoWorkspace,
   leaveWorkspace,
@@ -37,16 +35,14 @@ import {
   missionsWorkspace,
   postMissions,
   startWorkspace,
-} from '@/api/workspace';
-import { useQuery } from '@tanstack/react-query';
-import { workspace } from '@/constants/queryKey';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Link from 'next/link';
-import { imageLoader } from '@/utils/image';
-
-// import { Divide } from 'lucide-react';
+} from "@/api/workspace";
+import { useQuery } from "@tanstack/react-query";
+import { workspace } from "@/constants/queryKey";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+import { imageLoader } from "@/utils/image";
 
 type MissonData = {
   id: number;
@@ -88,7 +84,7 @@ export default function Page() {
   }
 
   useEffect(() => {
-    if (data?.data.status === 'COMPLETED') {
+    if (data?.data.status === "COMPLETED") {
       setIsOpen(true);
     }
   }, [data]);
@@ -137,7 +133,7 @@ export default function Page() {
       const res = await leaveWorkspace(Number(workspaceId));
       console.log(res);
       if (res.status === 200) {
-        router.push('/workspace-list/mygroup');
+        router.push("/workspace-list/mygroup");
       }
     } catch (error) {
       console.log(error);
@@ -148,7 +144,7 @@ export default function Page() {
       const res = await postMissions({ workspaceId, missions: count });
       console.log(res);
       if (res.data.workingScore > 0) {
-        alert('미션완료');
+        alert("미션완료");
         setWorkout(false);
         router.push(`/workspace/${workspaceId}`);
       }
@@ -176,15 +172,15 @@ export default function Page() {
   const addCount = (id: number) => {
     setCount((prevCount) =>
       prevCount.map((item) =>
-        item.id === id ? { ...item, count: item.count + 1 } : item,
-      ),
+        item.id === id ? { ...item, count: item.count + 1 } : item
+      )
     );
   };
   const minusCount = (id: number) => {
     setCount((prevCount) =>
       prevCount.map((item) =>
-        item.id === id ? { ...item, count: Math.max(item.count - 1, 0) } : item,
-      ),
+        item.id === id ? { ...item, count: Math.max(item.count - 1, 0) } : item
+      )
     );
   };
 
@@ -192,12 +188,6 @@ export default function Page() {
 
   return (
     <div className="h-screen">
-      <Link href={`/workspaceDetail/${workspaceId}`}>
-        <div className="absolute right-5 top-14">
-          <Image src={settings} alt="settings" />
-        </div>
-      </Link>
-
       <Dialog open={isOpen} onOpenChange={handleModalChange}>
         <DialogContent className="w-4/6 rounded-lg">
           <DialogDescription>
@@ -225,9 +215,9 @@ export default function Page() {
 
       <div className="mb-14">
         <div className="flex items-end mb-11">
-          <h1 className="font-galmuri text-3xl">{data?.data.name}</h1>
+          <h1 className="font-galmuri text-[28px] ml-2">{data?.data.name}</h1>
         </div>
-        <div className=" flex items-center justify-center mb-11">
+        <div className=" flex items-center justify-center mb-5 flex-col">
           {percent < 25 && percent >= 0 ? (
             <Image src={mainLogo0} alt="mainLogo0" />
           ) : null}
@@ -242,12 +232,10 @@ export default function Page() {
           ) : null}
         </div>
         <div className="flex flex-col mb-5">
-          <div className="text-[10px] text-[#4B5563] mb-3.5 pl-1">
-            목표 달성률
-          </div>
+          <div className="text-[10px] text-[#4B5563] mb-3.5">목표 달성률</div>
           <Progress
             indicatorColor="bg-main"
-            className="h-1.5 bg-[#ffff] mb-1 mx-0.5"
+            className="h-1.5 bg-[#ffff] mb-1"
             value={percent}
           />
           <div className="text-[10px] text-[#4B5563] text-right">{`${data?.data.achievementScore}/${data?.data.goalScore}점`}</div>
@@ -255,64 +243,62 @@ export default function Page() {
 
         {!workout ? (
           <div>
-            <div className="flex items-center ml-3.5 mb-2">
-              <Image src={good} alt="good" className="mr-1" />
-              <span className="text-[10px] text-[#4B5563]">획득 점수</span>
+            <div className="flex items-center mb-2">
+              <Image src={good} alt="good" className="w-5 h-5 mr-1.5" />
+              <span className="text-xs text-[#4B5563]">획득 점수</span>
             </div>
             {/* 여기에 유저들 매핑해주기 */}
             <div className="overflow-auto">
-              {data?.data.workers
-                // .sort((a: any, b: any) => (b.isMyself ? 1 : -1))
-                .map((user: any) => {
-                  return (
+              {data?.data.workers.map((user: any) => {
+                return (
+                  <div
+                    className="mb-4 text-[#4B5563]"
+                    key={user.id}
+                    onClick={() =>
+                      handleWorkout({
+                        userId: user.id,
+                        isMyself: user.isMyself,
+                      })
+                    }
+                  >
                     <div
-                      className="mb-4 text-[#4B5563]"
-                      key={user.id}
-                      onClick={() =>
-                        handleWorkout({
-                          userId: user.id,
-                          isMyself: user.isMyself,
-                        })
-                      }
+                      className={`w-full h-16 ${
+                        user.isMyself ? "bg-[#C8F68B]" : "bg-[#DBEAFE] "
+                      } rounded-lg flex items-center justify-between px-3.5`}
                     >
-                      <div
-                        className={`w-full h-16 ${
-                          user.isMyself ? 'bg-[#C8F68B]' : 'bg-[#DBEAFE] '
-                        } rounded-xl flex items-center justify-between px-3.5`}
-                      >
-                        <div className="h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative">
-                          {user.isCreator && (
-                            <Image
-                              src={creator}
-                              alt="creator"
-                              className="absolute -top-1 -left-1 z-10"
-                            />
-                          )}
-                          {user.profileImage === 'default.png' ? (
-                            <Image src={noImage} alt="no-image" />
-                          ) : (
-                            <Image
-                              className="rounded-full"
-                              src={user.profileImage}
-                              alt="profil-image"
-                              layout="fill"
-                              loader={() => imageLoader(user.profileImage)}
-                            />
-                          )}
-                        </div>
-                        <div className="flex-1">{user.name}</div>
-                        <div className="">{`${user.contributeScore} P`}</div>
+                      <div className="h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative">
+                        {user.isCreator && (
+                          <Image
+                            src={creator}
+                            alt="creator"
+                            className="absolute -top-1 -left-1 z-10"
+                          />
+                        )}
+                        {user.profileImage === "default.png" ? (
+                          <Image src={noImage} alt="no-image" />
+                        ) : (
+                          <Image
+                            className="rounded-full"
+                            src={user.profileImage}
+                            alt="profil-image"
+                            layout="fill"
+                            loader={() => imageLoader(user.profileImage)}
+                          />
+                        )}
                       </div>
+                      <div className="flex-1">{user.name}</div>
+                      <div>{`${user.contributeScore} P`}</div>
                     </div>
-                  );
-                })}
+                  </div>
+                );
+              })}
             </div>
           </div>
         ) : (
           <div className="bg-white max-h-screen rounded-2xl relative pb-10 min-h-80">
             <Tabs
               className="w-full"
-              defaultValue={isMyself ? 'workout' : 'myRecord'}
+              defaultValue={isMyself ? "workout" : "myRecord"}
             >
               <TabsList className="px-1 pt-2 pb-1">
                 {isMyself && (
@@ -345,7 +331,7 @@ export default function Page() {
                         <div className="flex justify-center items-center">
                           <button
                             disabled={
-                              data?.data.status === 'PREPARING' ? true : false
+                              data?.data.status === "PREPARING" ? true : false
                             }
                             className="text-lg"
                             onClick={() => minusCount(mission.id)}
@@ -359,7 +345,7 @@ export default function Page() {
 
                           <button
                             disabled={
-                              data?.data.status === 'PREPARING' ? true : false
+                              data?.data.status === "PREPARING" ? true : false
                             }
                             onClick={() => addCount(mission.id)}
                           >
@@ -373,10 +359,10 @@ export default function Page() {
                   <div className="flex justify-center items-center absolute bottom-2 right-2">
                     <button
                       disabled={
-                        data?.data.status === 'PREPARING' ? true : false
+                        data?.data.status === "PREPARING" ? true : false
                       }
                       className={`w-14 h-6 bg-[#60A5FA] flex items-center justify-center rounded-md ${
-                        data?.data.status === 'PREPARING' && 'opacity-50'
+                        data?.data.status === "PREPARING" && "opacity-50"
                       }`}
                       onClick={handleMissions}
                     >
@@ -419,14 +405,14 @@ export default function Page() {
         )}
       </div>
       {/* 조건으로 유저 닉네임과 방장 같으면 뭐시기 넣어주기 */}
-      {data?.data.status === 'PREPARING' && data?.data.isCreator === true && (
-        <div className="px-7 fixed bottom-11 left-0 w-full flex justify-between items-center">
+      {data?.data.status === "PREPARING" && data?.data.isCreator === true && (
+        <div className="px-4 fixed bottom-11 left-0 w-full flex justify-between items-center">
           <div>
             <button
               // opacity & disabled
               disabled={data?.data.workers.length === 1 ? true : false}
               className={`w-40 py-2.5 bg-main text-white text-base rounded-lg ${
-                data?.data.workers.length === 1 && 'opacity-30'
+                data?.data.workers.length === 1 && "opacity-30"
               }`}
               onClick={handleStart}
             >
@@ -437,7 +423,7 @@ export default function Page() {
             <button
               disabled={data?.data.workers.length > 1 ? true : false}
               className={`w-40 py-2.5 text-main text-base rounded-lg ${
-                data?.data.workers.length > 1 ? 'bg-custom-blue' : 'bg-white'
+                data?.data.workers.length > 1 ? "bg-custom-blue" : "bg-white"
               }`}
               onClick={handleLeave}
             >
@@ -449,7 +435,7 @@ export default function Page() {
 
       <Dialog>
         <DialogTrigger asChild>
-          {data?.data.status === 'PREPARING' &&
+          {data?.data.status === "PREPARING" &&
             data?.data.isCreator === false && (
               <div className="px-7 fixed bottom-11 left-0 w-full">
                 <button className="w-full py-3.5 bg-main text-white text-base rounded-lg">
