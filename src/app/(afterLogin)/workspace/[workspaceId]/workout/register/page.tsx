@@ -9,7 +9,7 @@ import warning from '@/../public/svgs/workspace/warning.svg';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 const items = [
   {
@@ -36,6 +36,7 @@ const items = [
 
 export default function Page() {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [comment, setComment] = useState('');
 
   const handleClick = () => {
     if (fileInputRef.current) {
@@ -85,6 +86,8 @@ export default function Page() {
             id="pencil"
             className="bg-[#F9FAFB] px-3 py-[10px] w-full h-24 rounded-lg appearance-none focus:outline-none placeholder:text-xs text-xs"
             placeholder="운동에 대한 간단한 코멘트를 작성해주세요!"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
           ></textarea>
         </div>
       </div>
