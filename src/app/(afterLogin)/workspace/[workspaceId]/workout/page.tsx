@@ -48,6 +48,10 @@ export default function Page() {
 
   const updateCount = (missionId: number, newCount: number) => {
     setCounts((prevCounts) => {
+      if (newCount === 0) {
+        return prevCounts.filter((item) => item.id !== missionId);
+      }
+
       const existing = prevCounts.find((item) => item.id === missionId);
       if (existing) {
         return prevCounts.map((item) =>
@@ -167,11 +171,19 @@ export default function Page() {
 
       <div className="w-full fixed bottom-10">
         <div className="w-full">
-          <button className="py-3 w-[85%] bg-[#EFF6FF] rounded-full flex justify-center items-center text-base">
-            <div>
-              <Image src={registerIcon} alt="registerIcon" />
+          <button
+            className={`py-3 w-[85%] ${
+              counts.length > 0 ? 'bg-main text-white' : 'bg-[#EFF6FF]'
+            } rounded-full flex justify-center items-center text-base`}
+          >
+            <div className="absolute left-4">
+              {counts.length > 0 ? (
+                <Image src={registerOnIcon} alt="registerOnIcon" />
+              ) : (
+                <Image src={registerIcon} alt="registerIcon" />
+              )}
             </div>
-            등록하러 가기
+            <span>등록하러 가기</span>
           </button>
         </div>
       </div>
