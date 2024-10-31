@@ -42,7 +42,7 @@ export default function Layout({ children }: Props) {
   ];
 
   return (
-    <div className="px-4 py-12 bg-custom-gradient2 h-full">
+    <div className="px-4 py-12 h-full">
       <div className="flex justify-between">
         <BackArrow />
         <Link href={`/workspaceDetail/${workspaceIdNumber}`}>

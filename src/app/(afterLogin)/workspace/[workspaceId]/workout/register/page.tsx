@@ -6,6 +6,7 @@ import plus from '@/../public/svgs/plus.svg';
 import checkedCircle from '@/../public/svgs/workspace/checkedCircle.svg';
 import nonCheckedCircle from '@/../public/svgs/workspace/nonCheckedCircle.svg';
 import warning from '@/../public/svgs/workspace/warning.svg';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
@@ -91,12 +92,22 @@ export default function Page() {
           ></textarea>
         </div>
       </div>
-      <div className="flex justify-center items-start mb-2">
+      {/* <div className="flex justify-center items-start mb-2">
         <Image src={warning} alt="warning" />
         <span className="text-[10px] text-[#F87171]">
           성의없는 운동인증은 이의제기를 받을 수 있습니다. 또한 운동인증은 하루
           최대 3번까지만 등록 가능합니다.
         </span>
+      </div> */}
+      <div className="flex items-center space-x-2 mb-2">
+        <Checkbox id="terms" />
+        <label
+          htmlFor="terms"
+          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[10px] text-[#F87171]"
+        >
+          성의없는 운동인증은 이의제기를 받을 수 있습니다. 또한 운동인증은 하루
+          최대 3번까지만 등록 가능합니다.
+        </label>
       </div>
       {/* 나중에 여기 아래 div태그 h 크기 바꾸기!!  */}
       <div className="-mx-6 bg-[#EFF6FF] min-h-full">
