@@ -11,7 +11,9 @@ import mainLogo50 from "@/../public/svgs/mainLogo50.svg";
 import mainLogo75 from "@/../public/svgs/mainLogo75.svg";
 
 import radius from "@/../public/svgs/workspace/workspaceHistory/radius.svg";
+import radiusClicked from "@/../public/svgs/workspace/workspaceHistory/radiusClicked.svg";
 import verticalLineHistory from "@/../public/svgs/workspace/workspaceHistory/verticalLine.svg";
+import detailHistoryRadius from "@/../public/svgs/workspace/workspaceHistory/detailHistoryRadius.svg";
 import arrow from "@/../public/svgs/workspace/workspaceHistory/arrow.svg";
 
 import noImage from "@/../public/images/deafultProfile.png";
@@ -40,10 +42,11 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { workspace } from "@/constants/queryKey";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { use, useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { imageLoader } from "@/utils/image";
+// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 
 type MissonData = {
   id: number;
@@ -51,18 +54,25 @@ type MissonData = {
   score: number;
 };
 
-type Records = {
-  id: number;
-  mission: string;
-  totalContributedScore: number;
-  totalCount: number;
-};
+// type Records = {
+//   id: number;
+//   mission: string;
+//   totalContributedScore: number;
+//   totalCount: number;
+// };
 
 type THistorys = {
   id: number;
   isApproved: string;
   createdAt: string;
   sumOfScore: number;
+};
+
+type TDetailHistorys = {
+  id: number;
+  mission: string;
+  count: number;
+  totalScore: number;
 };
 
 const mockDatas = {
@@ -116,18 +126,44 @@ const mockDatas = {
   ],
 };
 
+const mockDataHistorys = [
+  {
+    id: 1,
+    mission: "데드리프트",
+    count: 7,
+    totalScore: 100,
+  },
+  {
+    id: 2,
+    mission: "데드리프트",
+    count: 7,
+    totalScore: 100,
+  },
+  {
+    id: 3,
+    mission: "데드리프트",
+    count: 7,
+    totalScore: 100,
+  },
+  {
+    id: 4,
+    mission: "데드리프트",
+    count: 7,
+    totalScore: 100,
+  },
+];
+
 export default function Page() {
   const { workspaceId } = useParams();
-
-  const [workout, setWorkout] = useState(false);
-  const [missionData, setMissionData] = useState<MissonData[]>();
-
-  const [worksoutRecord, setWorkoutRecord] = useState<Records[]>([]);
-  const [isMyself, setIsMyself] = useState(false);
-
   const router = useRouter();
 
-  const [count, setCount] = useState<{ id: number; count: number }[]>([]);
+  const [workout, setWorkout] = useState(false);
+  const [workoutHistory, setWorkoutHistory] = useState<number[]>([]);
+  // const [missionData, setMissionData] = useState<MissonData[]>();
+
+  // const [worksoutRecord, setWorkoutRecord] = useState<Records[]>([]);
+
+  // const [count, setCount] = useState<{ id: number; count: number }[]>([]);
 
   const { data } = useQuery({
     queryKey: [workspace.info, workspaceId, workout],
@@ -152,29 +188,34 @@ export default function Page() {
     setIsOpen(open);
   };
 
-  const user = data?.data.workers.filter((user: any) => user.isMyself === true);
+  const handleWorkoutHistory = (id: number) => {
+    setWorkoutHistory((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // const user = data?.data.workers.filter((user: any) => user.isMyself === true);
 
   const handleWorkout = async ({ userId, isMyself }: any) => {
     // if (data?.data.status === 'PREPARING') return;
     setWorkout((v) => !v);
-    setIsMyself(isMyself);
-    const res = await missionsWorkspace(Number(workspaceId));
-    const recordData = await workoutRecord(userId);
-    setMissionData(res.data);
+    // const res = await missionsWorkspace(Number(workspaceId));
+    // const recordData = await workoutRecord(userId);
+    // setMissionData(res.data);
   };
 
-  const workoutRecord = async (userId: number) => {
-    const id = Number(workspaceId);
-    console.log(user);
-    try {
-      const res = await missionsRecord({ workspaceId: id, userId });
-      setWorkoutRecord(res.data);
+  // const workoutRecord = async (userId: number) => {
+  //   const id = Number(workspaceId);
+  //   console.log(user);
+  //   try {
+  //     const res = await missionsRecord({ workspaceId: id, userId });
+  //     setWorkoutRecord(res.data);
 
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     console.log(res);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const handleStart = async () => {
     try {
@@ -199,15 +240,15 @@ export default function Page() {
     }
   };
 
-  useEffect(() => {
-    if (missionData) {
-      const initialCounts = missionData.map((mission) => ({
-        id: mission.id,
-        count: 0,
-      }));
-      setCount(initialCounts);
-    }
-  }, [missionData]);
+  // useEffect(() => {
+  //   if (missionData) {
+  //     const initialCounts = missionData.map((mission) => ({
+  //       id: mission.id,
+  //       count: 0,
+  //     }));
+  //     // setCount(initialCounts);
+  //   }
+  // }, [missionData]);
 
   return (
     <div className="h-screen">
@@ -344,43 +385,39 @@ export default function Page() {
           <div>
             <div className=" h-[50px] bg-white rounded-lg mb-4">
               <Tabs className="w-full" defaultValue="totalScore">
-                {isMyself && (
-                  <TabsContent value="totalScore">
-                    <div className="flex gap-x-6 pl-7 pt-2 justify-items-center">
-                      <div className="flex flex-col items-center">
-                        <span className="text-[#9C9EA3] text-[8px]">
-                          총 점수
-                        </span>
-                        <span className="text-[#1F2937]">230점</span>
-                      </div>
-                      <Image src={verticalLine} alt="verticalLine" />
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="text-[#9C9EA3] text-[8px]">
-                          일일 최고 운동점수
-                        </span>
-                        <span className="text-[#1F2937] text-xs pt-1">
-                          110점
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="text-[#9C9EA3] text-[8px]">
-                          누적 운동 기록 횟수
-                        </span>
-                        <span className="text-[#1F2937] text-xs pt-1">
-                          15회
-                        </span>
-                      </div>
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="text-[#9C9EA3] text-[8px]">
-                          1등과의 격차
-                        </span>
-                        <span className="text-[#1F2937] text-xs pt-1">
-                          50점
-                        </span>
-                      </div>
-                    </div>
-                  </TabsContent>
-                )}
+                <div className="flex gap-x-6 pl-7 pt-2 justify-items-center">
+                  <div className="flex flex-col items-center">
+                    <span className="text-[#9C9EA3] text-[8px]">총 점수</span>
+                    <span className="text-[#1F2937]">
+                      {mockDatas.totalContributedScore}점
+                    </span>
+                  </div>
+                  <Image src={verticalLine} alt="verticalLine" />
+                  <div className="flex flex-col items-center justify-center">
+                    <span className="text-[#9C9EA3] text-[8px]">
+                      일일 최고 운동점수
+                    </span>
+                    <span className="text-[#1F2937] text-xs pt-1">
+                      {mockDatas.bestDailyScore}점
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                    <span className="text-[#9C9EA3] text-[8px]">
+                      누적 운동 기록 횟수
+                    </span>
+                    <span className="text-[#1F2937] text-xs pt-1">
+                      {mockDatas.totalWorkoutCount}점
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center justify-center">
+                    <span className="text-[#9C9EA3] text-[8px]">
+                      1등과의 격차
+                    </span>
+                    <span className="text-[#1F2937] text-xs pt-1">
+                      {mockDatas.scoreGapFromFirst}점
+                    </span>
+                  </div>
+                </div>
               </Tabs>
             </div>
             <div className="bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto">
@@ -389,23 +426,37 @@ export default function Page() {
                   {"<개인별 운동 히스토리>"}
                 </span>
                 {mockDatas.workoutHistories.map((mockData: THistorys) => {
+                  const isToggled = workoutHistory.includes(mockData.id);
                   return (
                     <div className="flex pt-3 pb-4" key={mockData.id}>
                       <span className="text-[#9C9EA3] text-[10px]">
                         {mockData.createdAt.substring(5)}
                       </span>
                       <div className="flex flex-col items-center px-3">
-                        <Image src={radius} alt="radius" />
+                        <Image
+                          src={isToggled ? radiusClicked : radius}
+                          alt={isToggled ? "radiusClicked" : "radius"}
+                        />
                       </div>
                       <div>
-                        <span className="text-[#6B7280] text-sm flex">
-                          {mockData.sumOfScore}점 운동 기록
-                          <Image
-                            src={arrow}
-                            alt="arrow"
-                            className="w-[4px] ml-2"
-                          />
-                        </span>
+                        <div
+                          onClick={() => {
+                            handleWorkoutHistory(mockData.id);
+                          }}
+                        >
+                          <span className="text-[#6B7280] text-sm flex">
+                            {mockData.sumOfScore}점 운동 기록
+                            {isToggled ? (
+                              <></>
+                            ) : (
+                              <Image
+                                src={arrow}
+                                alt="arrow"
+                                className="w-[4px] ml-2"
+                              />
+                            )}
+                          </span>
+                        </div>
                         {mockData.isApproved ? (
                           <span className="text-xs text-[#6B7280]">
                             인증 완료
@@ -414,6 +465,33 @@ export default function Page() {
                           <span className="text-xs text-[#F87171]">
                             인증 기각
                           </span>
+                        )}
+                        {isToggled && (
+                          <div className="w-36 min-h-20 bg-[#DBEAFE] rounded-lg mt-2 pt-1 pb-2">
+                            {mockDataHistorys.map(
+                              (dataHistory: TDetailHistorys) => {
+                                return (
+                                  <div
+                                    className="h-5 flex items-center"
+                                    key={dataHistory.id}
+                                  >
+                                    <Image
+                                      className="mx-2"
+                                      src={detailHistoryRadius}
+                                      alt="detailRadius"
+                                    />
+                                    <div>
+                                      <span className="text-[#4B5563] text-[10px]">
+                                        {dataHistory.mission}{" "}
+                                        {dataHistory.count}회 -{" "}
+                                        {dataHistory.totalScore}p
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
