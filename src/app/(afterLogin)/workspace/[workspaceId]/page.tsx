@@ -1,8 +1,5 @@
 "use client";
 
-import minus from "@/../public/svgs/workspace/minus.svg";
-import plus from "@/../public/svgs/workspace/plus.svg";
-import check from "@/../public/svgs/workspace/check.svg";
 import verticalLine from "@/../public/svgs/workspace/verticalLine.svg";
 import speechBubble1 from "@/../public/svgs/workspace/speechBubble/speechBubble1.svg";
 import speechBubble2 from "@/../public/svgs/workspace/speechBubble/speechBubble2.svg";
@@ -12,14 +9,15 @@ import mainLogo0 from "@/../public/svgs/mainLogo0.svg";
 import mainLogo25 from "@/../public/svgs/mainLogo25.svg";
 import mainLogo50 from "@/../public/svgs/mainLogo50.svg";
 import mainLogo75 from "@/../public/svgs/mainLogo75.svg";
-import fire from "@/../public/svgs/fire.svg";
-import chart from "@/../public/svgs/chart.svg";
+
+import radius from "@/../public/svgs/workspace/workspaceHistory/radius.svg";
+import verticalLineHistory from "@/../public/svgs/workspace/workspaceHistory/verticalLine.svg";
+import arrow from "@/../public/svgs/workspace/workspaceHistory/arrow.svg";
 
 import noImage from "@/../public/images/deafultProfile.png";
 
 import good from "@/../public/svgs/good.svg";
 import creator from "@/../public/svgs/creator.svg";
-import backBlue from "@/../public/svgs/workspace/backBlue.svg";
 
 import { Progress } from "@/components/ui/progress";
 import Image from "next/image";
@@ -37,14 +35,13 @@ import {
   leaveWorkspace,
   missionsRecord,
   missionsWorkspace,
-  postMissions,
   startWorkspace,
 } from "@/api/workspace";
 import { useQuery } from "@tanstack/react-query";
 import { workspace } from "@/constants/queryKey";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
 import Link from "next/link";
 import { imageLoader } from "@/utils/image";
 
@@ -59,6 +56,64 @@ type Records = {
   mission: string;
   totalContributedScore: number;
   totalCount: number;
+};
+
+type THistorys = {
+  id: number;
+  isApproved: string;
+  createdAt: string;
+  sumOfScore: number;
+};
+
+const mockDatas = {
+  totalContributedScore: 200,
+  bestDailyScore: 100,
+  totalWorkoutCount: 12,
+  scoreGapFromFirst: 40,
+  workoutHistories: [
+    {
+      id: 1, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+    {
+      id: 2, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+    {
+      id: 3, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+    {
+      id: 4, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+    {
+      id: 5, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+    {
+      id: 6, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+    {
+      id: 7, //
+      isApproved: "true",
+      createdAt: "2024-05-06",
+      sumOfScore: 100,
+    },
+  ],
 };
 
 export default function Page() {
@@ -143,25 +198,6 @@ export default function Page() {
       console.log(error);
     }
   };
-  const handleMissions = async () => {
-    try {
-      const res = await postMissions({ workspaceId, missions: count });
-      console.log(res);
-      if (res.data.workingScore > 0) {
-        alert("미션완료");
-        setWorkout(false);
-        router.push(`/workspace/${workspaceId}`);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleBack = () => {
-    if (workout) {
-      setWorkout((v) => !v);
-    }
-  };
 
   useEffect(() => {
     if (missionData) {
@@ -172,23 +208,6 @@ export default function Page() {
       setCount(initialCounts);
     }
   }, [missionData]);
-
-  const addCount = (id: number) => {
-    setCount((prevCount) =>
-      prevCount.map((item) =>
-        item.id === id ? { ...item, count: item.count + 1 } : item
-      )
-    );
-  };
-  const minusCount = (id: number) => {
-    setCount((prevCount) =>
-      prevCount.map((item) =>
-        item.id === id ? { ...item, count: Math.max(item.count - 1, 0) } : item
-      )
-    );
-  };
-
-  // imageLoader()
 
   return (
     <div className="h-screen">
@@ -364,90 +383,42 @@ export default function Page() {
                 )}
               </Tabs>
             </div>
-            <div className="bg-white max-h-screen rounded-lg relative pb-10 min-h-80">
-              <Tabs className="w-full" defaultValue="myHistory">
-                {isMyself && (
-                  <TabsContent value="workout">
-                    {missionData?.map((mission: MissonData, i) => (
-                      <div
-                        className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563] "
-                        key={mission.id}
-                      >
-                        <div className="w-full flex justify-between text-xs">
-                          <span>{`${mission.mission} / ${mission.score}점`}</span>
-
-                          <div className="flex justify-center items-center">
-                            <button
-                              disabled={
-                                data?.data.status === "PREPARING" ? true : false
-                              }
-                              className="text-lg"
-                              onClick={() => minusCount(mission.id)}
-                            >
-                              <Image src={minus} alt="minus" />
-                            </button>
-                            <span className="mx-1">
-                              {count.find((item) => item.id === mission.id)
-                                ?.count || 0}
-                            </span>
-
-                            <button
-                              disabled={
-                                data?.data.status === "PREPARING" ? true : false
-                              }
-                              onClick={() => addCount(mission.id)}
-                            >
-                              <Image src={plus} alt="plus" />
-                            </button>
-                          </div>
-                        </div>
+            <div className="bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto">
+              <Tabs className="w-full pl-5 pt-2" defaultValue="myHistory">
+                <span className="text-[#9CA3AF] text-xs">
+                  {"<개인별 운동 히스토리>"}
+                </span>
+                {mockDatas.workoutHistories.map((mockData: THistorys) => {
+                  return (
+                    <div className="flex pt-3 pb-4" key={mockData.id}>
+                      <span className="text-[#9C9EA3] text-[10px]">
+                        {mockData.createdAt.substring(5)}
+                      </span>
+                      <div className="flex flex-col items-center px-3">
+                        <Image src={radius} alt="radius" />
                       </div>
-                    ))}
-
-                    <div className="flex justify-center items-center absolute bottom-2 right-2">
-                      <button
-                        disabled={
-                          data?.data.status === "PREPARING" ? true : false
-                        }
-                        className={`w-14 h-6 bg-[#60A5FA] flex items-center justify-center rounded-md ${
-                          data?.data.status === "PREPARING" && "opacity-50"
-                        }`}
-                        onClick={handleMissions}
-                      >
-                        <Image src={check} alt="check" />
-                      </button>
-                    </div>
-                    <div className="flex justify-center items-center absolute bottom-2 left-2">
-                      <button
-                        className="w-14 h-6 flex items-center justify-center rounded-md"
-                        onClick={handleBack}
-                      >
-                        <Image src={backBlue} alt="backButton" />
-                      </button>
-                    </div>
-                  </TabsContent>
-                )}
-                <TabsContent value="myHistory">
-                  {worksoutRecord.map((record: any) => (
-                    <div
-                      className="flex flex-col py-5 px-5 border-b-[0.5px] text-[#4B5563]"
-                      key={record.id}
-                    >
-                      <div className="w-full flex justify-between text-xs">
-                        <span className="">{record.mission}</span>
-                        <div className="flex justify-center items-center pr-1">{`${record.totalCount}회/${record.totalContributedScore}점`}</div>
+                      <div>
+                        <span className="text-[#6B7280] text-sm flex">
+                          {mockData.sumOfScore}점 운동 기록
+                          <Image
+                            src={arrow}
+                            alt="arrow"
+                            className="w-[4px] ml-2"
+                          />
+                        </span>
+                        {mockData.isApproved ? (
+                          <span className="text-xs text-[#6B7280]">
+                            인증 완료
+                          </span>
+                        ) : (
+                          <span className="text-xs text-[#F87171]">
+                            인증 기각
+                          </span>
+                        )}
                       </div>
                     </div>
-                  ))}
-                  <div className="flex justify-center items-center absolute bottom-2 left-2">
-                    <button
-                      className="w-14 h-6 flex items-center justify-center rounded-md"
-                      onClick={handleBack}
-                    >
-                      <Image src={backBlue} alt="backButton" />
-                    </button>
-                  </div>
-                </TabsContent>
+                  );
+                })}
               </Tabs>
             </div>
           </div>
