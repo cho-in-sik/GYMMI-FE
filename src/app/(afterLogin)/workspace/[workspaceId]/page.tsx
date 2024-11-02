@@ -31,9 +31,15 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { infoWorkspace, leaveWorkspace, startWorkspace } from "@/api/workspace";
+import {
+  historyDetails,
+  infoWorkspace,
+  leaveWorkspace,
+  startWorkspace,
+  workspaceHistorys,
+} from "@/api/workspace";
 import { useQuery } from "@tanstack/react-query";
-import { workspace } from "@/constants/queryKey";
+import { workspace, workspaceHistoryData } from "@/constants/queryKey";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Tabs } from "@/components/ui/tabs";
@@ -187,14 +193,48 @@ export default function Page() {
   const [workout, setWorkout] = useState(false);
   const [workoutHistory, setWorkoutHistory] = useState<number[]>([]);
 
-  const { data } = useQuery({
+  const { data: infoWork } = useQuery({
     queryKey: [workspace.info, workspaceId, workout],
     queryFn: () => infoWorkspace(Number(workspaceId)),
   });
 
+  const userId = infoWork?.data.workers.map((worker: { id: number }) => {
+    return worker.id;
+  });
+
+  const { data: workspaceHistory } = useQuery({
+    queryKey: [workspaceHistoryData.workspaceHistoryData, workspaceId, userId],
+    queryFn: () =>
+      workspaceHistorys({ workspaceId: Number(workspaceId), userId }),
+  });
+
+  // const workoutHistoryId = workoutHistory?.data.workoutHistories.map(
+  //   (workoutHistory: { id: number }) => {
+  //     return workoutHistory.id;
+  //   }
+  // );
+
+  // const { data: workspaceHistoryDetail } = useQuery({
+  //   queryKey: [
+  //     [
+  //       workspaceHistoryData.workspaceHistoryDataDetail,
+  //       workspaceId,
+  //       userId,
+  //       workoutHistoryId,
+  //     ],
+  //   ],
+  //   queryFn: () =>
+  //     historyDetails({
+  //       workspaceId: Number(workspaceId),
+  //       userId,
+  //       workoutHistoryId,
+  //     }),
+  // });
+
   const [isOpen, setIsOpen] = useState(false);
 
-  let percent = (data?.data.achievementScore / data?.data.goalScore) * 100;
+  let percent =
+    (infoWork?.data.achievementScore / infoWork?.data.goalScore) * 100;
 
   if (percent > 100) {
     percent = 100;
@@ -207,10 +247,10 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (data?.data.status === "COMPLETED") {
+    if (infoWork?.data.status === "COMPLETED") {
       setIsOpen(true);
     }
-  }, [data]);
+  }, [infoWork]);
 
   const handleModalChange = (open: any) => {
     setIsOpen(open);
@@ -278,7 +318,9 @@ export default function Page() {
 
       <div className="mb-14">
         <div className={`flex items-end ${!workout ? "mb-8" : "mb-3"}`}>
-          <h1 className="font-galmuri text-[28px] ml-2">{data?.data.name}</h1>
+          <h1 className="font-galmuri text-[28px] ml-2">
+            {infoWork?.data.name}
+          </h1>
         </div>
         <div
           className={`flex justify-center items-end gap-x-6 ${
@@ -329,7 +371,7 @@ export default function Page() {
                 className="h-1.5 bg-[#ffff] mb-1"
                 value={percent}
               />
-              <div className="text-[10px] text-[#4B5563] text-right">{`${data?.data.achievementScore}/${data?.data.goalScore}점`}</div>
+              <div className="text-[10px] text-[#4B5563] text-right">{`${infoWork?.data.achievementScore}/${infoWork?.data.goalScore}점`}</div>
             </div>
             <div className="flex items-center mb-2">
               <Image src={good} alt="good" className="w-5 h-5 mr-1.5" />
@@ -337,7 +379,7 @@ export default function Page() {
             </div>
             {/* 여기에 유저들 매핑해주기 */}
             <div className="overflow-auto">
-              {data?.data.workers.map((user: any) => {
+              {infoWork?.data.workers.map((user: any) => {
                 return (
                   <div
                     className="mb-4 text-[#4B5563]"
@@ -514,38 +556,41 @@ export default function Page() {
         )}
       </div>
       {/* 조건으로 유저 닉네임과 방장 같으면 뭐시기 넣어주기 */}
-      {data?.data.status === "PREPARING" && data?.data.isCreator === true && (
-        <div className="px-4 fixed bottom-11 left-0 w-full flex justify-between items-center">
-          <div>
-            <button
-              // opacity & disabled
-              disabled={data?.data.workers.length === 1 ? true : false}
-              className={`w-40 py-2.5 bg-main text-white text-base rounded-lg ${
-                data?.data.workers.length === 1 && "opacity-30"
-              }`}
-              onClick={handleStart}
-            >
-              그룹 시작하기
-            </button>
+      {infoWork?.data.status === "PREPARING" &&
+        infoWork?.data.isCreator === true && (
+          <div className="px-4 fixed bottom-11 left-0 w-full flex justify-between items-center">
+            <div>
+              <button
+                // opacity & disabled
+                disabled={infoWork?.data.workers.length === 1 ? true : false}
+                className={`w-40 py-2.5 bg-main text-white text-base rounded-lg ${
+                  infoWork?.data.workers.length === 1 && "opacity-30"
+                }`}
+                onClick={handleStart}
+              >
+                그룹 시작하기
+              </button>
+            </div>
+            <div>
+              <button
+                disabled={infoWork?.data.workers.length > 1 ? true : false}
+                className={`w-40 py-2.5 text-main text-base rounded-lg ${
+                  infoWork?.data.workers.length > 1
+                    ? "bg-custom-blue"
+                    : "bg-white"
+                }`}
+                onClick={handleLeave}
+              >
+                그룹 없애기
+              </button>
+            </div>
           </div>
-          <div>
-            <button
-              disabled={data?.data.workers.length > 1 ? true : false}
-              className={`w-40 py-2.5 text-main text-base rounded-lg ${
-                data?.data.workers.length > 1 ? "bg-custom-blue" : "bg-white"
-              }`}
-              onClick={handleLeave}
-            >
-              그룹 없애기
-            </button>
-          </div>
-        </div>
-      )}
+        )}
 
       <Dialog>
         <DialogTrigger asChild>
-          {data?.data.status === "PREPARING" &&
-            data?.data.isCreator === false && (
+          {infoWork?.data.status === "PREPARING" &&
+            infoWork?.data.isCreator === false && (
               <div className="px-7 fixed bottom-11 left-0 w-full">
                 <button className="w-full py-3.5 bg-main text-white text-base rounded-lg">
                   그룹 나가기
