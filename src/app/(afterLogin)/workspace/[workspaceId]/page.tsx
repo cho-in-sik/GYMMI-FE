@@ -1,9 +1,9 @@
 "use client";
 
-import verticalLine from "@/../public/svgs/workspace/verticalLine.svg";
 import speechBubble1 from "@/../public/svgs/workspace/speechBubble/speechBubble1.svg";
 import speechBubble2 from "@/../public/svgs/workspace/speechBubble/speechBubble2.svg";
-import speechBubble3_1 from "@/../public/svgs/workspace/speechBubble/speechBubble3_1.svg";
+import speechBubble3 from "@/../public/svgs/workspace/speechBubble/speechBubble3.svg";
+import verticalLine from "@/../public/svgs/workspace/verticalLine.svg";
 
 import mainLogo0 from "@/../public/svgs/mainLogo0.svg";
 import mainLogo25 from "@/../public/svgs/mainLogo25.svg";
@@ -12,7 +12,6 @@ import mainLogo75 from "@/../public/svgs/mainLogo75.svg";
 
 import radius from "@/../public/svgs/workspace/workspaceHistory/radius.svg";
 import radiusClicked from "@/../public/svgs/workspace/workspaceHistory/radiusClicked.svg";
-import verticalLineHistory from "@/../public/svgs/workspace/workspaceHistory/verticalLine.svg";
 import detailHistoryRadius from "@/../public/svgs/workspace/workspaceHistory/detailHistoryRadius.svg";
 import arrow from "@/../public/svgs/workspace/workspaceHistory/arrow.svg";
 
@@ -32,34 +31,14 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  infoWorkspace,
-  leaveWorkspace,
-  missionsRecord,
-  missionsWorkspace,
-  startWorkspace,
-} from "@/api/workspace";
+import { infoWorkspace, leaveWorkspace, startWorkspace } from "@/api/workspace";
 import { useQuery } from "@tanstack/react-query";
 import { workspace } from "@/constants/queryKey";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import Link from "next/link";
 import { imageLoader } from "@/utils/image";
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
-
-// type MissonData = {
-//   id: number;
-//   mission: string;
-//   score: number;
-// };
-
-// type Records = {
-//   id: number;
-//   mission: string;
-//   totalContributedScore: number;
-//   totalCount: number;
-// };
 
 type TScoreData = {
   id: number;
@@ -170,17 +149,43 @@ const mockDataHistorys = [
   },
 ];
 
+// 응원 메세지 저장
+const bubbleMessage = [
+  {
+    message: `곧 있으면
+    다음 레벨이야!!
+    화이팅하자구 1`,
+  },
+  {
+    message: `곧 있으면
+    다음 레벨이야!!
+    화이팅하자구 2`,
+  },
+  {
+    message: `곧 있으면
+    다음 레벨이야!!
+    화이팅하자구 3`,
+  },
+  {
+    message: `곧 있으면
+    다음 레벨이야!!
+    화이팅하자구 4`,
+  },
+  {
+    message: `곧 있으면
+    다음 레벨이야!!
+    화이팅하자구 5`,
+  },
+];
+
 export default function Page() {
   const { workspaceId } = useParams();
   const router = useRouter();
 
+  const [randomMessage, setRandomMessage] = useState(``);
+
   const [workout, setWorkout] = useState(false);
   const [workoutHistory, setWorkoutHistory] = useState<number[]>([]);
-  // const [missionData, setMissionData] = useState<MissonData[]>();
-
-  // const [worksoutRecord, setWorkoutRecord] = useState<Records[]>([]);
-
-  // const [count, setCount] = useState<{ id: number; count: number }[]>([]);
 
   const { data } = useQuery({
     queryKey: [workspace.info, workspaceId, workout],
@@ -194,6 +199,12 @@ export default function Page() {
   if (percent > 100) {
     percent = 100;
   }
+
+  // 사용자가 페이지에 들어왔을 때 랜덤한 메세지를 보여준다.
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * bubbleMessage.length);
+    setRandomMessage(bubbleMessage[randomIndex].message);
+  }, []);
 
   useEffect(() => {
     if (data?.data.status === "COMPLETED") {
@@ -211,28 +222,9 @@ export default function Page() {
     );
   };
 
-  // const user = data?.data.workers.filter((user: any) => user.isMyself === true);
-
-  const handleWorkout = async ({ userId, isMyself }: any) => {
-    // if (data?.data.status === 'PREPARING') return;
+  const handleWorkout = async (v: any) => {
     setWorkout((v) => !v);
-    // const res = await missionsWorkspace(Number(workspaceId));
-    // const recordData = await workoutRecord(userId);
-    // setMissionData(res.data);
   };
-
-  // const workoutRecord = async (userId: number) => {
-  //   const id = Number(workspaceId);
-  //   console.log(user);
-  //   try {
-  //     const res = await missionsRecord({ workspaceId: id, userId });
-  //     setWorkoutRecord(res.data);
-
-  //     console.log(res);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   const handleStart = async () => {
     try {
@@ -256,16 +248,6 @@ export default function Page() {
       console.log(error);
     }
   };
-
-  // useEffect(() => {
-  //   if (missionData) {
-  //     const initialCounts = missionData.map((mission) => ({
-  //       id: mission.id,
-  //       count: 0,
-  //     }));
-  //     // setCount(initialCounts);
-  //   }
-  // }, [missionData]);
 
   return (
     <div className="h-screen">
@@ -320,8 +302,11 @@ export default function Page() {
           {!workout ? (
             <></>
           ) : (
-            <div className="pb-28">
-              <Image src={speechBubble3_1} alt="speechBubble3" />
+            <div className="pb-28 relative">
+              <span className="text-[#4B5563] text-[10px] absolute top-5 right-5 left-6">
+                {randomMessage}
+              </span>
+              <Image src={speechBubble3} alt="speechBubble3" />
               <Image
                 className="ml-3 my-2"
                 src={speechBubble2}
