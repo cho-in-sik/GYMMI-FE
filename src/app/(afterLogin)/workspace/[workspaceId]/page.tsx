@@ -75,6 +75,12 @@ type TDetailHistorys = {
   totalScore: number;
 };
 
+type TScoreData = {
+  id: number;
+  label: string;
+  value: number | string;
+};
+
 const mockDatas = {
   totalContributedScore: 200,
   bestDailyScore: 100,
@@ -125,6 +131,17 @@ const mockDatas = {
     },
   ],
 };
+
+// 히스토리 정보 가져오면 여기서 점수들 정보를 배열로 저장
+const scoreDatas = [
+  {
+    id: 1,
+    label: "일일 최고 운동점수",
+    value: `${mockDatas.totalContributedScore}`,
+  },
+  { id: 2, label: "누적 운동 기록 횟수", value: mockDatas.bestDailyScore },
+  { id: 3, label: "1등과의 격차", value: mockDatas.scoreGapFromFirst },
+];
 
 const mockDataHistorys = [
   {
@@ -393,30 +410,21 @@ export default function Page() {
                     </span>
                   </div>
                   <Image src={verticalLine} alt="verticalLine" />
-                  <div className="flex flex-col items-center justify-center">
-                    <span className="text-[#9C9EA3] text-[8px]">
-                      일일 최고 운동점수
-                    </span>
-                    <span className="text-[#1F2937] text-xs pt-1">
-                      {mockDatas.bestDailyScore}점
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <span className="text-[#9C9EA3] text-[8px]">
-                      누적 운동 기록 횟수
-                    </span>
-                    <span className="text-[#1F2937] text-xs pt-1">
-                      {mockDatas.totalWorkoutCount}점
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-center justify-center">
-                    <span className="text-[#9C9EA3] text-[8px]">
-                      1등과의 격차
-                    </span>
-                    <span className="text-[#1F2937] text-xs pt-1">
-                      {mockDatas.scoreGapFromFirst}점
-                    </span>
-                  </div>
+                  {scoreDatas.map((scoreData: TScoreData) => {
+                    return (
+                      <div
+                        className="flex flex-col items-center justify-center"
+                        key={scoreData.id}
+                      >
+                        <span className="text-[#9C9EA3] text-[8px]">
+                          {scoreData.label}
+                        </span>
+                        <span className="text-[#1F2937] text-xs pt-1">
+                          {scoreData.value}점
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
               </Tabs>
             </div>
