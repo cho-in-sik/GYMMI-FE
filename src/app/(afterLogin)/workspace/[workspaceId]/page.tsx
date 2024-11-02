@@ -42,17 +42,17 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { workspace } from "@/constants/queryKey";
 import { useParams, useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from "next/link";
 import { imageLoader } from "@/utils/image";
 // import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
 
-type MissonData = {
-  id: number;
-  mission: string;
-  score: number;
-};
+// type MissonData = {
+//   id: number;
+//   mission: string;
+//   score: number;
+// };
 
 // type Records = {
 //   id: number;
@@ -60,6 +60,12 @@ type MissonData = {
 //   totalContributedScore: number;
 //   totalCount: number;
 // };
+
+type TScoreData = {
+  id: number;
+  label: string;
+  value: number | string;
+};
 
 type THistorys = {
   id: number;
@@ -73,12 +79,6 @@ type TDetailHistorys = {
   mission: string;
   count: number;
   totalScore: number;
-};
-
-type TScoreData = {
-  id: number;
-  label: string;
-  value: number | string;
 };
 
 const mockDatas = {
@@ -433,78 +433,96 @@ export default function Page() {
                 <span className="text-[#9CA3AF] text-xs">
                   {"<개인별 운동 히스토리>"}
                 </span>
-                {mockDatas.workoutHistories.map((mockData: THistorys) => {
-                  const isToggled = workoutHistory.includes(mockData.id);
-                  return (
-                    <div className="flex pt-3 pb-4" key={mockData.id}>
-                      <span className="text-[#9C9EA3] text-[10px]">
-                        {mockData.createdAt.substring(5)}
-                      </span>
-                      <div className="flex flex-col items-center px-3">
-                        <Image
-                          src={isToggled ? radiusClicked : radius}
-                          alt={isToggled ? "radiusClicked" : "radius"}
-                        />
-                      </div>
-                      <div>
-                        <div
-                          onClick={() => {
-                            handleWorkoutHistory(mockData.id);
-                          }}
-                        >
-                          <span className="text-[#6B7280] text-sm flex">
-                            {mockData.sumOfScore}점 운동 기록
-                            {isToggled ? (
+                <div className="pt-4">
+                  {mockDatas.workoutHistories.map(
+                    (mockData: THistorys, index: number) => {
+                      const isToggled = workoutHistory.includes(mockData.id);
+                      const isLastIndex =
+                        index === mockDatas.workoutHistories.length - 1;
+
+                      return (
+                        <div className="flex pb-4" key={mockData.id}>
+                          <span className="text-[#9C9EA3] text-[10px]">
+                            {mockData.createdAt.substring(5)}
+                          </span>
+                          <div className="flex flex-col items-center px-3">
+                            <Image
+                              src={isToggled ? radiusClicked : radius}
+                              alt={isToggled ? "radiusClicked" : "radius"}
+                            />
+                            {isLastIndex ? (
                               <></>
                             ) : (
-                              <Image
-                                src={arrow}
-                                alt="arrow"
-                                className="w-[4px] ml-2"
-                              />
-                            )}
-                          </span>
-                        </div>
-                        {mockData.isApproved ? (
-                          <span className="text-xs text-[#6B7280]">
-                            인증 완료
-                          </span>
-                        ) : (
-                          <span className="text-xs text-[#F87171]">
-                            인증 기각
-                          </span>
-                        )}
-                        {isToggled && (
-                          <div className="w-36 min-h-20 bg-[#DBEAFE] rounded-lg mt-2 pt-1 pb-2">
-                            {mockDataHistorys.map(
-                              (dataHistory: TDetailHistorys) => {
-                                return (
-                                  <div
-                                    className="h-5 flex items-center"
-                                    key={dataHistory.id}
-                                  >
-                                    <Image
-                                      className="mx-2"
-                                      src={detailHistoryRadius}
-                                      alt="detailRadius"
-                                    />
-                                    <div>
-                                      <span className="text-[#4B5563] text-[10px]">
-                                        {dataHistory.mission}{" "}
-                                        {dataHistory.count}회 -{" "}
-                                        {dataHistory.totalScore}p
-                                      </span>
-                                    </div>
-                                  </div>
-                                );
-                              }
+                              <hr className="w-[1px] h-full border-0 bg-[#BFDBFE] -mb-4" />
                             )}
                           </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                          <div>
+                            <div
+                              onClick={() => {
+                                handleWorkoutHistory(mockData.id);
+                              }}
+                            >
+                              <span
+                                className={`text-sm flex ${
+                                  isToggled
+                                    ? "text-[#4B5563]"
+                                    : "text-[#6B7280]"
+                                }`}
+                              >
+                                {mockData.sumOfScore}점 운동 기록
+                                {isToggled ? (
+                                  <></>
+                                ) : (
+                                  <Image
+                                    src={arrow}
+                                    alt="arrow"
+                                    className="w-[4px] ml-2"
+                                  />
+                                )}
+                              </span>
+                            </div>
+                            {mockData.isApproved ? (
+                              <span className="text-xs text-[#6B7280]">
+                                인증 완료
+                              </span>
+                            ) : (
+                              <span className="text-xs text-[#F87171]">
+                                인증 기각
+                              </span>
+                            )}
+                            {isToggled && (
+                              <div className="w-36 min-h-20 bg-[#DBEAFE] rounded-lg mt-2 pt-1 pb-2">
+                                {mockDataHistorys.map(
+                                  (dataHistory: TDetailHistorys) => {
+                                    return (
+                                      <div
+                                        className="h-5 flex items-center"
+                                        key={dataHistory.id}
+                                      >
+                                        <Image
+                                          className="mx-2"
+                                          src={detailHistoryRadius}
+                                          alt="detailRadius"
+                                        />
+                                        <div>
+                                          <span className="text-[#4B5563] text-[10px]">
+                                            {dataHistory.mission}{" "}
+                                            {dataHistory.count}회 -{" "}
+                                            {dataHistory.totalScore}p
+                                          </span>
+                                        </div>
+                                      </div>
+                                    );
+                                  }
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
+                </div>
               </Tabs>
             </div>
           </div>
