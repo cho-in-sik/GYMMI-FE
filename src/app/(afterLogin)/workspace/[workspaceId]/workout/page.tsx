@@ -16,13 +16,13 @@ import registerIcon from '@/../public/svgs/workspace/registerOff.svg';
 import registerOnIcon from '@/../public/svgs/workspace/registerOn.svg';
 
 import emptyStar from '@/../public/svgs/workspace/emptyStar.svg';
-import filledStar from '@/../public/svgs/workspace/filledStar.svg';
-
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { userMissions } from '@/api/workspace';
 import { useState } from 'react';
+import { getBookmarks } from '@/api/workout';
+import { useWorkoutStore } from '@/hooks/useWorkout';
 
 type TMission = {
   id: number;
@@ -32,64 +32,73 @@ type TMission = {
 
 export default function Page() {
   const { workspaceId } = useParams();
+  const { workoutInfo, updateMission } = useWorkoutStore();
   const [activeNumber, setActiveNumber] = useState(0);
   const [open, setOpen] = useState(false);
+  const [bookmark, setBookmark] = useState('all');
   const [selectedMission, setSelectedMission] = useState<TMission | null>(null);
-  const [counts, setCounts] = useState<Array<{ id: number; count: number }>>(
-    [],
-  );
+
+  const router = useRouter();
 
   const { data } = useQuery({
     queryKey: ['missions'],
-    queryFn: () => userMissions(Number(workspaceId)),
+    queryFn: async () => {
+      if (bookmark === 'all') {
+        return await userMissions(Number(workspaceId));
+      } else {
+        return await getBookmarks(Number(workspaceId));
+      }
+    },
   });
 
-  console.log(counts);
-
-  const updateCount = (missionId: number, newCount: number) => {
-    setCounts((prevCounts) => {
-      if (newCount === 0) {
-        return prevCounts.filter((item) => item.id !== missionId);
-      }
-
-      const existing = prevCounts.find((item) => item.id === missionId);
-      if (existing) {
-        return prevCounts.map((item) =>
-          item.id === missionId ? { ...item, count: newCount } : item,
-        );
-      } else {
-        return [...prevCounts, { id: missionId, count: newCount }];
-      }
-    });
-  };
+  console.log(workoutInfo.missions);
 
   const handleAddClick = () => {
     if (selectedMission) {
-      updateCount(selectedMission.id, activeNumber);
+      updateMission({
+        id: selectedMission.id,
+        mission: selectedMission.mission,
+        score: selectedMission.score,
+        count: activeNumber,
+      });
       setActiveNumber(0);
       setOpen(false);
     }
   };
 
-  // 특정 미션의 count 가져오는 함수
   const getMissionCount = (missionId: number) => {
-    const mission = counts.find((item) => item.id === missionId);
+    const mission = workoutInfo.missions.find((item) => item.id === missionId);
     return mission ? mission.count : 0;
   };
 
-  // 특정 미션이 완료되었는지 확인하는 함수 (count가 1 이상일 때 완료)
-  const isMissionCompleted = (missionId: number) => {
-    return getMissionCount(missionId) > 0;
-  };
+  const isMissionCompleted = (missionId: number) =>
+    getMissionCount(missionId) > 0;
 
   return (
-    <div className="">
+    <div>
       <div className="flex justify-start items-center text-xs gap-2 mb-4">
-        <div className="px-3 py-1 bg-[#9CA3AF] rounded-xl text-white">전체</div>
-        <div className="px-3 py-1 bg-[#F9FAFB] text-[#9CA3AF] rounded-xl">
+        <div
+          className={`${
+            bookmark === 'all'
+              ? 'bg-[#9CA3AF] text-white'
+              : 'bg-[#F9FAFB] text-[#9CA3AF]'
+          } px-3 py-1 rounded-xl`}
+          onClick={() => setBookmark('all')}
+        >
+          전체
+        </div>
+        <div
+          className={`${
+            bookmark === 'bookmark'
+              ? 'bg-[#9CA3AF] text-white'
+              : 'bg-[#F9FAFB] text-[#9CA3AF]'
+          } px-3 py-1 rounded-xl`}
+          onClick={() => setBookmark('bookmark')}
+        >
           즐겨찾기
         </div>
       </div>
+
       <Drawer open={open} onOpenChange={setOpen}>
         <div className="w-full flex flex-col justify-center items-center gap-2">
           {data?.map((item: TMission) => (
@@ -170,22 +179,26 @@ export default function Page() {
       </Drawer>
 
       <div className="w-full fixed bottom-10">
-        <div className="w-full">
-          <button
-            className={`py-3 w-[85%] ${
-              counts.length > 0 ? 'bg-main text-white' : 'bg-[#EFF6FF]'
-            } rounded-full flex justify-center items-center text-base`}
-          >
-            <div className="absolute left-4">
-              {counts.length > 0 ? (
-                <Image src={registerOnIcon} alt="registerOnIcon" />
-              ) : (
-                <Image src={registerIcon} alt="registerIcon" />
-              )}
-            </div>
-            <span>등록하러 가기</span>
-          </button>
-        </div>
+        <button
+          className={`py-3 w-[90%] ${
+            workoutInfo.missions.length > 0
+              ? 'bg-main text-white'
+              : 'bg-[#EFF6FF]'
+          } rounded-full flex justify-center items-center text-base`}
+          onClick={() => {
+            if (workoutInfo.missions.length <= 0) return;
+            router.push(`/workspace/${workspaceId}/workout/register`);
+          }}
+        >
+          <div className="absolute left-4">
+            {workoutInfo.missions.length > 0 ? (
+              <Image src={registerOnIcon} alt="registerOnIcon" />
+            ) : (
+              <Image src={registerIcon} alt="registerIcon" />
+            )}
+          </div>
+          <span>등록하러 가기</span>
+        </button>
       </div>
     </div>
   );

@@ -6,44 +6,64 @@ import plus from '@/../public/svgs/plus.svg';
 import checkedCircle from '@/../public/svgs/workspace/checkedCircle.svg';
 import nonCheckedCircle from '@/../public/svgs/workspace/nonCheckedCircle.svg';
 import warning from '@/../public/svgs/workspace/warning.svg';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
+
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-
-const items = [
-  {
-    id: 0,
-    mission: '풀업 1세트(10회)',
-    score: 10,
-  },
-  {
-    id: 1,
-    mission: '벤치프레스 1세트(10회)',
-    score: 10,
-  },
-  {
-    id: 2,
-    mission: '스쿼트 1세트(10회)',
-    score: 10,
-  },
-  {
-    id: 3,
-    mission: '오버헤드프레스 1세트(10회)',
-    score: 7,
-  },
-];
+import { useWorkoutStore } from '@/hooks/useWorkout';
+import { Input } from '@/components/ui/input';
+import { s3PutPresifnedUrls, workout } from '@/api/workout';
+import { useParams } from 'next/navigation';
 
 export default function Page() {
+  const { workspaceId } = useParams();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [photoCheck, setPhotoCheck] = useState(false);
   const [comment, setComment] = useState('');
+  const [imagePreview, setImagePreview] = useState<File | null>(null);
+
+  const { workoutInfo } = useWorkoutStore();
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImagePreview(file);
+    }
+  };
+
+  const handleImageRemove = (e: any) => {
+    e.stopPropagation();
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    setImagePreview(null);
+  };
 
   const handleClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current?.click();
+      fileInputRef.current.click();
     }
   };
+
+  const handleSubmit = async () => {
+    if (imagePreview) {
+      const imageUrl = await s3PutPresifnedUrls(imagePreview);
+
+      const data = {
+        imageUrl,
+        comment,
+        willLink: photoCheck,
+        missions: workoutInfo.missions.map(({ id, count }) => ({ id, count })),
+      };
+      try {
+        const workoutRes = await workout({ workspaceId, data });
+        console.log(workoutRes);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <div className="">
       <div className="mb-6">
@@ -54,21 +74,47 @@ export default function Page() {
         </Label>
         <div className="flex justify-start items-end gap-1">
           <div
-            className="w-24 h-24 bg-[#F9FAFB] rounded-lg flex justify-center items-center"
+            className="w-24 h-24 bg-[#F9FAFB] rounded-lg flex justify-center items-center relative"
             onClick={handleClick}
           >
-            <Image src={plus} alt="plus" />
+            <span
+              className="absolute right-0 -top-2 text-white bg-red-500 rounded-full"
+              onClick={(e) => handleImageRemove(e)}
+            >
+              x
+            </span>
+            {imagePreview ? (
+              <img
+                src={URL.createObjectURL(imagePreview)}
+                alt="preview"
+                className="w-full h-full object-cover rounded-lg"
+              />
+            ) : (
+              <Image src={plus} alt="plus" />
+            )}
           </div>
-          <span className="text-[10px] text-[#B7C4D5] flex">
-            <Image src={nonCheckedCircle} alt="check" className="mr-1" />
-            사진 커뮤니티에도 사진을 등록할까요?
-          </span>
-          <input
+          <div onClick={() => setPhotoCheck((v) => !v)}>
+            <span
+              className={`${
+                photoCheck ? 'text-[#1F2937]' : ' text-[#B7C4D5]'
+              } text-[10px] flex`}
+            >
+              <Image
+                src={photoCheck ? checkedCircle : nonCheckedCircle}
+                alt="check"
+                className="mr-1"
+              />
+              사진 커뮤니티에도 사진을 등록할까요?
+            </span>
+          </div>
+
+          <Input
             required
             id="photo"
             type="file"
             className="hidden"
             ref={fileInputRef}
+            onChange={handleImageChange}
           />
         </div>
       </div>
@@ -92,27 +138,20 @@ export default function Page() {
           ></textarea>
         </div>
       </div>
-      {/* <div className="flex justify-center items-start mb-2">
-        <Image src={warning} alt="warning" />
-        <span className="text-[10px] text-[#F87171]">
-          성의없는 운동인증은 이의제기를 받을 수 있습니다. 또한 운동인증은 하루
-          최대 3번까지만 등록 가능합니다.
-        </span>
-      </div> */}
+
       <div className="flex items-center space-x-2 mb-2">
-        <Checkbox id="terms" />
+        <Image src={warning} alt="warning" />
         <label
           htmlFor="terms"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[10px] text-[#F87171]"
+          className="font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[10px] text-[#F87171]"
         >
           성의없는 운동인증은 이의제기를 받을 수 있습니다. 또한 운동인증은 하루
           최대 3번까지만 등록 가능합니다.
         </label>
       </div>
-      {/* 나중에 여기 아래 div태그 h 크기 바꾸기!!  */}
-      <div className="-mx-6 bg-[#EFF6FF] min-h-full">
-        {items.map((item, i) => {
-          const isLast = i === items.length - 1;
+      <div className="bg-[#EFF6FF] min-h-96 h-full -mx-6">
+        {workoutInfo.missions.map((item, i) => {
+          const isLast = i === workoutInfo.missions.length - 1;
           return (
             <div
               key={item.id}
@@ -124,10 +163,19 @@ export default function Page() {
                 <h3>{item.mission}</h3>
                 <h5 className="text-xs font-light">{`${item.score}점`}</h5>
               </div>
-              <div className="text-2xl mr-4">3</div>
+              <div className="text-2xl mr-4">{item.count}</div>
             </div>
           );
         })}
+      </div>
+      <div className="w-full fixed bottom-10">
+        <button
+          className={`py-3 w-[90%] bg-main text-white
+             rounded-full flex justify-center items-center text-base`}
+          onClick={handleSubmit}
+        >
+          <span>인증 등록하기</span>
+        </button>
       </div>
     </div>
   );
