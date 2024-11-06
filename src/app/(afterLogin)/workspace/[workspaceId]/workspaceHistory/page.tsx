@@ -42,67 +42,6 @@ type TDetailHistorys = {
   totalScore: number;
 };
 
-const mockDatas = {
-  totalContributedScore: 200,
-  bestDailyScore: 100,
-  totalWorkoutCount: 12,
-  scoreGapFromFirst: 40,
-  workoutHistories: [
-    {
-      id: 1, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-    {
-      id: 2, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-    {
-      id: 3, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-    {
-      id: 4, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-    {
-      id: 5, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-    {
-      id: 6, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-    {
-      id: 7, //
-      isApproved: 'true',
-      createdAt: '2024-05-06',
-      sumOfScore: 100,
-    },
-  ],
-};
-
-const scoreDatas = [
-  {
-    id: 1,
-    label: '일일 최고 운동점수',
-    value: `${mockDatas.totalContributedScore}`,
-  },
-  { id: 2, label: '누적 운동 기록 횟수', value: mockDatas.bestDailyScore },
-  { id: 3, label: '1등과의 격차', value: mockDatas.scoreGapFromFirst },
-];
-
 const mockDataHistorys = [
   {
     id: 1,
@@ -172,7 +111,8 @@ function Page() {
   const [workoutHistory, setWorkoutHistory] = useState<number[]>([]);
   const [randomMessage, setRandomMessage] = useState(``);
   const [queryData, setQueryData] = useState<IQueryTypes | null>(null);
-  const [workoutHistoryId, setWorkoutHistoryId] = useState<number | null>(1);
+  const [workoutHistoryId, setWorkoutHistoryId] = useState<number>(0);
+  const [isWorkoutHistoryDetail, setIsWorkoutHistoryDetail] = useState(false);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -198,7 +138,68 @@ function Page() {
     setWorkoutHistory((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+    setWorkoutHistoryId(id);
+    setIsWorkoutHistoryDetail(true);
   };
+
+  const { data: workspaceHistoryDatas } = useQuery({
+    queryKey: [
+      [
+        workspaceHistoryData.workspaceHistoryData,
+        workspaceIdNumber,
+        queryData?.userId,
+      ],
+    ],
+    queryFn: () => {
+      if (queryData?.userId !== undefined) {
+        return workspaceHistorys({
+          workspaceId: workspaceIdNumber,
+          userId: queryData?.userId,
+        });
+      }
+    },
+  });
+  console.log(workspaceHistoryDatas);
+
+  const scoreDatas = [
+    {
+      id: 1,
+      label: '일일 최고 운동점수',
+      value: `${workspaceHistoryDatas?.data.totalContributedScore}`,
+    },
+    {
+      id: 2,
+      label: '누적 운동 기록 횟수',
+      value: workspaceHistoryDatas?.data.bestDailyScore,
+    },
+    {
+      id: 3,
+      label: '1등과의 격차',
+      value: workspaceHistoryDatas?.data.gabScoreFromFirst,
+    },
+  ];
+
+  const { data: workspaceHistoryDetail } = useQuery({
+    queryKey: [
+      [
+        workspaceHistoryData.workspaceHistoryDataDetail,
+        workspaceIdNumber,
+        queryData?.userId,
+        workoutHistoryId,
+      ],
+    ],
+    queryFn: () => {
+      if (queryData?.userId !== undefined) {
+        return historyDetails({
+          workspaceId: workspaceIdNumber,
+          userId: queryData?.userId,
+          workoutHistoryId,
+        });
+      }
+    },
+    enabled: isWorkoutHistoryDetail,
+  });
+  console.log(workspaceHistoryDetail);
 
   return (
     <div className='h-screen'>
@@ -231,7 +232,7 @@ function Page() {
             <div className='flex flex-col items-center'>
               <span className='text-[#9C9EA3] text-[8px]'>총 점수</span>
               <span className='text-[#1F2937]'>
-                {mockDatas.totalContributedScore}점
+                {workspaceHistoryDatas?.data.totalContributedScore}점
               </span>
             </div>
             <Image src={verticalLine} alt='verticalLine' />
@@ -256,19 +257,22 @@ function Page() {
       <div className='bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto'>
         <Tabs className='w-full pl-5 pt-2' defaultValue='myHistory'>
           <span className='text-[#9CA3AF] text-xs'>
-            {'<개인별 운동 히스토리>'}
+            {'<개인별 운동 히스토리 목록>'}
           </span>
           <div className='pt-4'>
-            {mockDatas.workoutHistories.map(
-              (mockData: THistorys, index: number) => {
-                const isToggled = workoutHistory.includes(mockData.id);
+            {workspaceHistoryDatas?.data.workoutHistories.map(
+              (workspaceHistoryData: THistorys, index: number) => {
+                const isToggled = workoutHistory.includes(
+                  workspaceHistoryData.id
+                );
                 const isLastIndex =
-                  index === mockDatas.workoutHistories.length - 1;
+                  index ===
+                  workspaceHistoryDatas?.data.workoutHistories.length - 1;
 
                 return (
-                  <div className='flex pb-4' key={mockData.id}>
+                  <div className='flex pb-4' key={workspaceHistoryData.id}>
                     <span className='text-[#9C9EA3] text-[10px]'>
-                      {mockData.createdAt.substring(5)}
+                      {workspaceHistoryData.createdAt.substring(5)}
                     </span>
                     <div className='flex flex-col items-center px-3'>
                       <Image
@@ -284,7 +288,7 @@ function Page() {
                     <div>
                       <div
                         onClick={() => {
-                          handleWorkoutHistory(mockData.id);
+                          handleWorkoutHistory(workspaceHistoryData.id);
                         }}
                       >
                         <span
@@ -292,7 +296,7 @@ function Page() {
                             isToggled ? 'text-[#4B5563]' : 'text-[#6B7280]'
                           }`}
                         >
-                          {mockData.sumOfScore}점 운동 기록
+                          {workspaceHistoryData.sumOfScore}점 운동 기록
                           {isToggled ? (
                             <></>
                           ) : (
@@ -304,7 +308,7 @@ function Page() {
                           )}
                         </span>
                       </div>
-                      {mockData.isApproved ? (
+                      {workspaceHistoryData.isApproved ? (
                         <span className='text-xs text-[#6B7280]'>
                           인증 완료
                         </span>

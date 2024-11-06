@@ -31,7 +31,7 @@ import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_componen
 
 type THistoryType = {
   workspaceId: number;
-  userId: number;
+  userId: number | null;
   name: string;
   workout: boolean;
   percent: number;
@@ -44,18 +44,12 @@ export default function Page() {
   const router = useRouter();
 
   const [workout, setWorkout] = useState(false);
-  const [userId, setUserId] = useState<number>(0);
+  const [userId, setUserId] = useState<number | null>(null);
 
   const { data: infoWork } = useQuery({
     queryKey: [workspace.info, workspaceIdNumber, workout],
     queryFn: () => infoWorkspace(workspaceIdNumber),
   });
-
-  useEffect(() => {
-    if (infoWork?.data?.workoutHistories) {
-      setUserId(infoWork.data.workoutHistories[0].id);
-    }
-  }, [infoWork]);
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -76,9 +70,22 @@ export default function Page() {
     setIsOpen(open);
   };
 
-  const handleWorkout = async (v: any) => {
-    setWorkout((v) => !v);
+  const handleWorkout = async (v: { userId: number; isMyself: boolean }) => {
+    setWorkout((prevWorkout) => !prevWorkout);
+    setUserId(v.userId);
   };
+
+  useEffect(() => {
+    if (userId !== null) {
+      clickPageMove({
+        workspaceId: workspaceIdNumber,
+        userId,
+        name: infoWork?.data.name,
+        workout: true,
+        percent,
+      });
+    }
+  }, [userId]);
 
   const handleStart = async () => {
     try {
@@ -162,30 +169,26 @@ export default function Page() {
             <span className='text-xs text-[#4B5563]'>획득 점수</span>
           </div>
           {/* 여기에 유저들 매핑해주기 */}
-          <div
-            className='overflow-auto'
-            onClick={() => {
-              setWorkout(true);
-              clickPageMove({
-                workspaceId: workspaceIdNumber,
-                userId,
-                name: infoWork?.data.name,
-                workout: true,
-                percent,
-              });
-            }}
-          >
+          <div className='overflow-auto'>
             {infoWork?.data.workers.map((user: any) => {
               return (
                 <div
                   className='mb-4 text-[#4B5563]'
                   key={user.id}
-                  onClick={() =>
+                  onClick={() => {
                     handleWorkout({
                       userId: user.id,
                       isMyself: user.isMyself,
-                    })
-                  }
+                    });
+
+                    clickPageMove({
+                      workspaceId: workspaceIdNumber,
+                      userId,
+                      name: infoWork?.data.name,
+                      workout,
+                      percent,
+                    });
+                  }}
                 >
                   <div
                     className={`w-full h-16 ${
