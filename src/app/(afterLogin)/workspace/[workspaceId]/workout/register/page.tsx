@@ -13,7 +13,7 @@ import { useRef, useState } from 'react';
 import { useWorkoutStore } from '@/hooks/useWorkout';
 import { Input } from '@/components/ui/input';
 import { s3PutPresifnedUrls, workout } from '@/api/workout';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 export default function Page() {
   const { workspaceId } = useParams();
@@ -23,6 +23,8 @@ export default function Page() {
   const [imagePreview, setImagePreview] = useState<File | null>(null);
 
   const { workoutInfo } = useWorkoutStore();
+
+  const router = useRouter();
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -58,9 +60,14 @@ export default function Page() {
       try {
         const workoutRes = await workout({ workspaceId, data });
         console.log(workoutRes);
+        if (workoutRes.status === 200) {
+          router.push(`/workspace/${workspaceId}`);
+        }
       } catch (error) {
         console.log(error);
       }
+    } else {
+      alert('이미지를 등록해주세요!');
     }
   };
 

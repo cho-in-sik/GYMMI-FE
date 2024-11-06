@@ -105,6 +105,11 @@ export default function Page() {
             <div
               className="w-full h-16 py-3 px-4 rounded-lg bg-[#FEFCE8] flex justify-between items-center"
               key={item.id}
+              onClick={() => {
+                setOpen(true);
+                setSelectedMission(item);
+                setActiveNumber(getMissionCount(item.id));
+              }}
             >
               <div className="flex flex-col">
                 <h3 className="text-base">{item.mission}</h3>
@@ -113,13 +118,7 @@ export default function Page() {
 
               <div>
                 <DrawerTrigger asChild id={item.id.toString()}>
-                  <button
-                    onClick={() => {
-                      setOpen(true);
-                      setSelectedMission(item);
-                      setActiveNumber(getMissionCount(item.id));
-                    }}
-                  >
+                  <button>
                     <Image
                       src={isMissionCompleted(item.id) ? filledCheck : plus}
                       alt="icon"
