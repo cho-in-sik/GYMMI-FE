@@ -42,33 +42,6 @@ type TDetailHistorys = {
   totalScore: number;
 };
 
-const mockDataHistorys = [
-  {
-    id: 1,
-    mission: '데드리프트',
-    count: 7,
-    totalScore: 100,
-  },
-  {
-    id: 2,
-    mission: '데드리프트',
-    count: 7,
-    totalScore: 100,
-  },
-  {
-    id: 3,
-    mission: '데드리프트',
-    count: 7,
-    totalScore: 100,
-  },
-  {
-    id: 4,
-    mission: '데드리프트',
-    count: 7,
-    totalScore: 100,
-  },
-];
-
 const bubbleMessage = [
   {
     message: `곧 있으면
@@ -101,7 +74,7 @@ interface IQueryTypes {
   userId: number;
   name: string;
   workout: boolean;
-  percent: number;
+  achievementScore: number;
 }
 
 function Page() {
@@ -119,15 +92,19 @@ function Page() {
     const userId = parseInt(searchParams.get('userId') || '0', 10);
     const name = searchParams.get('name');
     const workout = searchParams.get('workout') === 'true';
-    const percent = parseInt(searchParams.get('percent') || '0', 10);
+    const achievementScore = parseInt(
+      searchParams.get('achievementScore') || '0',
+      10
+    );
 
     setQueryData({
       userId: userId,
       name: name || '',
       workout: workout,
-      percent: percent,
+      achievementScore: achievementScore,
     });
   }, []);
+  console.log(queryData);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * bubbleMessage.length);
@@ -209,7 +186,7 @@ function Page() {
           <div className={`flex justify-center items-end gap-x-6 h-48 mb-5 `}>
             <WorkspaceGimmi
               workout={queryData.workout}
-              percent={queryData.percent}
+              achievementScore={queryData.achievementScore}
             />
             <div className='pb-28 relative'>
               <span className='text-[#4B5563] text-[10px] absolute top-5 right-5 left-6'>
@@ -228,30 +205,34 @@ function Page() {
       )}
       <div className=' h-[50px] bg-white rounded-lg mb-4'>
         <Tabs className='w-full' defaultValue='totalScore'>
-          <div className='flex gap-x-6 pl-7 pt-2 justify-items-center'>
-            <div className='flex flex-col items-center'>
-              <span className='text-[#9C9EA3] text-[8px]'>총 점수</span>
-              <span className='text-[#1F2937]'>
-                {workspaceHistoryDatas?.data.totalContributedScore}점
-              </span>
+          {!workspaceHistoryDatas ? (
+            <p>데이터가 없습니다.</p>
+          ) : (
+            <div className='flex gap-x-6 pl-7 pt-2 justify-items-center'>
+              <div className='flex flex-col items-center'>
+                <span className='text-[#9C9EA3] text-[8px]'>총 점수</span>
+                <span className='text-[#1F2937]'>
+                  {workspaceHistoryDatas?.data.totalContributedScore}점
+                </span>
+              </div>
+              <Image src={verticalLine} alt='verticalLine' />
+              {scoreDatas.map((scoreData: TScoreData) => {
+                return (
+                  <div
+                    className='flex flex-col items-center justify-center'
+                    key={scoreData.id}
+                  >
+                    <span className='text-[#9C9EA3] text-[8px]'>
+                      {scoreData.label}
+                    </span>
+                    <span className='text-[#1F2937] text-xs pt-1'>
+                      {scoreData.value}점
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-            <Image src={verticalLine} alt='verticalLine' />
-            {scoreDatas.map((scoreData: TScoreData) => {
-              return (
-                <div
-                  className='flex flex-col items-center justify-center'
-                  key={scoreData.id}
-                >
-                  <span className='text-[#9C9EA3] text-[8px]'>
-                    {scoreData.label}
-                  </span>
-                  <span className='text-[#1F2937] text-xs pt-1'>
-                    {scoreData.value}점
-                  </span>
-                </div>
-              );
-            })}
-          </div>
+          )}
         </Tabs>
       </div>
       <div className='bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto'>
@@ -259,96 +240,106 @@ function Page() {
           <span className='text-[#9CA3AF] text-xs'>
             {'<개인별 운동 히스토리 목록>'}
           </span>
-          <div className='pt-4'>
-            {workspaceHistoryDatas?.data.workoutHistories.map(
-              (workspaceHistoryData: THistorys, index: number) => {
-                const isToggled = workoutHistory.includes(
-                  workspaceHistoryData.id
-                );
-                const isLastIndex =
-                  index ===
-                  workspaceHistoryDatas?.data.workoutHistories.length - 1;
+          {!workspaceHistoryDatas ? (
+            <p>데이터가 없습니다.</p>
+          ) : (
+            <div className='pt-4'>
+              {workspaceHistoryDatas?.data.workoutHistories.map(
+                (workspaceHistoryData: THistorys, index: number) => {
+                  const isToggled = workoutHistory.includes(
+                    workspaceHistoryData.id
+                  );
+                  const isLastIndex =
+                    index ===
+                    workspaceHistoryDatas?.data.workoutHistories.length - 1;
 
-                return (
-                  <div className='flex pb-4' key={workspaceHistoryData.id}>
-                    <span className='text-[#9C9EA3] text-[10px]'>
-                      {workspaceHistoryData.createdAt.substring(5)}
-                    </span>
-                    <div className='flex flex-col items-center px-3'>
-                      <Image
-                        src={isToggled ? radiusClicked : radius}
-                        alt={isToggled ? 'radiusClicked' : 'radius'}
-                      />
-                      {isLastIndex ? (
-                        <></>
-                      ) : (
-                        <hr className='w-[1px] h-full border-0 bg-[#BFDBFE] -mb-4' />
-                      )}
-                    </div>
-                    <div>
-                      <div
-                        onClick={() => {
-                          handleWorkoutHistory(workspaceHistoryData.id);
-                        }}
-                      >
-                        <span
-                          className={`text-sm flex ${
-                            isToggled ? 'text-[#4B5563]' : 'text-[#6B7280]'
-                          }`}
-                        >
-                          {workspaceHistoryData.sumOfScore}점 운동 기록
-                          {isToggled ? (
-                            <></>
-                          ) : (
-                            <Image
-                              src={arrow}
-                              alt='arrow'
-                              className='w-[4px] ml-2'
-                            />
-                          )}
-                        </span>
+                  return (
+                    <div className='flex pb-4' key={workspaceHistoryData.id}>
+                      <span className='text-[#9C9EA3] text-[10px]'>
+                        {workspaceHistoryData.createdAt[index] ===
+                        workspaceHistoryData.createdAt ? (
+                          <></>
+                        ) : (
+                          workspaceHistoryData.createdAt.substring(5, 10)
+                        )}
+                      </span>
+                      <div className='flex flex-col items-center px-3'>
+                        <Image
+                          src={isToggled ? radiusClicked : radius}
+                          alt={isToggled ? 'radiusClicked' : 'radius'}
+                        />
+                        {isLastIndex ? (
+                          <></>
+                        ) : (
+                          <hr className='w-[1px] h-full border-0 bg-[#BFDBFE] -mb-4' />
+                        )}
                       </div>
-                      {workspaceHistoryData.isApproved ? (
-                        <span className='text-xs text-[#6B7280]'>
-                          인증 완료
-                        </span>
-                      ) : (
-                        <span className='text-xs text-[#F87171]'>
-                          인증 기각
-                        </span>
-                      )}
-                      {isToggled && (
-                        <div className='w-36 min-h-20 bg-[#DBEAFE] rounded-lg mt-2 pt-1 pb-2'>
-                          {mockDataHistorys.map(
-                            (dataHistory: TDetailHistorys) => {
-                              return (
-                                <div
-                                  className='h-5 flex items-center'
-                                  key={dataHistory.id}
-                                >
-                                  <Image
-                                    className='mx-2'
-                                    src={detailHistoryRadius}
-                                    alt='detailRadius'
-                                  />
-                                  <div>
-                                    <span className='text-[#4B5563] text-[10px]'>
-                                      {dataHistory.mission} {dataHistory.count}
-                                      회 - {dataHistory.totalScore}p
-                                    </span>
-                                  </div>
-                                </div>
-                              );
-                            }
-                          )}
+                      <div>
+                        <div
+                          onClick={() => {
+                            handleWorkoutHistory(workspaceHistoryData.id);
+                          }}
+                        >
+                          <span
+                            className={`text-sm flex ${
+                              isToggled ? 'text-[#4B5563]' : 'text-[#6B7280]'
+                            }`}
+                          >
+                            {workspaceHistoryData.sumOfScore}점 운동 기록
+                            {isToggled ? (
+                              <></>
+                            ) : (
+                              <Image
+                                src={arrow}
+                                alt='arrow'
+                                className='w-[4px] ml-2'
+                              />
+                            )}
+                          </span>
                         </div>
-                      )}
+                        {workspaceHistoryData.isApproved ? (
+                          <span className='text-xs text-[#6B7280]'>
+                            인증 완료
+                          </span>
+                        ) : (
+                          <span className='text-xs text-[#F87171]'>
+                            인증 기각
+                          </span>
+                        )}
+                        {isToggled && (
+                          <div className='w-36 min-h-20 bg-[#DBEAFE] rounded-lg mt-2 pt-1 pb-2'>
+                            {workspaceHistoryDetail?.data.map(
+                              (dataHistory: TDetailHistorys) => {
+                                return (
+                                  <div
+                                    className='h-5 flex items-center'
+                                    key={dataHistory.id}
+                                  >
+                                    <Image
+                                      className='mx-2'
+                                      src={detailHistoryRadius}
+                                      alt='detailRadius'
+                                    />
+                                    <div>
+                                      <span className='text-[#4B5563] text-[10px]'>
+                                        {dataHistory.mission}{' '}
+                                        {dataHistory.count}회 -{' '}
+                                        {dataHistory.totalScore}p
+                                      </span>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              }
-            )}
-          </div>
+                  );
+                }
+              )}
+            </div>
+          )}
         </Tabs>
       </div>
     </div>
