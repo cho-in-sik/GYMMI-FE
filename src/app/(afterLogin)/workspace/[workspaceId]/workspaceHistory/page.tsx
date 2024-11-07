@@ -5,6 +5,8 @@ import radiusClicked from '@/../public/svgs/workspace/workspaceHistory/radiusCli
 import detailHistoryRadius from '@/../public/svgs/workspace/workspaceHistory/detailHistoryRadius.svg';
 import arrow from '@/../public/svgs/workspace/workspaceHistory/arrow.svg';
 import verticalLine from '@/../public/svgs/workspace/verticalLine.svg';
+import detailVertical from '@/../public/svgs/workspace/workspaceHistory/detailVertical.svg';
+import detailVerticalIsToggled from '@/../public/svgs/workspace/workspaceHistory/detailVerticalIsToggled.svg';
 
 import speechBubble1 from '@/../public/svgs/workspace/speechBubble/speechBubble1.svg';
 import speechBubble2 from '@/../public/svgs/workspace/speechBubble/speechBubble2.svg';
@@ -182,7 +184,7 @@ function Page() {
       {queryData && (
         <>
           <WorkspaceTitle name={queryData.name} workout={queryData.workout} />
-          <div className={`flex justify-center items-end gap-x-6 h-48 mb-5 `}>
+          <div className='flex justify-center items-end gap-x-6 h-48 mb-5'>
             <WorkspaceGimmi
               workout={queryData.workout}
               achievementScore={queryData.achievementScore}
@@ -235,7 +237,7 @@ function Page() {
         </Tabs>
       </div>
       <div className='bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto'>
-        <Tabs className='w-full pl-5 pt-2' defaultValue='myHistory'>
+        <Tabs className='w-full pl-5 pt-2 pb-5' defaultValue='myHistory'>
           <span className='text-[#9CA3AF] text-xs'>
             {'<개인별 운동 히스토리 목록>'}
           </span>
@@ -253,7 +255,7 @@ function Page() {
                     workspaceHistoryDatas?.data.workoutHistories.length - 1;
 
                   return (
-                    <div className='flex pb-4' key={workspaceHistoryData.id}>
+                    <div className='flex' key={workspaceHistoryData.id}>
                       <span className='text-[#9C9EA3] text-[10px]'>
                         {workspaceHistoryData.createdAt[index] ===
                         workspaceHistoryData.createdAt ? (
@@ -270,7 +272,19 @@ function Page() {
                         {isLastIndex ? (
                           <></>
                         ) : (
-                          <hr className='w-[1px] h-full border-0 bg-[#BFDBFE] -mb-4' />
+                          <div>
+                            {isToggled ? (
+                              <Image
+                                src={detailVerticalIsToggled}
+                                alt='detailVerticalIsToggled'
+                              />
+                            ) : (
+                              <Image
+                                src={detailVertical}
+                                alt='detailVertical'
+                              />
+                            )}
+                          </div>
                         )}
                       </div>
                       <div>
