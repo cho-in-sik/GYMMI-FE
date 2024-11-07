@@ -1,6 +1,6 @@
-import { workspace } from "@/constants/queryKey";
-import { IWorkspaceInputs } from "@/types/\bworkSpace";
-import customAxios from "@/utils/cutstomAxios";
+import { workspace } from '@/constants/queryKey';
+import { IWorkspaceInputs } from '@/types/\bworkSpace';
+import customAxios from '@/utils/cutstomAxios';
 
 type SearchProps = {
   type?: string;
@@ -47,9 +47,9 @@ const myWorkspaces = async (page: number = 0) => {
   return res;
 };
 
-const allWorkspaces = async ({ type, keyword = "", page = 0 }: SearchProps) => {
-  if (type === "COMPLETED") {
-    type = "";
+const allWorkspaces = async ({ type, keyword = '', page = 0 }: SearchProps) => {
+  if (type === 'COMPLETED') {
+    type = '';
   }
   const res = await customAxios.get(
     `/workspaces?status=${type}&keyword=${keyword}&page=${page}`
@@ -59,7 +59,7 @@ const allWorkspaces = async ({ type, keyword = "", page = 0 }: SearchProps) => {
 };
 
 const createWorkspace = async (data: any) => {
-  const res = await customAxios.post("/workspaces", data);
+  const res = await customAxios.post('/workspaces', data);
   return res;
 };
 
