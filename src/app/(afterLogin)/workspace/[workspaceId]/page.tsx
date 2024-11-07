@@ -34,7 +34,7 @@ type THistoryType = {
   userId: number | null;
   name: string;
   workout: boolean;
-  percent: number;
+  achievementScore: number;
 };
 
 export default function Page() {
@@ -44,7 +44,6 @@ export default function Page() {
   const router = useRouter();
 
   const [workout, setWorkout] = useState(false);
-  const [userId, setUserId] = useState<number | null>(null);
 
   const { data: infoWork } = useQuery({
     queryKey: [workspace.info, workspaceIdNumber, workout],
@@ -53,11 +52,11 @@ export default function Page() {
 
   const [isOpen, setIsOpen] = useState(false);
 
-  let percent =
+  let achievementScore =
     (infoWork?.data.achievementScore / infoWork?.data.goalScore) * 100;
 
-  if (percent > 100) {
-    percent = 100;
+  if (achievementScore > 100) {
+    achievementScore = 100;
   }
 
   useEffect(() => {
@@ -70,22 +69,15 @@ export default function Page() {
     setIsOpen(open);
   };
 
-  const handleWorkout = async (v: { userId: number; isMyself: boolean }) => {
-    setWorkout((prevWorkout) => !prevWorkout);
-    setUserId(v.userId);
+  const handleUserId = (user: { userId: number; isMyself: boolean }) => {
+    clickPageMove({
+      workspaceId: workspaceIdNumber,
+      userId: user.userId,
+      name: infoWork?.data.name,
+      workout,
+      achievementScore,
+    });
   };
-
-  useEffect(() => {
-    if (userId !== null) {
-      clickPageMove({
-        workspaceId: workspaceIdNumber,
-        userId,
-        name: infoWork?.data.name,
-        workout: true,
-        percent,
-      });
-    }
-  }, [userId]);
 
   const handleStart = async () => {
     try {
@@ -115,9 +107,9 @@ export default function Page() {
     userId,
     name,
     workout,
-    percent,
+    achievementScore,
   }: THistoryType) => {
-    const queryString = `?userId=${userId}&name=${name}&workout=${workout}&percent=${percent}`;
+    const queryString = `?userId=${userId}&name=${name}&workout=${workout}&achievementScore=${achievementScore}`;
     router.push(`/workspace/${workspaceId}/workspaceHistory${queryString}`);
   };
 
@@ -151,7 +143,10 @@ export default function Page() {
       <div className='mb-14'>
         <WorkspaceTitle name={infoWork?.data.name} workout={workout} />
         <div className={`flex justify-center items-end gap-x-6 h-48 mb-4 `}>
-          <WorkspaceGimmi workout={workout} percent={percent} />
+          <WorkspaceGimmi
+            workout={workout}
+            achievementScore={achievementScore}
+          />
         </div>
         {/* 회원 클릭 전 */}
         <div>
@@ -160,7 +155,7 @@ export default function Page() {
             <Progress
               indicatorColor='bg-main'
               className='h-1.5 bg-[#ffff] mb-1'
-              value={percent}
+              value={achievementScore}
             />
             <div className='text-[10px] text-[#4B5563] text-right'>{`${infoWork?.data.achievementScore}/${infoWork?.data.goalScore}점`}</div>
           </div>
@@ -176,17 +171,11 @@ export default function Page() {
                   className='mb-4 text-[#4B5563]'
                   key={user.id}
                   onClick={() => {
-                    handleWorkout({
+                    setWorkout(true);
+
+                    handleUserId({
                       userId: user.id,
                       isMyself: user.isMyself,
-                    });
-
-                    clickPageMove({
-                      workspaceId: workspaceIdNumber,
-                      userId,
-                      name: infoWork?.data.name,
-                      workout,
-                      percent,
                     });
                   }}
                 >

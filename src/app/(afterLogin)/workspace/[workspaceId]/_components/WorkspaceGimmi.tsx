@@ -7,22 +7,22 @@ import Image from 'next/image';
 
 type TWorkspaceGimmi = {
   workout: boolean;
-  percent: number;
+  achievementScore: number;
 };
 
-function WorkspaceGimmi({ workout, percent }: TWorkspaceGimmi) {
+function WorkspaceGimmi({ workout, achievementScore }: TWorkspaceGimmi) {
   return (
     <div className={`${!workout ? 'w-48' : 'w-[136px]'}`}>
-      {percent < 25 && percent >= 0 ? (
+      {achievementScore < 25 && achievementScore >= 0 ? (
         <Image src={mainLogo0} alt='mainLogo0' />
       ) : null}
-      {percent < 50 && percent >= 25 ? (
+      {achievementScore < 50 && achievementScore >= 25 ? (
         <Image src={mainLogo25} alt='mainLogo25' />
       ) : null}
-      {percent < 75 && percent >= 50 ? (
+      {achievementScore < 75 && achievementScore >= 50 ? (
         <Image src={mainLogo50} alt='mainLogo50' />
       ) : null}
-      {percent <= 100 && percent >= 75 ? (
+      {achievementScore <= 100 && achievementScore >= 75 ? (
         <Image src={mainLogo75} alt='mainLogo75' />
       ) : null}
     </div>

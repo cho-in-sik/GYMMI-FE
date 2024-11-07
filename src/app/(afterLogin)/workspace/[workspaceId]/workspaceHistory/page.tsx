@@ -20,7 +20,7 @@ import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_componen
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 type TScoreData = {
   id: number;
@@ -86,12 +86,13 @@ function Page() {
   const [queryData, setQueryData] = useState<IQueryTypes | null>(null);
   const [workoutHistoryId, setWorkoutHistoryId] = useState<number>(0);
   const [isWorkoutHistoryDetail, setIsWorkoutHistoryDetail] = useState(false);
+  console.log(queryData);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const userId = parseInt(searchParams.get('userId') || '0', 10);
     const name = searchParams.get('name');
-    const workout = searchParams.get('workout') === 'true';
+    const workout = searchParams.get('workout') === 'false';
     const achievementScore = parseInt(
       searchParams.get('achievementScore') || '0',
       10
@@ -104,7 +105,6 @@ function Page() {
       achievementScore: achievementScore,
     });
   }, []);
-  console.log(queryData);
 
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * bubbleMessage.length);
@@ -176,7 +176,6 @@ function Page() {
     },
     enabled: isWorkoutHistoryDetail,
   });
-  console.log(workspaceHistoryDetail);
 
   return (
     <div className='h-screen'>
@@ -303,7 +302,7 @@ function Page() {
                           </span>
                         ) : (
                           <span className='text-xs text-[#F87171]'>
-                            인증 기각
+                            인증 거부
                           </span>
                         )}
                         {isToggled && (
