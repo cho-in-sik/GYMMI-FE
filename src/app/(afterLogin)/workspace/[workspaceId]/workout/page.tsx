@@ -16,18 +16,20 @@ import registerIcon from '@/../public/svgs/workspace/registerOff.svg';
 import registerOnIcon from '@/../public/svgs/workspace/registerOn.svg';
 
 import emptyStar from '@/../public/svgs/workspace/emptyStar.svg';
+import filledStart from '@/../public/svgs/workspace/filledStar.svg';
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { QueryClient, useQuery, useQueryClient } from '@tanstack/react-query';
 import { userMissions } from '@/api/workspace';
 import { useState } from 'react';
-import { getBookmarks } from '@/api/workout';
+import { getBookmarks, postBookmark } from '@/api/workout';
 import { useWorkoutStore } from '@/hooks/useWorkout';
 
 type TMission = {
   id: number;
   mission: string;
   score: number;
+  isFavorite: boolean;
 };
 
 export default function Page() {
@@ -40,8 +42,10 @@ export default function Page() {
 
   const router = useRouter();
 
+  const queryClient = useQueryClient();
+
   const { data } = useQuery({
-    queryKey: ['missions'],
+    queryKey: ['missions', bookmark],
     queryFn: async () => {
       if (bookmark === 'all') {
         return await userMissions(Number(workspaceId));
@@ -50,8 +54,6 @@ export default function Page() {
       }
     },
   });
-
-  console.log(workoutInfo.missions);
 
   const handleAddClick = () => {
     if (selectedMission) {
@@ -63,6 +65,26 @@ export default function Page() {
       });
       setActiveNumber(0);
       setOpen(false);
+    }
+  };
+  const handleBookmark = async () => {
+    try {
+      const numId = Number(workspaceId);
+      const res = await postBookmark({
+        workspaceId: numId,
+        missionId: selectedMission?.id,
+      });
+      //임시로 설정. 추후 optimistic update로 바꿀 예정
+      if (res.status === 200 && selectedMission) {
+        setSelectedMission({
+          ...selectedMission,
+          isFavorite: !selectedMission.isFavorite,
+        });
+        await queryClient.invalidateQueries({ queryKey: ['missions'] });
+      }
+      console.log(res);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -138,8 +160,12 @@ export default function Page() {
                     ? selectedMission.mission
                     : '선택된 미션이 없습니다'}
                 </DrawerTitle>
-                <div>
-                  <Image src={emptyStar} alt="empty-star" />
+                <div onClick={handleBookmark}>
+                  {selectedMission?.isFavorite ? (
+                    <Image src={filledStart} alt="filled-star" />
+                  ) : (
+                    <Image src={emptyStar} alt="empty-star" />
+                  )}
                 </div>
               </div>
 

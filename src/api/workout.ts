@@ -15,6 +15,7 @@ const postBookmark = async ({ workspaceId, missionId }: TBookmark) => {
   const res = await customAxios.post(
     `/workspace/${workspaceId}/missions/${missionId}`,
   );
+  console.log(res);
   return res;
 };
 
@@ -23,6 +24,7 @@ const getBookmarks = async (workspaceId: number) => {
     const res = await customAxios.get(
       `/workspace/${workspaceId}/missions/favorite`,
     );
+
     return res.data;
   } catch (error) {
     console.error(error);
