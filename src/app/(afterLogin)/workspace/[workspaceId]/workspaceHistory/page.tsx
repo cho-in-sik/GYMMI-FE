@@ -7,6 +7,7 @@ import arrow from '@/../public/svgs/workspace/workspaceHistory/arrow.svg';
 import verticalLine from '@/../public/svgs/workspace/verticalLine.svg';
 import detailVertical from '@/../public/svgs/workspace/workspaceHistory/detailVertical.svg';
 import detailVerticalIsToggled from '@/../public/svgs/workspace/workspaceHistory/detailVerticalIsToggled.svg';
+import noGroup from '@/../public/svgs/noGroup.svg';
 
 import speechBubble1 from '@/../public/svgs/workspace/speechBubble/speechBubble1.svg';
 import speechBubble2 from '@/../public/svgs/workspace/speechBubble/speechBubble2.svg';
@@ -35,13 +36,6 @@ type THistorys = {
   isApproved: string;
   createdAt: string;
   sumOfScore: number;
-};
-
-type TDetailHistorys = {
-  id: number;
-  mission: string;
-  count: number;
-  totalScore: number;
 };
 
 const bubbleMessage = [
@@ -79,16 +73,31 @@ interface IQueryTypes {
   achievementScore: number;
 }
 
+type TDetailHistorys = {
+  count: number;
+  id: number;
+  mission: string;
+  totalScore: number;
+};
+
+type THistoryDetails = {
+  id: number;
+  details: TDetailHistorys[];
+};
+
 function Page() {
   const workspaceId = useParams();
   const workspaceIdNumber = Number(workspaceId.workspaceId);
 
   const [workoutHistory, setWorkoutHistory] = useState<number[]>([]);
+  const [workoutHistoryId, setWorkoutHistoryId] = useState<number>(0);
   const [randomMessage, setRandomMessage] = useState(``);
   const [queryData, setQueryData] = useState<IQueryTypes | null>(null);
-  const [workoutHistoryId, setWorkoutHistoryId] = useState<number>(0);
+
+  const [historyDetailMissions, setHistoryDetailMissions] = useState<
+    THistoryDetails[]
+  >([]);
   const [isWorkoutHistoryDetail, setIsWorkoutHistoryDetail] = useState(false);
-  console.log(queryData);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -117,7 +126,9 @@ function Page() {
     setWorkoutHistory((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
+
     setWorkoutHistoryId(id);
+
     setIsWorkoutHistoryDetail(true);
   };
 
@@ -138,7 +149,6 @@ function Page() {
       }
     },
   });
-  console.log(workspaceHistoryDatas);
 
   const scoreDatas = [
     {
@@ -164,7 +174,7 @@ function Page() {
         workspaceHistoryData.workspaceHistoryDataDetail,
         workspaceIdNumber,
         queryData?.userId,
-        workoutHistoryId,
+        workoutHistory,
       ],
     ],
     queryFn: () => {
@@ -178,6 +188,23 @@ function Page() {
     },
     enabled: isWorkoutHistoryDetail,
   });
+
+  useEffect(() => {
+    if (workspaceHistoryDetail) {
+      workoutHistory.forEach((id) => {
+        if (!historyDetailMissions.some((mission) => mission.id === id)) {
+          setHistoryDetailMissions((prev) => [
+            ...prev,
+            { id, details: workspaceHistoryDetail.data },
+          ]);
+        }
+      });
+    }
+  }, [workspaceHistoryDetail, workoutHistory, historyDetailMissions]);
+
+  const matchingHistory = historyDetailMissions.find(
+    (mission) => mission.id === workoutHistoryId
+  );
 
   return (
     <div className='h-screen'>
@@ -204,15 +231,17 @@ function Page() {
           </div>
         </>
       )}
-      <div className=' h-[50px] bg-white rounded-lg mb-4'>
+      <div className='h-14 bg-white rounded-lg mb-4'>
         <Tabs className='w-full' defaultValue='totalScore'>
           {!workspaceHistoryDatas ? (
-            <p>데이터가 없습니다.</p>
+            <div className='h-[50px] flex justify-center items-center'>
+              <p className='text-[#4B5563] text-sm'>점수 데이터가 없습니다.</p>
+            </div>
           ) : (
-            <div className='flex gap-x-6 pl-7 pt-2 justify-items-center'>
+            <div className='flex gap-x-4 pl-7 pt-2 justify-items-center'>
               <div className='flex flex-col items-center'>
-                <span className='text-[#9C9EA3] text-[8px]'>총 점수</span>
-                <span className='text-[#1F2937]'>
+                <span className='text-[#9C9EA3] text-[10px]'>총 점수</span>
+                <span className='text-[#1F2937] text-base'>
                   {workspaceHistoryDatas?.data.totalContributedScore}점
                 </span>
               </div>
@@ -223,10 +252,10 @@ function Page() {
                     className='flex flex-col items-center justify-center'
                     key={scoreData.id}
                   >
-                    <span className='text-[#9C9EA3] text-[8px]'>
+                    <span className='text-[#9C9EA3] text-[10px]'>
                       {scoreData.label}
                     </span>
-                    <span className='text-[#1F2937] text-xs pt-1'>
+                    <span className='text-[#1F2937] text-sm pt-1'>
                       {scoreData.value}점
                     </span>
                   </div>
@@ -237,14 +266,19 @@ function Page() {
         </Tabs>
       </div>
       <div className='bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto'>
-        <Tabs className='w-full pl-5 pt-2 pb-5' defaultValue='myHistory'>
-          <span className='text-[#9CA3AF] text-xs'>
+        <Tabs className='w-full pt-2 pb-5' defaultValue='myHistory'>
+          <span className='text-[#9CA3AF] text-xs pl-5'>
             {'<개인별 운동 히스토리 목록>'}
           </span>
           {!workspaceHistoryDatas ? (
-            <p>데이터가 없습니다.</p>
+            <div className='h-[230px] flex items-center justify-center flex-col'>
+              <Image src={noGroup} alt='noGroup' className='h-[73px]' />
+              <span className='text-[#4B5563] text-sm mt-5'>
+                아직 운동 히스토리가 없습니다.
+              </span>
+            </div>
           ) : (
-            <div className='pt-4'>
+            <div className='pt-4 pl-8'>
               {workspaceHistoryDatas?.data.workoutHistories.map(
                 (workspaceHistoryData: THistorys, index: number) => {
                   const isToggled = workoutHistory.includes(
@@ -294,7 +328,7 @@ function Page() {
                           }}
                         >
                           <span
-                            className={`text-sm flex ${
+                            className={`text-base flex -mt-1 ${
                               isToggled ? 'text-[#4B5563]' : 'text-[#6B7280]'
                             }`}
                           >
@@ -320,29 +354,26 @@ function Page() {
                           </span>
                         )}
                         {isToggled && (
-                          <div className='w-36 min-h-20 bg-[#DBEAFE] rounded-lg mt-2 pt-1 pb-2'>
-                            {workspaceHistoryDetail?.data.map(
-                              (dataHistory: TDetailHistorys) => {
-                                return (
-                                  <div
-                                    className='h-5 flex items-center'
-                                    key={dataHistory.id}
-                                  >
-                                    <Image
-                                      className='mx-2'
-                                      src={detailHistoryRadius}
-                                      alt='detailRadius'
-                                    />
-                                    <div>
-                                      <span className='text-[#4B5563] text-[10px]'>
-                                        {dataHistory.mission}{' '}
-                                        {dataHistory.count}회 -{' '}
-                                        {dataHistory.totalScore}p
-                                      </span>
-                                    </div>
+                          <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
+                            {matchingHistory?.details.map(
+                              (dataHistory: TDetailHistorys) => (
+                                <div
+                                  className='h-5 flex items-center'
+                                  key={dataHistory.id}
+                                >
+                                  <Image
+                                    className='mx-2'
+                                    src={detailHistoryRadius}
+                                    alt='detailRadius'
+                                  />
+                                  <div>
+                                    <span className='text-[#4B5563] text-xs'>
+                                      {dataHistory.mission} {dataHistory.count}{' '}
+                                      회 - {dataHistory.totalScore}p
+                                    </span>
                                   </div>
-                                );
-                              }
+                                </div>
+                              )
                             )}
                           </div>
                         )}
