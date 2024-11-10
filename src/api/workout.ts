@@ -15,7 +15,6 @@ const postBookmark = async ({ workspaceId, missionId }: TBookmark) => {
   const res = await customAxios.post(
     `/workspace/${workspaceId}/missions/${missionId}`,
   );
-
   return res;
 };
 
