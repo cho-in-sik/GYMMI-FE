@@ -169,8 +169,7 @@ function Page() {
       enabled: isWorkoutHistoryDetail,
     })),
   });
-  console.log(workspaceHistoryDetails[0]?.data?.data);
-  console.log(workspaceHistoryDetails[1]?.data?.data);
+  console.log(workspaceHistoryDetails);
 
   return (
     <div className='h-screen'>
@@ -253,7 +252,6 @@ function Page() {
                   const isLastIndex =
                     index ===
                     workspaceHistoryDatas?.data.workoutHistories.length - 1;
-                  console.log('미션 인덱스', index);
                   return (
                     <div className='flex' key={workspaceHistoryData.id}>
                       <span className='text-[#9C9EA3] text-[10px]'>
@@ -321,32 +319,29 @@ function Page() {
                         )}
                         {isToggled && (
                           <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
-                            {workspaceHistoryDetails
-                              .at(-1)
-                              ?.data?.data.map(
-                                (historyDetail: TDetailHistorys, i: any) => {
-                                  console.log('미션상세인덱스', i);
-                                  return (
-                                    <div
-                                      className='h-5 flex items-center'
-                                      key={historyDetail.id}
-                                    >
-                                      <Image
-                                        className='mx-2'
-                                        src={detailHistoryRadius}
-                                        alt='detailRadius'
-                                      />
-                                      <div>
-                                        <span className='text-[#4B5563] text-xs'>
-                                          {historyDetail.mission}{' '}
-                                          {historyDetail.count} 회 -{' '}
-                                          {historyDetail.totalScore}p
-                                        </span>
-                                      </div>
+                            {workspaceHistoryDetails[index]?.data?.data.map(
+                              (historyDetail: TDetailHistorys, i: any) => {
+                                return (
+                                  <div
+                                    className='h-5 flex items-center'
+                                    key={historyDetail.id}
+                                  >
+                                    <Image
+                                      className='mx-2'
+                                      src={detailHistoryRadius}
+                                      alt='detailRadius'
+                                    />
+                                    <div>
+                                      <span className='text-[#4B5563] text-xs'>
+                                        {historyDetail.mission}{' '}
+                                        {historyDetail.count} 회 -{' '}
+                                        {historyDetail.totalScore}p
+                                      </span>
                                     </div>
-                                  );
-                                }
-                              )}
+                                  </div>
+                                );
+                              }
+                            )}
                           </div>
                         )}
                       </div>

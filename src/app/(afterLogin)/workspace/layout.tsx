@@ -1,12 +1,13 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSelectedLayoutSegment } from 'next/navigation';
+import { usePathname, useSelectedLayoutSegment } from 'next/navigation';
 
 import settings from '@/../public/svgs/workspace/settings.svg';
 import BackArrow from '../_components/BackArrow';
+import { workspace } from '@/constants/queryKey';
 
 type Props = {
   children: ReactNode;
@@ -17,7 +18,9 @@ export default function Layout({ children }: Props) {
   const workspaceIdNumber = Number(workspaceId);
 
   const [activeSegment, setActiveSegment] = useState<string | null>(null);
-  const currentSegment = useSelectedLayoutSegment();
+  const pathName = usePathname();
+  const segments = pathName.split('/');
+  const currentSegment = segments[segments.length - 1];
 
   useEffect(() => {
     setActiveSegment(currentSegment);
@@ -31,8 +34,8 @@ export default function Layout({ children }: Props) {
     },
     {
       name: '운동하기',
-      path: `/workspace/${workspaceIdNumber}/exercise`,
-      segment: 'exercise',
+      path: `/workspace/${workspaceIdNumber}/workout`,
+      segment: 'workout',
     },
     {
       name: '그룹채팅',
@@ -63,7 +66,7 @@ export default function Layout({ children }: Props) {
             <Link href={navItem.path} key={navItem.name}>
               <li
                 className={`${
-                  navItem.segment == isActiveSegment
+                  navItem.segment == activeSegment
                     ? 'text-[#4B5563]'
                     : 'text-[#E5E7EB]'
                 }`}
