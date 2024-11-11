@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSelectedLayoutSegment } from 'next/navigation';
@@ -31,8 +31,8 @@ export default function Layout({ children }: Props) {
     },
     {
       name: '운동하기',
-      path: `/workspace/${workspaceIdNumber}/workout`,
-      segment: 'workout',
+      path: `/workspace/${workspaceIdNumber}/exercise`,
+      segment: 'exercise',
     },
     {
       name: '그룹채팅',
@@ -63,7 +63,7 @@ export default function Layout({ children }: Props) {
             <Link href={navItem.path} key={navItem.name}>
               <li
                 className={`${
-                  navItem.segment == activeSegment
+                  navItem.segment == isActiveSegment
                     ? 'text-[#4B5563]'
                     : 'text-[#E5E7EB]'
                 }`}
