@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { ReactNode, useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { useSelectedLayoutSegment } from "next/navigation";
+import { ReactNode, useEffect, useState } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { useSelectedLayoutSegment } from 'next/navigation';
 
-import settings from "@/../public/svgs/workspace/settings.svg";
-import BackArrow from "../_components/BackArrow";
+import settings from '@/../public/svgs/workspace/settings.svg';
+import BackArrow from '../_components/BackArrow';
 
 type Props = {
   children: ReactNode;
@@ -25,24 +25,24 @@ export default function Layout({ children }: Props) {
 
   const navItems = [
     {
-      name: "그룹홈",
+      name: '그룹홈',
       path: `/workspace/${workspaceIdNumber}`,
       segment: workspaceIdNumber,
     },
     {
-      name: "운동하기",
-      path: `/workspace/${workspaceIdNumber}/missions`,
-      segment: "missions",
+      name: '운동하기',
+      path: `/workspace/${workspaceIdNumber}/workout`,
+      segment: 'workout',
     },
     {
-      name: "그룹채팅",
+      name: '그룹채팅',
       path: `/workspace/${workspaceIdNumber}/chat`,
-      segment: "chat",
+      segment: 'chat',
     },
     {
-      name: "운동인증",
+      name: '운동인증',
       path: `/workspace/${workspaceIdNumber}/auth`,
-      segment: "auth",
+      segment: 'auth',
     },
   ];
 
@@ -64,8 +64,8 @@ export default function Layout({ children }: Props) {
               <li
                 className={`${
                   navItem.segment == activeSegment
-                    ? "text-[#4B5563]"
-                    : "text-[#E5E7EB]"
+                    ? 'text-[#4B5563]'
+                    : 'text-[#E5E7EB]'
                 }`}
               >
                 {navItem.name}
