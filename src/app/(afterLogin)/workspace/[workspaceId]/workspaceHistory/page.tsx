@@ -22,7 +22,7 @@ import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_componen
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 
 type TScoreData = {
@@ -68,6 +68,7 @@ function Page() {
   const [randomMessage, setRandomMessage] = useState(``);
   const [queryData, setQueryData] = useState<IQueryTypes | null>(null);
 
+  const [workoutMissions, setWorkoutMissions] = useState<THistoryDetails[]>([]);
   const [isWorkoutHistoryDetail, setIsWorkoutHistoryDetail] = useState(false);
 
   useEffect(() => {
@@ -149,27 +150,46 @@ function Page() {
     },
   ];
 
-  const workspaceHistoryDetails = useQueries({
-    queries: workoutHistoryIds.map((id) => ({
-      queryKey: [
+  const { data: workspaceHistoryDetail } = useQuery({
+    queryKey: [
+      [
         workspaceHistoryData.workspaceHistoryDataDetail,
         workspaceIdNumber,
         queryData?.userId,
-        id,
+        workoutHistoryId,
       ],
-      queryFn: () => {
-        if (queryData?.userId !== undefined) {
-          return historyDetails({
-            workspaceId: workspaceIdNumber,
-            userId: queryData.userId,
-            workoutHistoryId: id,
-          });
-        }
-      },
-      enabled: isWorkoutHistoryDetail,
-    })),
+    ],
+    queryFn: () => {
+      if (queryData?.userId !== undefined) {
+        return historyDetails({
+          workspaceId: workspaceIdNumber,
+          userId: queryData?.userId,
+          workoutHistoryId,
+        });
+      }
+    },
+    enabled: isWorkoutHistoryDetail,
   });
-  console.log(workspaceHistoryDetails);
+
+  useEffect(() => {
+    if (workspaceHistoryDetail) {
+      const isworkDetail = workoutMissions.some(
+        (mission) => mission.id === workoutHistoryId
+      );
+
+      if (!isworkDetail) {
+        setWorkoutMissions((prev) => [
+          ...prev,
+          { id: workoutHistoryId, details: workspaceHistoryDetail.data },
+        ]);
+      }
+    }
+  }, [
+    workspaceHistoryDetail,
+    workoutHistoryIds,
+    workoutMissions,
+    workoutHistoryId,
+  ]);
 
   return (
     <div className='h-screen'>
@@ -198,36 +218,30 @@ function Page() {
       )}
       <div className='h-14 bg-white rounded-lg mb-4'>
         <div className='w-full' defaultValue='totalScore'>
-          {!workspaceHistoryDatas ? (
-            <div className='h-[50px] flex justify-center items-center'>
-              <p className='text-[#4B5563] text-sm'>점수 데이터가 없습니다.</p>
+          <div className='flex gap-x-4 pl-7 pt-2 justify-items-center'>
+            <div className='flex flex-col items-center'>
+              <span className='text-[#9C9EA3] text-[10px]'>총 점수</span>
+              <span className='text-[#1F2937] text-base'>
+                {workspaceHistoryDatas?.data.totalContributedScore}점
+              </span>
             </div>
-          ) : (
-            <div className='flex gap-x-4 pl-7 pt-2 justify-items-center'>
-              <div className='flex flex-col items-center'>
-                <span className='text-[#9C9EA3] text-[10px]'>총 점수</span>
-                <span className='text-[#1F2937] text-base'>
-                  {workspaceHistoryDatas?.data.totalContributedScore}점
-                </span>
-              </div>
-              <Image src={verticalLine} alt='verticalLine' />
-              {scoreDatas.map((scoreData: TScoreData) => {
-                return (
-                  <div
-                    className='flex flex-col items-center justify-center'
-                    key={scoreData.id}
-                  >
-                    <span className='text-[#9C9EA3] text-[10px]'>
-                      {scoreData.label}
-                    </span>
-                    <span className='text-[#1F2937] text-sm pt-1'>
-                      {scoreData.value}점
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+            <Image src={verticalLine} alt='verticalLine' />
+            {scoreDatas.map((scoreData: TScoreData) => {
+              return (
+                <div
+                  className='flex flex-col items-center justify-center'
+                  key={scoreData.id}
+                >
+                  <span className='text-[#9C9EA3] text-[10px]'>
+                    {scoreData.label}
+                  </span>
+                  <span className='text-[#1F2937] text-sm pt-1'>
+                    {scoreData.value}점
+                  </span>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
       <div className='bg-white rounded-lg relative min-h-80 max-h-96 overflow-y-auto'>
@@ -235,7 +249,7 @@ function Page() {
           <span className='text-[#9CA3AF] text-xs pl-5'>
             {'<개인별 운동 히스토리 목록>'}
           </span>
-          {!workspaceHistoryDatas ? (
+          {workspaceHistoryDatas?.data.workoutHistories.length === 0 ? (
             <div className='h-[230px] flex items-center justify-center flex-col'>
               <Image src={noGroup} alt='noGroup' className='h-[73px]' />
               <span className='text-[#4B5563] text-sm mt-5'>
@@ -252,6 +266,7 @@ function Page() {
                   const isLastIndex =
                     index ===
                     workspaceHistoryDatas?.data.workoutHistories.length - 1;
+
                   return (
                     <div className='flex' key={workspaceHistoryData.id}>
                       <span className='text-[#9C9EA3] text-[10px]'>
@@ -319,28 +334,34 @@ function Page() {
                         )}
                         {isToggled && (
                           <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
-                            {workspaceHistoryDetails[index]?.data?.data.map(
-                              (historyDetail: TDetailHistorys, i: any) => {
-                                return (
-                                  <div
-                                    className='h-5 flex items-center'
-                                    key={historyDetail.id}
-                                  >
-                                    <Image
-                                      className='mx-2'
-                                      src={detailHistoryRadius}
-                                      alt='detailRadius'
-                                    />
-                                    <div>
-                                      <span className='text-[#4B5563] text-xs'>
-                                        {historyDetail.mission}{' '}
-                                        {historyDetail.count} 회 -{' '}
-                                        {historyDetail.totalScore}p
-                                      </span>
+                            {workoutMissions[index]?.details ? (
+                              workoutMissions[index].details.map(
+                                (historyDetail: TDetailHistorys) => {
+                                  return (
+                                    <div
+                                      className='h-5 flex items-center'
+                                      key={historyDetail.id}
+                                    >
+                                      <Image
+                                        className='mx-2'
+                                        src={detailHistoryRadius}
+                                        alt='detailRadius'
+                                      />
+                                      <div>
+                                        <span className='text-[#4B5563] text-xs'>
+                                          {historyDetail.mission}{' '}
+                                          {historyDetail.count} 회 -{' '}
+                                          {historyDetail.totalScore}p
+                                        </span>
+                                      </div>
                                     </div>
-                                  </div>
-                                );
-                              }
+                                  );
+                                }
+                              )
+                            ) : (
+                              <p className='text-[10px] text-center'>
+                                데이터를 불러오는 중입니다.
+                              </p>
                             )}
                           </div>
                         )}
