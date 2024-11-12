@@ -7,7 +7,6 @@ import { usePathname, useSelectedLayoutSegment } from 'next/navigation';
 
 import settings from '@/../public/svgs/workspace/settings.svg';
 import BackArrow from '../_components/BackArrow';
-import { workspace } from '@/constants/queryKey';
 
 type Props = {
   children: ReactNode;
@@ -30,22 +29,22 @@ export default function Layout({ children }: Props) {
     {
       name: '그룹홈',
       path: `/workspace/${workspaceIdNumber}`,
-      segment: workspaceIdNumber,
+      segments: [workspaceId, 'workspaceHistory'],
     },
     {
       name: '운동하기',
       path: `/workspace/${workspaceIdNumber}/workout`,
-      segment: 'workout',
+      segments: ['workout', 'register'],
     },
     {
       name: '그룹채팅',
       path: `/workspace/${workspaceIdNumber}/chat`,
-      segment: 'chat',
+      segments: 'chat',
     },
     {
       name: '운동인증',
       path: `/workspace/${workspaceIdNumber}/auth`,
-      segment: 'auth',
+      segments: 'auth',
     },
   ];
 
@@ -66,7 +65,11 @@ export default function Layout({ children }: Props) {
             <Link href={navItem.path} key={navItem.name}>
               <li
                 className={`${
-                  navItem.segment == activeSegment
+                  navItem.segments &&
+                  activeSegment !== null &&
+                  navItem.segments.includes(activeSegment)
+                    ? 'text-[#4B5563]'
+                    : navItem.segments === activeSegment
                     ? 'text-[#4B5563]'
                     : 'text-[#E5E7EB]'
                 }`}
