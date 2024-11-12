@@ -48,3 +48,60 @@ export interface IW {
   add3Page: ({ task, description }: any) => void;
   clearData: () => void;
 }
+
+interface IUser {
+  id: number;
+  name: string;
+  contributionScore: number;
+  rank: number;
+  isCreator: boolean;
+  isMyself: boolean;
+  profileImage: string;
+}
+
+export interface IInfoWork {
+  name: string;
+  headCount: number;
+  status: string;
+  goalScore: number;
+  description: string;
+  achievementScore: number;
+  isCreator: boolean;
+  workers: IUser[];
+}
+
+interface IWorker {
+  id: number;
+  name: string;
+  contributeScore: number;
+  rank: number;
+  isCreator: boolean;
+  isMyself: boolean;
+  profileImage: string;
+}
+
+export interface IInfoWorkData {
+  name: string;
+  headCount: number;
+  status: string;
+  goalScore: number;
+  description: string;
+  achievementScore: number;
+  isCreator: boolean;
+  workers: IWorker[];
+}
+
+interface IWorkoutHistory {
+  id: number;
+  isApproved: string;
+  createdAt: string;
+  sumOfScore: number;
+}
+
+export interface IWorkspaceHistory {
+  totalContributedScore: number;
+  bestDailyScore: number;
+  totalWorkoutCount: number;
+  scoreGapFromFirst: number;
+  workoutHistories: IWorkoutHistory[];
+}

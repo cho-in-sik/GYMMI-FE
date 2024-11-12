@@ -33,6 +33,15 @@ type PasswordCheck = {
   password: string;
 };
 
+type TWorkspaceHistory = {
+  workspaceId: number;
+  userId: number;
+};
+
+type THistoryDetail = TWorkspaceHistory & {
+  workoutHistoryId: number;
+};
+
 const myWorkspaces = async (page: number = 0) => {
   const res = await customAxios.get(`/workspaces/my?page=${page}`);
   return res;
@@ -43,7 +52,7 @@ const allWorkspaces = async ({ type, keyword = '', page = 0 }: SearchProps) => {
     type = '';
   }
   const res = await customAxios.get(
-    `/workspaces?status=${type}&keyword=${keyword}&page=${page}`,
+    `/workspaces?status=${type}&keyword=${keyword}&page=${page}`
   );
 
   return res;
@@ -57,7 +66,7 @@ const createWorkspace = async (data: any) => {
 const matchPassword = async ({ workspaceId, password }: PasswordCheck) => {
   const res = await customAxios.post(
     `/workspaces/${workspaceId}/match-password`,
-    { password },
+    { password }
   );
 
   return res;
@@ -71,7 +80,7 @@ const joinWorkspace = async ({
   const formData = { password, task };
   const res = await customAxios.post(
     `/workspaces/${workspaceId}/join`,
-    formData,
+    formData
   );
   return res;
 };
@@ -106,7 +115,7 @@ const missionsWorkspace = async (workspaceId: number) => {
 
 const missionsRecord = async ({ workspaceId, userId }: MissionRecord) => {
   const res = await customAxios.get(
-    `/workspaces/${workspaceId}/workings/${userId}`,
+    `/workspaces/${workspaceId}/workings/${userId}`
   );
   return res;
 };
@@ -133,6 +142,29 @@ const alreadyIn = async (workspaceId: number) => {
   return res;
 };
 
+// 워크스페이스 히스토리
+const workspaceHistorys = async ({
+  workspaceId,
+  userId,
+}: TWorkspaceHistory) => {
+  const res = customAxios.get(
+    `/workspaces/${workspaceId}/workout-context/${userId}`
+  );
+  return res;
+};
+
+// 히스토리 상세 운동 목록
+const historyDetails = async ({
+  workspaceId,
+  userId,
+  workoutHistoryId,
+}: THistoryDetail) => {
+  const res = customAxios.get(
+    `/workspaces/${workspaceId}/workout-histories/${userId}/${workoutHistoryId}`
+  );
+  return res;
+};
+
 export {
   myWorkspaces,
   allWorkspaces,
@@ -150,4 +182,6 @@ export {
   detailUpdate,
   completeWorkspace,
   alreadyIn,
+  workspaceHistorys,
+  historyDetails,
 };
