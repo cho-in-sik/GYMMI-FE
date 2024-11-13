@@ -17,7 +17,7 @@ import { workspaceHistoryData } from '@/constants/queryKey';
 import { cheerUpMessages } from '@/constants/cheerUpMessage';
 import { historyDetails, workspaceHistorys } from '@/api/workspace';
 
-import WorkspaceScoreBoard from './_components/workspaceScoreBoard';
+import WorkspaceScoreBoard from './_components/WorkspaceScoreBoard';
 import WorkspaceGimmiTitle from './_components/WorkspaceGimmiTitle';
 
 import type {
@@ -39,7 +39,10 @@ function Page() {
   const [randomMessage, setRandomMessage] = useState(``);
   const [queryData, setQueryData] = useState<TQueryTypes | null>(null);
 
-  const [workoutMissions, setWorkoutMissions] = useState<THistoryDetails[]>([]);
+  const [historyDetailMissions, setHistoryDetailMissions] = useState<
+    THistoryDetails[]
+  >([]);
+
   const [isWorkoutHistoryDetail, setIsWorkoutHistoryDetail] = useState(false);
 
   useEffect(() => {
@@ -51,7 +54,6 @@ function Page() {
       searchParams.get('achievementScore') || '0',
       10
     );
-
     setQueryData({
       userId: userId,
       name: name || '',
@@ -126,24 +128,22 @@ function Page() {
 
   useEffect(() => {
     if (workspaceHistoryDetail) {
-      const isworkDetail = workoutMissions.some(
-        (mission) => mission.id === workoutHistoryId
-      );
+      setHistoryDetailMissions((prev) => {
+        const isworkDetail = prev.some(
+          (mission) => mission.id === workoutHistoryId
+        );
 
-      if (!isworkDetail) {
-        setWorkoutMissions((prev) => [
-          ...prev,
-          { id: workoutHistoryId, details: workspaceHistoryDetail.data },
-        ]);
-      }
+        if (!isworkDetail) {
+          return [
+            ...prev,
+            { id: workoutHistoryId, details: workspaceHistoryDetail.data },
+          ];
+        }
+        return prev;
+      });
     }
-  }, [
-    workspaceHistoryDetail,
-    workoutHistoryIds,
-    workoutMissions,
-    workoutHistoryId,
-  ]);
-
+  }, [workspaceHistoryDetail, workoutHistoryId]);
+  console.log(historyDetailMissions);
   return (
     <div className='h-screen'>
       <WorkspaceGimmiTitle
@@ -245,8 +245,8 @@ function Page() {
                         )}
                         {isToggled && (
                           <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
-                            {workoutMissions[index]?.details ? (
-                              workoutMissions[index].details.map(
+                            {historyDetailMissions[index]?.details ? (
+                              historyDetailMissions[index]?.details.map(
                                 (historyDetail: TDetailHistorys) => {
                                   return (
                                     <div
