@@ -6,6 +6,7 @@ import plus from '@/../public/svgs/plus.svg';
 import checkedCircle from '@/../public/svgs/workspace/checkedCircle.svg';
 import nonCheckedCircle from '@/../public/svgs/workspace/nonCheckedCircle.svg';
 import warning from '@/../public/svgs/workspace/warning.svg';
+import cancelPhoto from '@/../public/svgs/workspace/workout/cancelPhoto.svg';
 
 import { Label } from '@/components/ui/label';
 import Image from 'next/image';
@@ -57,8 +58,9 @@ export default function Page() {
         willLink: photoCheck,
         missions: workoutInfo.missions.map(({ id, count }) => ({ id, count })),
       };
+      const id = Number(workspaceId);
       try {
-        const workoutRes = await workout({ workspaceId, data });
+        const workoutRes = await workout({ workspaceId: id, data });
         console.log(workoutRes);
         if (workoutRes.status === 200) {
           router.push(`/workspace/${workspaceId}`);
@@ -73,23 +75,26 @@ export default function Page() {
 
   return (
     <div className="">
-      <div className="mb-6">
+      <div className="mb-4">
         <Label htmlFor="photo" className="flex items-center justify-start mb-2">
           <Image src={photo} alt="photo" className="mr-1" />
           <span className="text-base mr-1">사진 등록</span>
           <span className="text-base">(필수)</span>
         </Label>
-        <div className="flex justify-start items-end gap-1">
+        <div className="flex flex-col justify-start items-start gap-2">
           <div
             className="w-24 h-24 bg-[#F9FAFB] rounded-lg flex justify-center items-center relative"
             onClick={handleClick}
           >
-            <span
-              className="absolute right-0 -top-2 text-white bg-red-500 rounded-full"
-              onClick={(e) => handleImageRemove(e)}
-            >
-              x
-            </span>
+            {imagePreview && (
+              <span
+                className="absolute -right-1 -top-1 rounded-full shadow-sm"
+                onClick={(e) => handleImageRemove(e)}
+              >
+                <Image src={cancelPhoto} alt="cancel-photo" />
+              </span>
+            )}
+
             {imagePreview ? (
               <img
                 src={URL.createObjectURL(imagePreview)}
@@ -104,7 +109,7 @@ export default function Page() {
             <span
               className={`${
                 photoCheck ? 'text-[#1F2937]' : ' text-[#B7C4D5]'
-              } text-[10px] flex`}
+              } text-xs flex`}
             >
               <Image
                 src={photoCheck ? checkedCircle : nonCheckedCircle}
@@ -125,7 +130,7 @@ export default function Page() {
           />
         </div>
       </div>
-      <hr className="-mx-6 mb-6" />
+      <hr className="-mx-6 mb-3" />
       <div className="mb-2">
         <Label
           htmlFor="pencil"
@@ -146,17 +151,17 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="flex items-center space-x-2 mb-2">
-        <Image src={warning} alt="warning" />
+      <div className="flex items-center space-x-1 mb-2">
+        <Image src={warning} alt="warning" className="-mt-4" />
         <label
           htmlFor="terms"
-          className="font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[10px] text-[#F87171]"
+          className="font-normal peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-xs text-[#F87171] leading-4"
         >
           성의없는 운동인증은 이의제기를 받을 수 있습니다. 또한 운동인증은 하루
           최대 3번까지만 등록 가능합니다.
         </label>
       </div>
-      <div className="bg-[#EFF6FF] min-h-96 h-full -mx-6">
+      <div className="bg-[#F3F4F6] min-h-80 h-full -mx-6">
         {workoutInfo.missions.map((item, i) => {
           const isLast = i === workoutInfo.missions.length - 1;
           return (
@@ -164,7 +169,7 @@ export default function Page() {
               key={item.id}
               className={`px-6 py-4 ${
                 !isLast ? 'border-b' : null
-              } border-[#E5E7EB] flex justify-between items-center`}
+              } border-white flex justify-between items-center`}
             >
               <div>
                 <h3>{item.mission}</h3>

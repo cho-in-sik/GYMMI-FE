@@ -25,7 +25,7 @@ import { useState } from 'react';
 import { getBookmarks, postBookmark } from '@/api/workout';
 import { useWorkoutStore } from '@/hooks/useWorkout';
 
-import noBookmark from '@/../public/svgs/workspace/noBookmark.svg';
+import noBookmark from '@/../public/svgs/workspace/workout/noBookmark.svg';
 
 type TMission = {
   id: number;
