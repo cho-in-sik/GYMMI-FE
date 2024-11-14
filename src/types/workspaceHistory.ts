@@ -6,7 +6,7 @@ type TScoreData = {
 
 type THistorys = {
   id: number;
-  isApproved: string;
+  isApproved: boolean;
   createdAt: string;
   sumOfScore: number;
 };
