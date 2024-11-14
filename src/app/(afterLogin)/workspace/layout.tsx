@@ -26,6 +26,8 @@ export default function Layout({ children }: Props) {
     setActiveSegment(currentSegment);
   }, [currentSegment]);
 
+  console.log(pathName);
+
   const navItems = [
     {
       name: '그룹홈',
@@ -50,18 +52,22 @@ export default function Layout({ children }: Props) {
   ];
 
   return (
-    <div className='px-4 py-12 bg-custom-gradient2 h-full'>
-      <div className='flex justify-between'>
+    <div
+      className={`px-4 py-12 ${
+        pathName.includes('/workout') ? 'bg-white' : 'bg-custom-gradient2'
+      }  h-full`}
+    >
+      <div className="flex justify-between">
         <BackArrow />
         <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
           <div>
-            <Image className='w-6 h-6' src={settings} alt='settings' />
+            <Image className="w-6 h-6" src={settings} alt="settings" />
           </div>
         </Link>
       </div>
-      <nav className='my-3'>
-        <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
-        <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
+      <nav className="my-3">
+        <hr className="border-1 border-[#E5E7EB] w-screen -mx-4" />
+        <ul className="flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]">
           {navItems.map((navItem) => (
             <Link href={navItem.path} key={navItem.name}>
               <li
@@ -76,7 +82,7 @@ export default function Layout({ children }: Props) {
             </Link>
           ))}
         </ul>
-        <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+        <hr className="border-1 border-[#E5E7EB] w-screen -mx-4" />
       </nav>
       {children}
     </div>
