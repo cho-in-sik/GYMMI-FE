@@ -8,16 +8,21 @@ import WorkspaceTitle from '@/app/(afterLogin)/workspace/[workspaceId]/_componen
 import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceGimmi';
 
 import type { TQueryTypes } from '@/types/workspaceHistory';
+import { useEffect, useState } from 'react';
+import { cheerUpMessages } from '@/constants/cheerUpMessage';
 
 type TWorkspaceGimmiTitleTypes = {
   queryData: TQueryTypes | null;
-  randomMessage: string;
 };
 
-function WorkspaceGimmiTitle({
-  queryData,
-  randomMessage,
-}: TWorkspaceGimmiTitleTypes) {
+function WorkspaceGimmiTitle({ queryData }: TWorkspaceGimmiTitleTypes) {
+  const [randomMessage, setRandomMessage] = useState(``);
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * cheerUpMessages.length);
+    setRandomMessage(cheerUpMessages[randomIndex].message);
+  }, []);
+
   return (
     <div>
       {queryData && (
