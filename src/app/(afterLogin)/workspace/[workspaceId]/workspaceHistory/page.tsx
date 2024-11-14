@@ -1,155 +1,73 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
-import radius from '@/../public/svgs/workspace/workspaceHistory/radius.svg';
-import radiusClicked from '@/../public/svgs/workspace/workspaceHistory/radiusClicked.svg';
-import detailHistoryRadius from '@/../public/svgs/workspace/workspaceHistory/detailHistoryRadius.svg';
-import arrow from '@/../public/svgs/workspace/workspaceHistory/arrow.svg';
-import detailVertical from '@/../public/svgs/workspace/workspaceHistory/detailVertical.svg';
-import detailVerticalIsToggled from '@/../public/svgs/workspace/workspaceHistory/detailVerticalIsToggled.svg';
 import noGroup from '@/../public/svgs/noGroup.svg';
 
-import { workspaceHistoryData } from '@/constants/queryKey';
-import { cheerUpMessages } from '@/constants/cheerUpMessage';
-import { historyDetails, workspaceHistorys } from '@/api/workspace';
+import { workspaceHistoryDataConst } from '@/constants/queryKey';
+import { workspaceHistorys } from '@/api/workspace';
 
 import WorkspaceScoreBoard from './_components/WorkspaceScoreBoard';
 import WorkspaceGimmiTitle from './_components/WorkspaceGimmiTitle';
+import WorkHistoryList from './_components/WorkoutHistoryList';
 
-import type {
-  THistorys,
-  TQueryTypes,
-  TDetailHistorys,
-  THistoryDetails,
-} from '@/types/workspaceHistory';
+import useWorkoutHistoryIds from '@/hooks/workoutHistory/useWorkoutHistoryIds';
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 
-const cheerUpMessage = cheerUpMessages;
+import type { THistorys, TQueryTypes } from '@/types/workspaceHistory';
+
+function useUserInfo(): TQueryTypes {
+  const searchParams = useSearchParams();
+  const userId = parseInt(searchParams.get('userId') || '0', 10);
+  const name = searchParams.get('name');
+  const workout = searchParams.get('workout') === 'false';
+  const achievementScore = parseInt(
+    searchParams.get('achievementScore') || '0',
+    10
+  );
+
+  return {
+    userId,
+    name: name || '',
+    workout,
+    achievementScore,
+  };
+}
 
 function Page() {
-  const workspaceId = useParams();
-  const workspaceIdNumber = Number(workspaceId.workspaceId);
+  const workspaceId = useWorkoutIdFromParams();
+  const queryData = useUserInfo();
+  const { workoutHistoryIds, handleWorkoutHistory } = useWorkoutHistoryIds();
 
-  const [workoutHistoryId, setWorkoutHistoryId] = useState<number>(0);
-  const [workoutHistoryIds, setWorkoutHistoryIds] = useState<number[]>([]);
-
-  const [randomMessage, setRandomMessage] = useState(``);
-  const [queryData, setQueryData] = useState<TQueryTypes | null>(null);
-
-  const [historyDetailMissions, setHistoryDetailMissions] = useState<
-    THistoryDetails[]
-  >([]);
-
-  const [isWorkoutHistoryDetail, setIsWorkoutHistoryDetail] = useState(false);
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const userId = parseInt(searchParams.get('userId') || '0', 10);
-    const name = searchParams.get('name');
-    const workout = searchParams.get('workout') === 'false';
-    const achievementScore = parseInt(
-      searchParams.get('achievementScore') || '0',
-      10
-    );
-    setQueryData({
-      userId: userId,
-      name: name || '',
-      workout: workout,
-      achievementScore: achievementScore,
-    });
-  }, []);
-
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * cheerUpMessage.length);
-    setRandomMessage(cheerUpMessage[randomIndex].message);
-  }, []);
-
-  const clickedWorkoutHistoryIds = (id: number) => {
-    setWorkoutHistoryIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-    );
-  };
-
-  const clickedWorkoutHistoryId = (id: number) => {
-    setWorkoutHistoryId(id);
-  };
-
-  const toggleWorkoutHistoryDetails = () => {
-    setIsWorkoutHistoryDetail(true);
-  };
-
-  const handleWorkoutHistory = (id: number) => {
-    clickedWorkoutHistoryIds(id);
-    clickedWorkoutHistoryId(id);
-    toggleWorkoutHistoryDetails();
-  };
-
-  const { data: workspaceHistoryDatas } = useQuery({
+  const { data: workspaceHistoryDatas, status } = useQuery({
     queryKey: [
       [
-        workspaceHistoryData.workspaceHistoryData,
-        workspaceIdNumber,
-        queryData?.userId,
+        workspaceHistoryDataConst.workspaceHistoryData,
+        workspaceId,
+        queryData.userId,
       ],
     ],
-    queryFn: () => {
-      if (queryData?.userId !== undefined) {
-        return workspaceHistorys({
-          workspaceId: workspaceIdNumber,
-          userId: queryData?.userId,
-        });
-      }
-    },
+    queryFn: () =>
+      workspaceHistorys({
+        workspaceId,
+        userId: queryData.userId,
+      }),
   });
+  if (status === 'pending')
+    return (
+      <p className='text-[10px] text-center'>데이터를 불러오는 중입니다.</p>
+    );
 
-  const { data: workspaceHistoryDetail } = useQuery({
-    queryKey: [
-      [
-        workspaceHistoryData.workspaceHistoryDataDetail,
-        workspaceIdNumber,
-        queryData?.userId,
-        workoutHistoryId,
-      ],
-    ],
-    queryFn: () => {
-      if (queryData?.userId !== undefined) {
-        return historyDetails({
-          workspaceId: workspaceIdNumber,
-          userId: queryData?.userId,
-          workoutHistoryId,
-        });
-      }
-    },
-    enabled: isWorkoutHistoryDetail,
-  });
+  if (status === 'error')
+    return (
+      <p className='text-[10px] text-center'>데이터를 불러올 수 없습니다.</p>
+    );
 
-  useEffect(() => {
-    if (workspaceHistoryDetail) {
-      setHistoryDetailMissions((prev) => {
-        const isworkDetail = prev.some(
-          (mission) => mission.id === workoutHistoryId
-        );
-
-        if (!isworkDetail) {
-          return [
-            ...prev,
-            { id: workoutHistoryId, details: workspaceHistoryDetail.data },
-          ];
-        }
-        return prev;
-      });
-    }
-  }, [workspaceHistoryDetail, workoutHistoryId]);
-  console.log(historyDetailMissions);
   return (
     <div className='h-screen'>
-      <WorkspaceGimmiTitle
-        queryData={queryData}
-        randomMessage={randomMessage}
-      />
+      <WorkspaceGimmiTitle queryData={queryData} />
 
       <WorkspaceScoreBoard
         workspaceHistoryDatas={workspaceHistoryDatas?.data}
@@ -171,113 +89,19 @@ function Page() {
             <div className='pt-4 pl-6'>
               {workspaceHistoryDatas?.data.workoutHistories.map(
                 (workspaceHistoryData: THistorys, index: number) => {
-                  const isToggled = workoutHistoryIds.includes(
-                    workspaceHistoryData.id
-                  );
-                  const isLastIndex =
-                    index ===
-                    workspaceHistoryDatas?.data.workoutHistories.length - 1;
-
                   return (
-                    <div className='flex' key={workspaceHistoryData.id}>
-                      <span className='text-[#9C9EA3] text-[10px]'>
-                        {workspaceHistoryData.createdAt[index] ===
-                        workspaceHistoryData.createdAt ? (
-                          <></>
-                        ) : (
-                          workspaceHistoryData.createdAt.substring(5, 10)
-                        )}
-                      </span>
-                      <div className='flex flex-col items-center px-5'>
-                        <Image
-                          src={isToggled ? radiusClicked : radius}
-                          alt={isToggled ? 'radiusClicked' : 'radius'}
-                        />
-                        {isLastIndex ? (
-                          <></>
-                        ) : (
-                          <div>
-                            {isToggled ? (
-                              <Image
-                                src={detailVerticalIsToggled}
-                                alt='detailVerticalIsToggled'
-                              />
-                            ) : (
-                              <Image
-                                src={detailVertical}
-                                alt='detailVertical'
-                              />
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <div
-                          onClick={() => {
-                            handleWorkoutHistory(workspaceHistoryData.id);
-                          }}
-                        >
-                          <span
-                            className={`text-base flex -mt-1 ${
-                              isToggled ? 'text-[#4B5563]' : 'text-[#6B7280]'
-                            }`}
-                          >
-                            {workspaceHistoryData.sumOfScore}점 운동 기록
-                            {isToggled ? (
-                              <></>
-                            ) : (
-                              <Image
-                                src={arrow}
-                                alt='arrow'
-                                className='w-[4px] ml-2'
-                              />
-                            )}
-                          </span>
-                        </div>
-                        {workspaceHistoryData.isApproved ? (
-                          <span className='text-xs text-[#6B7280]'>
-                            인증 완료
-                          </span>
-                        ) : (
-                          <span className='text-xs text-[#F87171]'>
-                            인증 거부
-                          </span>
-                        )}
-                        {isToggled && (
-                          <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
-                            {historyDetailMissions[index]?.details ? (
-                              historyDetailMissions[index]?.details.map(
-                                (historyDetail: TDetailHistorys) => {
-                                  return (
-                                    <div
-                                      className='h-5 flex items-center'
-                                      key={historyDetail.id}
-                                    >
-                                      <Image
-                                        className='mx-2'
-                                        src={detailHistoryRadius}
-                                        alt='detailRadius'
-                                      />
-                                      <div>
-                                        <span className='text-[#4B5563] text-xs'>
-                                          {historyDetail.mission}{' '}
-                                          {historyDetail.count} 회 -{' '}
-                                          {historyDetail.totalScore}p
-                                        </span>
-                                      </div>
-                                    </div>
-                                  );
-                                }
-                              )
-                            ) : (
-                              <p className='text-[10px] text-center'>
-                                데이터를 불러오는 중입니다.
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    <WorkHistoryList
+                      key={workspaceHistoryData.id}
+                      index={index}
+                      workoutHistoryIds={workoutHistoryIds}
+                      workspaceId={workspaceId}
+                      workspaceHistoryData={workspaceHistoryData}
+                      userId={queryData.userId}
+                      workoutHistoriesLength={
+                        workspaceHistoryDatas?.data.workoutHistories.length
+                      }
+                      handleWorkoutHistory={handleWorkoutHistory}
+                    />
                   );
                 }
               )}
