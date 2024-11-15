@@ -49,39 +49,41 @@ export default function Layout({ children }: Props) {
   ];
 
   return (
-    <div className='px-4 py-12 bg-custom-gradient2 h-full'>
-      <div className='flex justify-between'>
-        <BackArrow />
-        <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
-          <div>
-            <Image className='w-6 h-6' src={settings} alt='settings' />
-          </div>
-        </Link>
+    <div className='h-full'>
+      <div className='px-4 pt-12'>
+        <div className='flex justify-between'>
+          <BackArrow />
+          <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
+            <div>
+              <Image className='w-6 h-6' src={settings} alt='settings' />
+            </div>
+          </Link>
+        </div>
+        <nav className='my-3'>
+          <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+          <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
+            {navItems.map((navItem) => (
+              <Link href={navItem.path} key={navItem.name}>
+                <li
+                  className={`${
+                    navItem.segments &&
+                    activeSegment !== null &&
+                    navItem.segments.includes(activeSegment)
+                      ? 'text-[#4B5563]'
+                      : navItem.segments === activeSegment
+                      ? 'text-[#4B5563]'
+                      : 'text-[#E5E7EB]'
+                  }`}
+                >
+                  {navItem.name}
+                </li>
+              </Link>
+            ))}
+          </ul>
+          <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+        </nav>
       </div>
-      <nav className='my-3'>
-        <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
-        <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
-          {navItems.map((navItem) => (
-            <Link href={navItem.path} key={navItem.name}>
-              <li
-                className={`${
-                  navItem.segments &&
-                  activeSegment !== null &&
-                  navItem.segments.includes(activeSegment)
-                    ? 'text-[#4B5563]'
-                    : navItem.segments === activeSegment
-                    ? 'text-[#4B5563]'
-                    : 'text-[#E5E7EB]'
-                }`}
-              >
-                {navItem.name}
-              </li>
-            </Link>
-          ))}
-        </ul>
-        <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
-      </nav>
-      {children}
+      <div className='px-4 bg-custom-gradient2'>{children}</div>
     </div>
   );
 }
