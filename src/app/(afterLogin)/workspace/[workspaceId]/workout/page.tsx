@@ -163,7 +163,7 @@ export default function Page() {
           )}
         </div>
         <DrawerContent>
-          <div className="w-full max-w-sm">
+          <div className="w-full">
             <DrawerHeader>
               <div className="flex justify-between">
                 <DrawerTitle className="mb-2">
