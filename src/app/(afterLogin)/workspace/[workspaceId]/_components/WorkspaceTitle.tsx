@@ -1,5 +1,3 @@
-'use client';
-
 type TWorkspaceTitle = {
   name: string;
   workout: boolean;

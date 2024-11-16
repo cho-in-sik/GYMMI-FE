@@ -1,5 +1,3 @@
-'use client';
-
 interface ApproveStatusMsgProps {
   isApproved: boolean;
 }

@@ -1,5 +1,3 @@
-'use client';
-
 import Image from 'next/image';
 
 import verticalLine from '@/../public/svgs/workspace/verticalLine.svg';
