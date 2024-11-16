@@ -43,7 +43,7 @@ export default function Layout({ children }: Props) {
           <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
         </nav>
       </div>
-      <div className='px-4 bg-custom-gradient2'>{children}</div>
+      {children}
     </div>
   );
 }
