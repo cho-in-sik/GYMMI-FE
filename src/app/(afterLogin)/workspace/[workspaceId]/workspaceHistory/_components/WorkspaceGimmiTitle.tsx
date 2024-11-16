@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 
 import speechBubble1 from '@/../public/svgs/workspace/speechBubble/speechBubble1.svg';

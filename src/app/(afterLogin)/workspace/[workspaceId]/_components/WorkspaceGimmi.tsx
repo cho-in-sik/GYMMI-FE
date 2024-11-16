@@ -1,3 +1,5 @@
+'use client';
+
 import mainLogo0 from '@/../public/svgs/mainLogo0.svg';
 import mainLogo25 from '@/../public/svgs/mainLogo25.svg';
 import mainLogo50 from '@/../public/svgs/mainLogo50.svg';

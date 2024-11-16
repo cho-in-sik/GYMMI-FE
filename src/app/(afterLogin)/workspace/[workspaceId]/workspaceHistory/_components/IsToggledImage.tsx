@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 
 import detailVertical from '@/../public/svgs/workspace/workspaceHistory/detailVertical.svg';
