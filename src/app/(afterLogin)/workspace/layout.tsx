@@ -36,7 +36,7 @@ export default function Layout({ children }: Props) {
           <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
           <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
             <NavbarItems
-              workspaceId={workspaceIdNumber}
+              workspaceId={workspaceId}
               currentSegment={currentSegment}
             />
           </ul>

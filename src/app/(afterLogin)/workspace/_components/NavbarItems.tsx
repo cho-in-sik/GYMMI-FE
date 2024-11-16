@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface NavbarItemsProps {
-  workspaceId: number;
+  workspaceId: string | null;
   currentSegment: string;
 }
 
@@ -14,7 +14,6 @@ function NavbarItems({ workspaceId, currentSegment }: NavbarItemsProps) {
   useEffect(() => {
     setActiveSegment(currentSegment);
   }, [currentSegment]);
-
   const navItems = [
     {
       name: '그룹홈',
