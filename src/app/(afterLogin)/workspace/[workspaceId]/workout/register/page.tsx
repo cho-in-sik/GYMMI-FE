@@ -72,20 +72,20 @@ export default function Page() {
   };
 
   return (
-    <div className="">
-      <div className="mb-6">
-        <Label htmlFor="photo" className="flex items-center justify-start mb-2">
-          <Image src={photo} alt="photo" className="mr-1" />
-          <span className="text-base mr-1">사진 등록</span>
-          <span className="text-base">(필수)</span>
+    <div className=''>
+      <div className='mb-6'>
+        <Label htmlFor='photo' className='flex items-center justify-start mb-2'>
+          <Image src={photo} alt='photo' className='mr-1' />
+          <span className='text-base mr-1'>사진 등록</span>
+          <span className='text-base'>(필수)</span>
         </Label>
-        <div className="flex justify-start items-end gap-1">
+        <div className='flex justify-start items-end gap-1'>
           <div
-            className="w-24 h-24 bg-[#F9FAFB] rounded-lg flex justify-center items-center relative"
+            className='w-24 h-24 bg-[#F9FAFB] rounded-lg flex justify-center items-center relative'
             onClick={handleClick}
           >
             <span
-              className="absolute right-0 -top-2 text-white bg-red-500 rounded-full"
+              className='absolute right-0 -top-2 text-white bg-red-500 rounded-full'
               onClick={(e) => handleImageRemove(e)}
             >
               x
@@ -93,11 +93,11 @@ export default function Page() {
             {imagePreview ? (
               <img
                 src={URL.createObjectURL(imagePreview)}
-                alt="preview"
-                className="w-full h-full object-cover rounded-lg"
+                alt='preview'
+                className='w-full h-full object-cover rounded-lg'
               />
             ) : (
-              <Image src={plus} alt="plus" />
+              <Image src={plus} alt='plus' />
             )}
           </div>
           <div onClick={() => setPhotoCheck((v) => !v)}>
@@ -108,8 +108,8 @@ export default function Page() {
             >
               <Image
                 src={photoCheck ? checkedCircle : nonCheckedCircle}
-                alt="check"
-                className="mr-1"
+                alt='check'
+                className='mr-1'
               />
               사진 커뮤니티에도 사진을 등록할까요?
             </span>
@@ -117,46 +117,46 @@ export default function Page() {
 
           <Input
             required
-            id="photo"
-            type="file"
-            className="hidden"
+            id='photo'
+            type='file'
+            className='hidden'
             ref={fileInputRef}
             onChange={handleImageChange}
           />
         </div>
       </div>
-      <hr className="-mx-6 mb-6" />
-      <div className="mb-2">
+      <hr className='-mx-6 mb-6' />
+      <div className='mb-2'>
         <Label
-          htmlFor="pencil"
-          className="flex items-center justify-start mb-2"
+          htmlFor='pencil'
+          className='flex items-center justify-start mb-2'
         >
-          <Image src={pencil} alt="pencil" className="mr-1" />
-          <span className="text-base mr-1">코멘트 작성</span>
-          <span className="text-base">(선택)</span>
+          <Image src={pencil} alt='pencil' className='mr-1' />
+          <span className='text-base mr-1'>코멘트 작성</span>
+          <span className='text-base'>(선택)</span>
         </Label>
         <div>
           <textarea
-            id="pencil"
-            className="bg-[#F9FAFB] px-3 py-[10px] w-full h-24 rounded-lg appearance-none focus:outline-none placeholder:text-xs text-xs"
-            placeholder="운동에 대한 간단한 코멘트를 작성해주세요!"
+            id='pencil'
+            className='bg-[#F9FAFB] px-3 py-[10px] w-full h-24 rounded-lg appearance-none focus:outline-none placeholder:text-xs text-xs'
+            placeholder='운동에 대한 간단한 코멘트를 작성해주세요!'
             value={comment}
             onChange={(e) => setComment(e.target.value)}
           ></textarea>
         </div>
       </div>
 
-      <div className="flex items-center space-x-2 mb-2">
-        <Image src={warning} alt="warning" />
+      <div className='flex items-center space-x-2 mb-2'>
+        <Image src={warning} alt='warning' />
         <label
-          htmlFor="terms"
-          className="font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[10px] text-[#F87171]"
+          htmlFor='terms'
+          className='font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-[10px] text-[#F87171]'
         >
           성의없는 운동인증은 이의제기를 받을 수 있습니다. 또한 운동인증은 하루
           최대 3번까지만 등록 가능합니다.
         </label>
       </div>
-      <div className="bg-[#EFF6FF] min-h-96 h-full -mx-6">
+      <div className='bg-[#EFF6FF] min-h-96 h-full -mx-6'>
         {workoutInfo.missions.map((item, i) => {
           const isLast = i === workoutInfo.missions.length - 1;
           return (
@@ -168,14 +168,14 @@ export default function Page() {
             >
               <div>
                 <h3>{item.mission}</h3>
-                <h5 className="text-xs font-light">{`${item.score}점`}</h5>
+                <h5 className='text-xs font-light'>{`${item.score}점`}</h5>
               </div>
-              <div className="text-2xl mr-4">{item.count}</div>
+              <div className='text-2xl mr-4'>{item.count}</div>
             </div>
           );
         })}
       </div>
-      <div className="w-full fixed bottom-10">
+      <div className='w-full fixed bottom-10'>
         <button
           className={`py-3 w-[90%] bg-main text-white
              rounded-full flex justify-center items-center text-base`}
