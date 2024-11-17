@@ -32,8 +32,8 @@ function NavbarItems({ workspaceId, currentSegment }: NavbarItemsProps) {
     },
     {
       name: '운동인증',
-      path: `/workspace/${workspaceId}/auth`,
-      segments: 'auth',
+      path: `/workspace/${workspaceId}/workspaceConfirmation`,
+      segments: 'workspaceConfirmation',
     },
   ];
   return (
