@@ -26,21 +26,31 @@ export default function Layout({ children }: Props) {
       <div className='px-4 pt-12'>
         <div className='flex justify-between'>
           <BackArrow />
-          <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
-            <div>
-              <Image className='w-6 h-6' src={settings} alt='settings' />
-            </div>
-          </Link>
+          {currentSegment === 'workspaceConfirmaionDetail' ? (
+            <></>
+          ) : (
+            <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
+              <div>
+                <Image className='w-6 h-6' src={settings} alt='settings' />
+              </div>
+            </Link>
+          )}
         </div>
         <nav className='my-3'>
           <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
-          <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
-            <NavbarItems
-              workspaceId={workspaceId}
-              currentSegment={currentSegment}
-            />
-          </ul>
-          <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+          {currentSegment === 'workspaceConfirmaionDetail' ? (
+            <></>
+          ) : (
+            <>
+              <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
+                <NavbarItems
+                  workspaceId={workspaceId}
+                  currentSegment={currentSegment}
+                />
+              </ul>
+              <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+            </>
+          )}
         </nav>
       </div>
       {children}
