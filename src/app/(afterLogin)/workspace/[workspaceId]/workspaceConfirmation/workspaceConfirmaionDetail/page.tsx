@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -38,9 +39,9 @@ export default function Page() {
 
       {/* 이의 신청 팝업창 */}
       <Dialog>
-        {/* <DialogTrigger asChild>
+        <DialogTrigger asChild>
           <Button comment='이의 신청하기' />
-        </DialogTrigger> */}
+        </DialogTrigger>
 
         <DialogContent className='w-72 h-[190px] rounded-lg'>
           <DialogHeader>
@@ -50,10 +51,7 @@ export default function Page() {
             </DialogDescription>
           </DialogHeader>
           <div>
-            <input
-              defaultValue='이의 신청 이유'
-              className='w-60 h-10 rounded-lg bg-[#F9FAFB] text-sm text-[#B7C4D5] pl-3'
-            />
+            <input className='w-60 h-10 rounded-lg bg-[#F9FAFB] text-sm text-[#B7C4D5] pl-3' />
             <span className='text-[8px] text-[#F87171] ml-2'>
               이의 신청 이유는 10자 이상 작성해주세요.
             </span>
@@ -62,7 +60,9 @@ export default function Page() {
             <div>
               <hr className='absolute left-1/2 -translate-x-1/2 w-72 border-l border-[#E5E7EB]' />
               <div className='flex justify-between mx-7'>
-                <button className='text-sm text-[#B7C4D5]'>cancel</button>
+                <DialogClose asChild>
+                  <button className='text-sm text-[#B7C4D5]'>cancel</button>
+                </DialogClose>
                 <hr className='h-[45px] border-l border-[#E5E7EB]' />
                 <button className='text-sm text-[#3B82F6] mr-3'>OK</button>
               </div>
@@ -72,7 +72,7 @@ export default function Page() {
       </Dialog>
 
       {/* 이의 신청 투표 컴포넌트 */}
-      <div className='w-[360px] h-64 border border-[#E5E7EB] rounded-lg p-3'>
+      {/* <div className='w-[360px] h-64 border border-[#E5E7EB] rounded-lg p-3'>
         <div className='flex'>
           <Image src={objectedWorkoutVoteIcon} alt='objectedWorkoutVoteIcon' />
           <span className='text-base text-[#1F2937] ml-1'>이의 신청 투표</span>
@@ -89,7 +89,7 @@ export default function Page() {
         <ProgressBar comment='찬성하기' />
         <ProgressBar comment='반대하기' />
         <Button comment='투표하기' />
-      </div>
+      </div> */}
     </div>
   );
 }
