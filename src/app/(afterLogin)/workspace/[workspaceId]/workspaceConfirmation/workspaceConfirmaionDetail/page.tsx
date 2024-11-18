@@ -15,6 +15,7 @@ import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaio
 
 import Button from './_components/Button';
 import ProgressBar from './_components/ProgressBar';
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 export default function Page() {
   return (
@@ -37,15 +38,16 @@ export default function Page() {
 
       {/* 이의 신청 팝업창 */}
       <Dialog>
-        <DialogTrigger asChild>
+        {/* <DialogTrigger asChild>
           <Button comment='이의 신청하기' />
-        </DialogTrigger>
+        </DialogTrigger> */}
 
         <DialogContent className='w-72 h-[190px] rounded-lg'>
           <DialogHeader>
-            <DialogTitle className='font-normal text-base text-[#1F2937]'>
+            <DialogTitle className='-mb-2' />
+            <DialogDescription className='text-base text-[#1F2937]'>
               이의 신청 이유를 입력해주세요.
-            </DialogTitle>
+            </DialogDescription>
           </DialogHeader>
           <div>
             <input
@@ -70,7 +72,7 @@ export default function Page() {
       </Dialog>
 
       {/* 이의 신청 투표 컴포넌트 */}
-      {/* <div className='w-[360px] h-64 border border-[#E5E7EB] rounded-lg p-3'>
+      <div className='w-[360px] h-64 border border-[#E5E7EB] rounded-lg p-3'>
         <div className='flex'>
           <Image src={objectedWorkoutVoteIcon} alt='objectedWorkoutVoteIcon' />
           <span className='text-base text-[#1F2937] ml-1'>이의 신청 투표</span>
@@ -87,7 +89,7 @@ export default function Page() {
         <ProgressBar comment='찬성하기' />
         <ProgressBar comment='반대하기' />
         <Button comment='투표하기' />
-      </div> */}
+      </div>
     </div>
   );
 }
