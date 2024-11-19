@@ -1,24 +1,29 @@
-import photoING from '@/../public/svgs/photoCommunity/photoING.svg';
 import Image from 'next/image';
+import registerPhoto from '@/../public/svgs/photoCommunity/registerPhoto.svg';
 import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className="w-full flex justify-center items-center ">
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 -mt-10">
-        <div className="flex justify-center items-center mb-6">
-          <Image src={photoING} alt="photo-ing" />
-        </div>
-        <h3 className="text-center text-[#9CA3AF]">
-          사진 커뮤니티 준비 중입니다.
-        </h3>
+    <div>
+      <div className="flex justify-center items-center font-galmuri text-xl font-medium -mt-7 mb-6">
+        GYMMI Photo
       </div>
+      <div className="grid grid-cols-2 gap-4 h-full mb-32 relative">
+        <div className="w-full h-64 bg-[#E6EAEF] rounded-lg row-span-2">1</div>
+        <div className="w-full h-44 bg-[#F4F8FB] rounded-lg">2</div>
+        <div className="w-full h-64 bg-[#E6EAEF] rounded-lg row-span-2 col-start-2">
+          3
+        </div>
+        <div className="w-full h-64 bg-[#E6EAEF] rounded-lg col-start-1">4</div>
+        <div className="w-full h-44 bg-[#F4F8FB] rounded-lg">5</div>
+        <div className="w-full h-64 bg-[#E6EAEF] rounded-lg col-start-2 -mt-20">
+          6
+        </div>
 
-      <div className="absolute w-full bottom-10 px-5">
-        <Link href={'/'}>
-          <div className="bg-main text-white text-center py-4 rounded-lg">
-            홈으로 돌아가기
-          </div>{' '}
+        <Link href={'/photoCommunity/register'}>
+          <div className="fixed bottom-28 right-4 bg-[#3B82F6] rounded-full transform transition-transform duration-200 hover:scale-110 active:scale-95">
+            <Image src={registerPhoto} alt="photo-register" />
+          </div>
         </Link>
       </div>
     </div>
