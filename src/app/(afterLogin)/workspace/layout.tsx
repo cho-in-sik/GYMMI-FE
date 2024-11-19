@@ -1,13 +1,13 @@
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useSelectedLayoutSegment } from 'next/navigation';
 
 import settings from '@/../public/svgs/workspace/settings.svg';
 import BackArrow from '../_components/BackArrow';
-import { workspace } from '@/constants/queryKey';
+import NavbarItems from './_components/NavbarItems';
 
 type Props = {
   children: ReactNode;
@@ -17,10 +17,10 @@ export default function Layout({ children }: Props) {
   const workspaceId = useSelectedLayoutSegment();
   const workspaceIdNumber = Number(workspaceId);
 
-  const [activeSegment, setActiveSegment] = useState<string | null>(null);
   const pathName = usePathname();
   const segments = pathName.split('/');
   const currentSegment = segments[segments.length - 1];
+
 
   useEffect(() => {
     setActiveSegment(currentSegment);
@@ -85,6 +85,7 @@ export default function Layout({ children }: Props) {
         <hr className="border-1 border-[#E5E7EB] w-screen -mx-4" />
       </nav>
       {children}
+
     </div>
   );
 }
