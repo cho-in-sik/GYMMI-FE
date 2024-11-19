@@ -75,6 +75,7 @@ const config = {
           '"Segoe UI"',
           'Roboto',
         ],
+        yungothic: ['var(--font-yungothic)', 'sans-serif'],
       },
       borderRadius: {
         lg: 'var(--radius)',
