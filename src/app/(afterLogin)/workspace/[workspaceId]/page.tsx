@@ -181,7 +181,7 @@ export default function Page() {
                 >
                   <div
                     className={`w-full h-16 ${
-                      user.isMyself ? 'bg-[#C8F68B]' : 'bg-[#DBEAFE] '
+                      user.isMyself ? 'bg-[#C8F68B]' : 'bg-[#FFFFFF] '
                     } rounded-xl flex items-center justify-between px-3.5`}
                   >
                     <div className='h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative'>
