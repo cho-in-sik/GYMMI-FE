@@ -15,7 +15,8 @@ export const postFeed = async (filename: any, comment: string) => {
 
 export const feedDetails = async (photoId: any) => {
   try {
-    const res = await customAxios.get('/');
+    const res = await customAxios.get(`/photos/${photoId}`);
+    return res;
   } catch (error) {
     console.log(error);
   }
