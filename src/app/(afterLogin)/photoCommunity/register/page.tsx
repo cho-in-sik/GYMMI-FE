@@ -47,6 +47,9 @@ export default function Page() {
       try {
         const res = await postFeed(imageUrl, comment);
         console.log(res);
+        if (res?.status === 200) {
+          router.push('/photoCommunity');
+        }
       } catch (error) {
         console.log(error);
       }
