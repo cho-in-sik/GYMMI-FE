@@ -31,7 +31,7 @@ export default function Page() {
     10
   );
 
-  const { data: workspaceConfirmaionDetail } = useQuery({
+  const { data: workspaceConfirmationDetail } = useQuery({
     queryKey: [
       'workspaceConfimationDetail',
       workspaceId,
@@ -43,23 +43,46 @@ export default function Page() {
         workoutConfirmationId,
       }),
   });
-  console.log(workspaceConfirmaionDetail);
+  console.log(workspaceConfirmationDetail);
 
   return (
     <div className='h-screen px-4'>
       <div className='flex ml-1 mt-1.5'>
-        <Image className='w-11 h-11' src={profileIcon} alt='profileIcon' />
+        {workspaceConfirmationDetail?.data.profileImageUrl === 'default.png' ? (
+          <Image src={profileIcon} alt='profileIcon' className='w-11 h-11' />
+        ) : (
+          <Image
+            src={workspaceConfirmationDetail?.data.profileImageUrl}
+            alt='profileIcon'
+            className='w-11 h-11'
+          />
+        )}
         <div className='flex flex-col ml-3 mt-1'>
-          <span className='text-base text-[#1F2937]'>짱짱승현</span>
-          <span className='text-[10px] text-[#848D99]'>jdyjsh77</span>
+          <span className='text-base text-[#1F2937]'>
+            {workspaceConfirmationDetail?.data.nickname}
+          </span>
+          <span className='text-[10px] text-[#848D99]'>
+            {workspaceConfirmationDetail?.data.loginId}
+          </span>
         </div>
       </div>
       <div className='my-5'>
         <span className='text-base text-[#1F2937]'>
-          오늘 운동은 어쩌고 저쩌고 등등을 했고, 목표에 얼마정도 달성을 해서 ~
+          {workspaceConfirmationDetail?.data.comment}
         </span>
         <div className='w-[360px] h-[360px] bg-[#E5E7EB] mt-5 flex justify-center'>
-          <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
+          {workspaceConfirmationDetail?.data.workoutConfirmationImageUrl ===
+          '' ? (
+            <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
+          ) : (
+            // <Image
+            //   src={
+            //     workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
+            //   }
+            //   alt='Image'
+            // />
+            <></>
+          )}
         </div>
       </div>
 
