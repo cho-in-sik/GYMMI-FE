@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { useInView } from 'react-intersection-observer';
@@ -10,8 +10,9 @@ import { useInView } from 'react-intersection-observer';
 import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
 import noGroup from '@/../public/svgs/noGroup.svg';
 import { workoutConfirmations } from '@/api/workspaceConfirmaion';
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 
-interface workoutConfirmtionPageProps {
+interface IworkoutConfirmtionPageProps {
   createdAt: string;
   dayOfTheWeek: string;
   nickname: string;
@@ -21,9 +22,12 @@ interface workoutConfirmtionPageProps {
   isMine: boolean;
 }
 
+interface IWorkoutConfirmationProps {
+  workoutConfirmationId: number;
+}
+
 export default function Page() {
-  const { workspaceId } = useParams();
-  const workspaceIdNum = Number(workspaceId);
+  const workspaceId = useWorkoutIdFromParams();
 
   const [ref, inView] = useInView();
 
@@ -34,17 +38,16 @@ export default function Page() {
     isFetching,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey: ['workoutConfirmations', workspaceIdNum],
+    queryKey: ['workoutConfirmations', workspaceId],
     queryFn: async ({ pageParam = 0 }) => {
       const data = await workoutConfirmations({
-        workspaceId: workspaceIdNum,
+        workspaceId,
         page: pageParam,
       });
       return data;
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      // 마지막 페이지에서 다음 pageParam 계산
       return lastPage.data?.length < 10 ? undefined : allPages.length;
     },
   });
@@ -68,7 +71,7 @@ export default function Page() {
   return (
     <div className='h-screen px-4 -mt-3 bg-[#F1F7FF]'>
       {workoutConfirmation?.pages[0].data?.map(
-        (workoutConfirmationPage: workoutConfirmtionPageProps) => (
+        (workoutConfirmationPage: IworkoutConfirmtionPageProps) => (
           <div key={workoutConfirmationPage.workoutConfirmationId}>
             <div className='flex justify-center'>
               <div className='w-20 h-5 my-4 bg-[#F9FAFB] rounded flex justify-center'>
@@ -85,12 +88,22 @@ export default function Page() {
                       {workoutConfirmationPage.createdAt.substring(11, 16)}
                     </span>
                   </div>
-                  <div className='w-[150px] h-[150px] pl-2 pt-1 bg-[#FFEDA6] rounded-lg drop-shadow-lg'>
-                    <span className='text-[#1F2937] text-sm'>
-                      운동인증을 올렸어요!
-                    </span>
-                    <div className='w-[105px] h-[105px] mt-2 bg-[#D1D5DB]'></div>
-                  </div>
+                  <Link
+                    href={{
+                      pathname: `/workspace/${workspaceId}/workspaceConfirmation/${workoutConfirmationPage.workoutConfirmationId}`,
+                      query: {
+                        workoutConfirmationId:
+                          workoutConfirmationPage.workoutConfirmationId,
+                      },
+                    }}
+                  >
+                    <div className='w-[150px] h-[150px] pl-2 pt-1 bg-[#FFEDA6] rounded-lg drop-shadow-lg'>
+                      <span className='text-[#1F2937] text-sm'>
+                        운동인증을 올렸어요!
+                      </span>
+                      <div className='w-[105px] h-[105px] mt-2 bg-[#D1D5DB]'></div>
+                    </div>
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -111,30 +124,36 @@ export default function Page() {
                     </span>
                   </div>
                 </div>
-                <Link
-                  href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmaionDetail`}
-                >
-                  <div className='ml-10 mt-1 flex'>
+                <div className='ml-10 mt-1 flex'>
+                  <Link
+                    href={{
+                      pathname: `/workspace/${workspaceId}/workspaceConfirmation/${workoutConfirmationPage.workoutConfirmationId}`,
+                      query: {
+                        workoutConfirmationId:
+                          workoutConfirmationPage.workoutConfirmationId,
+                      },
+                    }}
+                  >
                     <div className='w-[150px] h-[150px] pl-2 pt-1 bg-[#FDFDFD] rounded-lg drop-shadow-lg'>
                       <span className='text-[#1F2937] text-sm'>
                         운동인증을 올렸어요!
                       </span>
-                      <div className='w-[105px] h-[105px]'>
-                        {/* <Image
+                      {/* <div className='w-[105px] h-[105px]'>
+                        <Image
                           src={
                             workoutConfirmationPage.workoutConfirmationImageUrl
                           }
                           alt='workoutConfirmationImageUrl'
-                        /> */}
-                      </div>
+                        />
+                      </div> */}
                     </div>
-                    <div className='ml-2 flex items-end'>
-                      <span className='text-[10px] text-[#9CA3AF]'>
-                        {workoutConfirmationPage.createdAt.substring(11, 16)}
-                      </span>
-                    </div>
+                  </Link>
+                  <div className='ml-2 flex items-end'>
+                    <span className='text-[10px] text-[#9CA3AF]'>
+                      {workoutConfirmationPage.createdAt.substring(11, 16)}
+                    </span>
                   </div>
-                </Link>
+                </div>
               </div>
             )}
           </div>

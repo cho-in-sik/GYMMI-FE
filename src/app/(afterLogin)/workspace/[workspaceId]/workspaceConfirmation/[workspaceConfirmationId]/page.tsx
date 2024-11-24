@@ -1,3 +1,5 @@
+'use client';
+
 import Image from 'next/image';
 
 import {
@@ -14,11 +16,35 @@ import objectedWorkoutVoteIcon from '@/../public/svgs/workspace/workspaceConfirm
 import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
 import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaion/confirmDetailNoImage.svg';
 
-import Button from './_components/Button';
 import ProgressBar from './_components/ProgressBar';
 import { DialogDescription } from '@radix-ui/react-dialog';
+import { useQuery } from '@tanstack/react-query';
+import { useParams, useSearchParams } from 'next/navigation';
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import { workoutConfirmaionsDetail } from '@/api/workspaceConfirmaion';
 
 export default function Page() {
+  const workspaceId = useWorkoutIdFromParams();
+  const seachParams = useSearchParams();
+  const workoutConfirmationId = parseInt(
+    seachParams.get('workoutConfirmationId') || '0',
+    10
+  );
+
+  const { data: workspaceConfirmaionDetail } = useQuery({
+    queryKey: [
+      'workspaceConfimationDetail',
+      workspaceId,
+      workoutConfirmationId,
+    ],
+    queryFn: () =>
+      workoutConfirmaionsDetail({
+        workspaceId,
+        workoutConfirmationId,
+      }),
+  });
+  console.log(workspaceConfirmaionDetail);
+
   return (
     <div className='h-screen px-4'>
       <div className='flex ml-1 mt-1.5'>
@@ -40,7 +66,13 @@ export default function Page() {
       {/* 이의 신청 팝업창 */}
       <Dialog>
         <DialogTrigger asChild>
-          <Button comment='이의 신청하기' />
+          <div
+            className={
+              ' w-[360px] h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'
+            }
+          >
+            <button className='text-base text-[#848D99]'>이의 신청하기</button>
+          </div>
         </DialogTrigger>
 
         <DialogContent className='w-72 h-[190px] rounded-lg'>
