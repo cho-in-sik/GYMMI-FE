@@ -5,6 +5,11 @@ interface workoutConfirmationsProps {
   page: number;
 }
 
+interface workoutConfirmaionsDetailProps {
+  workspaceId: number;
+  workoutConfirmationId: number;
+}
+
 const workoutConfirmations = async ({
   workspaceId,
   page,
@@ -15,4 +20,14 @@ const workoutConfirmations = async ({
   return res;
 };
 
-export { workoutConfirmations };
+const workoutConfirmaionsDetail = async ({
+  workspaceId,
+  workoutConfirmationId,
+}: workoutConfirmaionsDetailProps) => {
+  const res = customAxios.get(
+    `/workspaces/${workspaceId}/workout-confirmations/${workoutConfirmationId}`
+  );
+  return res;
+};
+
+export { workoutConfirmations, workoutConfirmaionsDetail };
