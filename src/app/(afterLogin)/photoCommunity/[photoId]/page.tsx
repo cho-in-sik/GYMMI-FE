@@ -19,6 +19,7 @@ type TPhotoDetail = {
   photoImageUrl: string;
   profileImageUrl: string;
   thumpsUpCount: number;
+  nickname: string;
 };
 
 export default function Page() {
@@ -42,7 +43,7 @@ export default function Page() {
             alt="no-image"
             className="h-11 w-11"
           />
-          <div className="text-base">경환2</div>
+          <div className="text-base">{data?.nickname}</div>
         </div>
         <div>
           <Image src={settings} alt="settings" />
