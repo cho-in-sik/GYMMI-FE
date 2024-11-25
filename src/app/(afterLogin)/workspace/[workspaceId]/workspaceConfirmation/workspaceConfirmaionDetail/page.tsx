@@ -19,16 +19,22 @@ import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaio
 import ProgressBar from './_components/ProgressBar';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import {
   workoutConfirmaionsDetail,
   workoutObjectionReason,
+  workoutObjections,
+  workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
 import { useState } from 'react';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
+  const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
+  console.log(typeof isObjectionVote);
+
+  const router = useRouter();
 
   const workspaceId = useWorkoutIdFromParams();
   const seachParams = useSearchParams();
@@ -36,7 +42,9 @@ export default function Page() {
     seachParams.get('workoutConfirmationId') || '0',
     10
   );
-  const isObjection = seachParams.get('isObjection');
+  const isObjection = seachParams.get('isObjection') === 'false';
+
+  const objectionId = parseInt(seachParams.get('objectionId') || '0', 10);
 
   const { data: workspaceConfirmationDetail } = useQuery({
     queryKey: [
@@ -49,9 +57,21 @@ export default function Page() {
         workspaceId,
         workoutConfirmationId,
       }),
+    enabled: isObjection,
   });
 
-  const mutation = useMutation({
+  const { data: workoutObjection } = useQuery({
+    queryKey: ['workoutObjection', workspaceId, objectionId],
+    queryFn: () =>
+      workoutObjections({
+        workspaceId,
+        objectionId,
+      }),
+    enabled: !isObjection,
+  });
+  console.log(workoutObjection);
+
+  const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
     onSuccess: (data) => {
       console.log('Success:', data);
@@ -66,11 +86,48 @@ export default function Page() {
   const handleReasonPost = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    mutation.mutate({
+    objectionReason.mutate({
       workspaceId,
       workoutConfirmationId,
       objectionReason: reasonInput,
     });
+  };
+
+  const handleVote = (isVote: boolean) => {
+    if (isObjectionVote === isVote) {
+      setIsObjection(null);
+    } else {
+      setIsObjection(isVote);
+    }
+  };
+
+  const objectionVote = useMutation({
+    mutationFn: workoutObjectionsVote,
+    onSuccess: (data) => {
+      console.log('Success:', data);
+      alert('이의 신청 투표가 성공적으로 제출되었습니다.');
+      router.push(`/workspace/${workspaceId}/workspaceConfirmation`);
+    },
+    onError: (error) => {
+      console.error('Error:', error);
+      alert('이의 신청 투표 중 오류가 발생했습니다.');
+    },
+  });
+
+  const handleVotePost = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
+    if (isObjectionVote === null) {
+      alert('이의신청 투표를 진행해주세요.');
+    }
+
+    if (isObjectionVote !== null) {
+      objectionVote.mutate({
+        workspaceId,
+        objectionId,
+        objectionVote: isObjectionVote,
+      });
+    }
   };
 
   return (
@@ -140,19 +197,36 @@ export default function Page() {
               </span>
             </div>
             <p className='text-[10px] text-[#1F2937] my-2'>
-              이의제기란 적합성평가기관이 희망하는 인정상태와 관련하여 KAB가
-              내린 인정결정사항에 대하여 재고하여 줄 것을 요청하는 것을
-              의미하며~
+              {workoutObjection?.data.reason}
             </p>
             <div className='flex justify-end mb-2'>
               <span className='text-[10px] text-[#848D99]'>
-                남은 투표 시간 23:58:00 2명 참여
+                남은 투표 시간 23:58:00{' '}
+                {workoutObjection?.data.voteParticipationCount}명 참여
               </span>
             </div>
-            <ProgressBar comment='찬성하기' />
-            <ProgressBar comment='반대하기' />
-            <div className='h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'>
-              <button className='text-base text-[#3B82F6]'>투표하기</button>
+            <ProgressBar
+              comment='찬성하기'
+              progressValue={0}
+              onClick={() => handleVote(true)}
+              isObjectionVote={isObjectionVote}
+            />
+            <ProgressBar
+              comment='반대하기'
+              progressValue={0}
+              onClick={() => handleVote(false)}
+              isObjectionVote={isObjectionVote}
+            />
+            <div
+              className={`h-11 ${
+                isObjectionVote !== null
+                  ? 'bg-[#3B82F6] text-[#FFFFFF]'
+                  : 'bg-[#EFF6FF] text-[#3B82F6]'
+              } rounded-[35px] flex justify-center`}
+            >
+              <button className='text-base w-full' onClick={handleVotePost}>
+                투표하기
+              </button>
             </div>
           </div>
         )}

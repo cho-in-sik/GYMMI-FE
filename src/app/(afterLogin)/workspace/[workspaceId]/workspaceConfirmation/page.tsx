@@ -46,16 +46,16 @@ export default function Page() {
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage.data?.length < 10 ? undefined : allPages.length;
+      return lastPage.data?.length < 11 ? undefined : allPages.length;
     },
   });
+  console.log(workoutConfirmation);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
-  console.log(workoutConfirmation);
 
   if (isFetching)
     return (
@@ -107,35 +107,34 @@ export default function Page() {
                           workoutConfirmationId:
                             workoutConfirmationPage.workoutConfirmationId,
                           isObjection: workoutConfirmationPage.isObjection,
+                          objectionId: workoutConfirmationPage.objectionId,
                         },
                       }}
                     >
                       {workoutConfirmationPage.isObjection ? (
-                        <div key={workoutConfirmationPage.objectionId}>
-                          <div className='w-56 h-14 bg-[#FDFDFD] py-1 px-2 rounded-lg drop-shadow-lg'>
-                            <span className='text-sm'>
-                              {workoutConfirmationPage.nickname}의{' '}
-                              {workoutConfirmationPage.createdAt.substring(
-                                5,
-                                10
-                              )}
-                              날 운동인증이 이의신청 되었어요.
-                            </span>
-                          </div>
+                        <div className='w-56 h-14 bg-[#FDFDFD] py-1 px-2 rounded-lg drop-shadow-lg'>
+                          <span className='text-sm'>
+                            {workoutConfirmationPage.nickname}님의{' '}
+                            {workoutConfirmationPage.createdAt.substring(5, 10)}
+                            의 운동인증이 이의신청 되었어요. ...
+                          </span>
                         </div>
                       ) : (
                         <div className='w-[150px] h-[150px] pl-2 pt-1 bg-[#FFEDA6] rounded-lg drop-shadow-lg'>
                           <span className='text-[#1F2937] text-sm'>
                             운동인증을 올렸어요!
                           </span>
-                          {/* <div className='w-[105px] h-[105px]'>
+                          <div className='flex gap-x-2 '>
+                            {/* <div className='w-[105px] h-[105px]'>
                           <Image
                             src={
                               workoutConfirmationPage.workoutConfirmationImageUrl
                             }
                             alt='workoutConfirmationImageUrl'
-                          />
+                        />
                         </div> */}
+                            <div className='justify-start'>...</div>
+                          </div>
                         </div>
                       )}
                     </Link>
@@ -168,35 +167,34 @@ export default function Page() {
                           workoutConfirmationId:
                             workoutConfirmationPage.workoutConfirmationId,
                           isObjection: workoutConfirmationPage.isObjection,
+                          objectionId: workoutConfirmationPage.objectionId,
                         },
                       }}
                     >
                       {workoutConfirmationPage.isObjection ? (
-                        <div key={workoutConfirmationPage.objectionId}>
-                          <div className='w-56 h-14 bg-[#FDFDFD] py-1 px-2 rounded-lg drop-shadow-lg'>
-                            <span className='text-sm'>
-                              {workoutConfirmationPage.nickname}의{' '}
-                              {workoutConfirmationPage.createdAt.substring(
-                                5,
-                                10
-                              )}
-                              날 운동인증이 이의신청 되었어요.
-                            </span>
-                          </div>
+                        <div className='w-56 h-14 bg-[#FDFDFD] py-1 px-2 rounded-lg drop-shadow-lg'>
+                          <span className='text-sm'>
+                            {workoutConfirmationPage.nickname}님의{' '}
+                            {workoutConfirmationPage.createdAt.substring(5, 10)}
+                            의 운동인증이 이의신청 되었어요. ...
+                          </span>
                         </div>
                       ) : (
                         <div className='w-[150px] h-[150px] pl-2 pt-1 bg-[#FDFDFD] rounded-lg drop-shadow-lg'>
                           <span className='text-[#1F2937] text-sm'>
                             운동인증을 올렸어요!
                           </span>
-                          {/* <div className='w-[105px] h-[105px]'>
-                          <Image
-                            src={
-                              workoutConfirmationPage.workoutConfirmationImageUrl
-                            }
-                            alt='workoutConfirmationImageUrl'
-                          />
-                        </div> */}
+                          <div className='flex gap-x-2 '>
+                            {/* <div className='w-[105px] h-[105px]'>
+                        <Image
+                          src={
+                            workoutConfirmationPage.workoutConfirmationImageUrl
+                          }
+                          alt='workoutConfirmationImageUrl'
+                      />
+                      </div> */}
+                            <div className='justify-start'>...</div>
+                          </div>
                         </div>
                       )}
                     </Link>

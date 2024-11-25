@@ -14,6 +14,15 @@ interface IworkoutObjectionReasonProps extends IworkoutConfirmaionsDetailProps {
   objectionReason: string;
 }
 
+interface IworkoutObjectionsProps {
+  workspaceId: number;
+  objectionId: number;
+}
+
+interface IworkoutOnjectionsVoteProps extends IworkoutObjectionsProps {
+  objectionVote: boolean | null;
+}
+
 const workoutConfirmations = async ({
   workspaceId,
   page,
@@ -46,8 +55,32 @@ const workoutObjectionReason = async ({
   return res;
 };
 
+const workoutObjections = async ({
+  workspaceId,
+  objectionId,
+}: IworkoutObjectionsProps) => {
+  const res = await customAxios.get(
+    `/workspaces/${workspaceId}/objections/${objectionId}`
+  );
+  return res;
+};
+
+const workoutObjectionsVote = async ({
+  workspaceId,
+  objectionId,
+  objectionVote,
+}: IworkoutOnjectionsVoteProps) => {
+  const res = await customAxios.post(
+    `/workspaces/${workspaceId}/objections/${objectionId}`,
+    { willApprove: objectionVote }
+  );
+  return res;
+};
+
 export {
   workoutConfirmations,
   workoutConfirmaionsDetail,
   workoutObjectionReason,
+  workoutObjections,
+  workoutObjectionsVote,
 };
