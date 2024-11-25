@@ -1,6 +1,14 @@
 import customAxios from '@/utils/cutstomAxios';
 import axios from 'axios';
-import { comment } from 'postcss';
+
+export const getFeeds = async (pageNumber: any) => {
+  try {
+    const res = await customAxios.get(`/photos?pageNumber=${pageNumber}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const postFeed = async (filename: any, comment: string) => {
   console.log(filename);

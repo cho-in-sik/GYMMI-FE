@@ -4,6 +4,8 @@ import Image from 'next/image';
 import basicIcon from '@/../public/images/basicIcon.png';
 import settings from '@/../public/svgs/photoCommunity/settings.svg';
 import heart from '@/../public/svgs/photoCommunity/heart.svg';
+import filledHeart from '@/../public/svgs/photoCommunity/filledHeart.svg';
+
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { feedDetails } from '@/api/photoCommunity';
@@ -62,8 +64,8 @@ export default function Page() {
         {data?.comment}
       </div>
       <div className="text-xs text-[#848D99]">
-        <span>{formatDate(data?.createdAt!)}</span>
-        <span>수정됨</span>
+        <span>{formatDate(data?.createdAt!)} </span>
+        {data?.isModified && <span>수정됨</span>}
       </div>
     </div>
   );
