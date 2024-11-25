@@ -1,19 +1,23 @@
 import customAxios from '@/utils/cutstomAxios';
 
-interface workoutConfirmationsProps {
+interface IworkoutConfirmationsProps {
   workspaceId: number;
   page: number;
 }
 
-interface workoutConfirmaionsDetailProps {
+interface IworkoutConfirmaionsDetailProps {
   workspaceId: number;
   workoutConfirmationId: number;
+}
+
+interface IworkoutObjectionReasonProps extends IworkoutConfirmaionsDetailProps {
+  objectionReason: string;
 }
 
 const workoutConfirmations = async ({
   workspaceId,
   page,
-}: workoutConfirmationsProps) => {
+}: IworkoutConfirmationsProps) => {
   const res = customAxios.get(
     `/workspaces/${workspaceId}/workout-confirmations?pageNumber=${page}`
   );
@@ -23,11 +27,27 @@ const workoutConfirmations = async ({
 const workoutConfirmaionsDetail = async ({
   workspaceId,
   workoutConfirmationId,
-}: workoutConfirmaionsDetailProps) => {
+}: IworkoutConfirmaionsDetailProps) => {
   const res = customAxios.get(
     `/workspaces/${workspaceId}/workout-confirmations/${workoutConfirmationId}`
   );
   return res;
 };
 
-export { workoutConfirmations, workoutConfirmaionsDetail };
+const workoutObjectionReason = async ({
+  workspaceId,
+  workoutConfirmationId,
+  objectionReason,
+}: IworkoutObjectionReasonProps) => {
+  const res = await customAxios.post(
+    `/workspaces/${workspaceId}/workout-confirmations/${workoutConfirmationId}`,
+    { reason: objectionReason }
+  );
+  return res;
+};
+
+export {
+  workoutConfirmations,
+  workoutConfirmaionsDetail,
+  workoutObjectionReason,
+};

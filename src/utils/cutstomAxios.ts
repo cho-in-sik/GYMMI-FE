@@ -18,7 +18,7 @@ const refreshAccessToken = async () => {
       `${process.env.NEXT_PUBLIC_BASE_URL}auth/reissue`,
       {
         refreshToken,
-      },
+      }
     );
     console.log(res);
 
@@ -51,7 +51,7 @@ customAxios.interceptors.response.use(
       return customAxios(originalRequest);
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 customAxios.interceptors.request.use(
@@ -64,7 +64,7 @@ customAxios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 export default customAxios;
