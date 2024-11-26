@@ -31,6 +31,15 @@ export const feedDetails = async (photoId: any) => {
   }
 };
 
+export const feedHeart = async (photoId: any) => {
+  try {
+    const res = await customAxios.post(`/photos/${photoId}/thumps-up`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const s3GetPresignedUrls = async () => {
   const res = await customAxios.get('/images/photo/presignedUrl');
   console.log(1);
