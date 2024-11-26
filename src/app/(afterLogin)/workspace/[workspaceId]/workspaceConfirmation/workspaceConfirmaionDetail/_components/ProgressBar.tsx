@@ -28,15 +28,11 @@ export default function ProgressBar({
       />
       <div
         className={`w-[290px] text-sm 
-         ${isObjectionVote !== null ? 'text-[#374151]' : 'text-[#848D99]'}
+         ${isObjectionVote ? 'text-[#374151]' : 'text-[#848D99]'}
          absolute left-5 inset-y-2.5 flex justify-between`}
       >
         {comment}
-        {isObjectionVote !== null ? (
-          <Image src={voteChecked} alt='voteChecked' />
-        ) : (
-          <></>
-        )}
+        {isObjectionVote && <Image src={voteChecked} alt='voteChecked' />}
       </div>
     </div>
   );

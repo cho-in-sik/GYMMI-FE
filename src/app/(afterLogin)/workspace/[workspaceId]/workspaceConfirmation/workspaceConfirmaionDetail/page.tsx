@@ -32,7 +32,6 @@ import { useState } from 'react';
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
   const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
-  console.log(typeof isObjectionVote);
 
   const router = useRouter();
 
@@ -57,7 +56,6 @@ export default function Page() {
         workspaceId,
         workoutConfirmationId,
       }),
-    enabled: isObjection,
   });
 
   const { data: workoutObjection } = useQuery({
@@ -70,6 +68,10 @@ export default function Page() {
     enabled: !isObjection,
   });
   console.log(workoutObjection);
+
+  // let approvalCount = (
+  //   workoutObjection?.data.approvalCount /
+  // )
 
   const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
@@ -93,12 +95,8 @@ export default function Page() {
     });
   };
 
-  const handleVote = (isVote: boolean) => {
-    if (isObjectionVote === isVote) {
-      setIsObjection(null);
-    } else {
-      setIsObjection(isVote);
-    }
+  const handleVote = (isObjection: boolean) => {
+    setIsObjection((prev) => (prev === isObjection ? null : isObjection));
   };
 
   const objectionVote = useMutation({
@@ -174,17 +172,17 @@ export default function Page() {
       {/* 이의 신청 팝업창 */}
       <Dialog>
         {isObjection ? (
-          <DialogTrigger asChild>
-            <div
-              className={
-                ' w-[360px] h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'
-              }
-            >
-              <button className='text-base text-[#848D99]'>
+          <div
+            className={
+              ' w-[360px] h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'
+            }
+          >
+            <DialogTrigger asChild>
+              <button className='w-full text-base text-[#848D99]'>
                 이의 신청하기
               </button>
-            </div>
-          </DialogTrigger>
+            </DialogTrigger>
+          </div>
         ) : (
           <div className='w-[360px] h-64 border border-[#E5E7EB] rounded-lg p-3'>
             <div className='flex'>
@@ -201,31 +199,34 @@ export default function Page() {
             </p>
             <div className='flex justify-end mb-2'>
               <span className='text-[10px] text-[#848D99]'>
-                남은 투표 시간 23:58:00{' '}
+                투표 종료까지 23:58:00{' '}
                 {workoutObjection?.data.voteParticipationCount}명 참여
               </span>
             </div>
             <ProgressBar
               comment='찬성하기'
-              progressValue={0}
+              progressValue={50}
               onClick={() => handleVote(true)}
-              isObjectionVote={isObjectionVote}
+              isObjectionVote={isObjectionVote === true}
             />
             <ProgressBar
               comment='반대하기'
-              progressValue={0}
+              progressValue={30}
               onClick={() => handleVote(false)}
-              isObjectionVote={isObjectionVote}
+              isObjectionVote={isObjectionVote === false}
             />
             <div
               className={`h-11 ${
-                isObjectionVote !== null
+                isObjectionVote !== null ||
+                workoutObjection?.data.voteCompletion
                   ? 'bg-[#3B82F6] text-[#FFFFFF]'
                   : 'bg-[#EFF6FF] text-[#3B82F6]'
               } rounded-[35px] flex justify-center`}
             >
               <button className='text-base w-full' onClick={handleVotePost}>
-                투표하기
+                {workoutObjection?.data.voteCompletion
+                  ? '투표완료'
+                  : '투표하기'}
               </button>
             </div>
           </div>
