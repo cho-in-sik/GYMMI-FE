@@ -7,7 +7,7 @@ type TBookmark = {
 };
 
 type TWorkout = {
-  workspaceId: any;
+  workspaceId: number;
   data: {};
 };
 

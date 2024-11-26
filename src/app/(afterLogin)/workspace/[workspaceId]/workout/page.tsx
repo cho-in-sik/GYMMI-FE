@@ -25,6 +25,8 @@ import { useState } from 'react';
 import { getBookmarks, postBookmark } from '@/api/workout';
 import { useWorkoutStore } from '@/hooks/useWorkout';
 
+import noBookmark from '@/../public/svgs/workspace/workout/noBookmark.svg';
+
 type TMission = {
   id: number;
   mission: string;
@@ -123,36 +125,45 @@ export default function Page() {
 
       <Drawer open={open} onOpenChange={setOpen}>
         <div className="w-full flex flex-col justify-center items-center gap-2">
-          {data?.map((item: TMission) => (
-            <div
-              className="w-full h-16 py-3 px-4 rounded-lg bg-[#FEFCE8] flex justify-between items-center"
-              key={item.id}
-              onClick={() => {
-                setOpen(true);
-                setSelectedMission(item);
-                setActiveNumber(getMissionCount(item.id));
-              }}
-            >
-              <div className="flex flex-col">
-                <h3 className="text-base">{item.mission}</h3>
-                <span className="text-xs font-normal">{`${item.score}점`}</span>
-              </div>
-
-              <div>
-                <DrawerTrigger asChild id={item.id.toString()}>
-                  <button>
-                    <Image
-                      src={isMissionCompleted(item.id) ? filledCheck : plus}
-                      alt="icon"
-                    />
-                  </button>
-                </DrawerTrigger>
-              </div>
+          {data?.length === 0 ? (
+            <div className="flex justify-center items-center flex-col absolute inset-0 transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2">
+              <Image src={noBookmark} alt="no-bookmark" />
+              <span className="text-sm text-[#4B5563] font-normal mt-5">
+                아직 즐겨찾기한 운동이 없어요.
+              </span>
             </div>
-          ))}
+          ) : (
+            data?.map((item: TMission) => (
+              <div
+                className="w-full h-16 py-3 px-4 rounded-lg bg-[#FEFCE8] flex justify-between items-center"
+                key={item.id}
+                onClick={() => {
+                  setOpen(true);
+                  setSelectedMission(item);
+                  setActiveNumber(getMissionCount(item.id));
+                }}
+              >
+                <div className="flex flex-col">
+                  <h3 className="text-base">{item.mission}</h3>
+                  <span className="text-xs font-normal">{`${item.score}점`}</span>
+                </div>
+
+                <div>
+                  <DrawerTrigger asChild id={item.id.toString()}>
+                    <button>
+                      <Image
+                        src={isMissionCompleted(item.id) ? filledCheck : plus}
+                        alt="icon"
+                      />
+                    </button>
+                  </DrawerTrigger>
+                </div>
+              </div>
+            ))
+          )}
         </div>
         <DrawerContent>
-          <div className="w-full max-w-sm">
+          <div className="w-full">
             <DrawerHeader>
               <div className="flex justify-between">
                 <DrawerTitle className="mb-2">

@@ -18,7 +18,7 @@ export default function Page() {
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      console.log('last', lastPage);
+      console.log('all', allPages);
       return lastPage?.data.length === 0 ? undefined : allPages.length; // 현재까지 로드된 페이지 수를 기반으로 계산
     },
   });
