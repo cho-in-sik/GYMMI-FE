@@ -8,9 +8,10 @@ import filledHeart from '@/../public/svgs/photoCommunity/filledHeart.svg';
 
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
-import { feedDetails } from '@/api/photoCommunity';
+import { feedDetails, feedHeart } from '@/api/photoCommunity';
 import { formatDate } from '@/utils/date';
 import { s3ImageLoader } from '@/utils/image';
+import useHeart from '@/hooks/useHeart';
 
 type TPhotoDetail = {
   comment: string;
@@ -29,6 +30,13 @@ export default function Page() {
     queryFn: () => feedDetails(photoId),
   });
   console.log(data);
+
+  const { like, toggleBookmark } = useHeart({
+    id: photoId,
+    queryKey: 'photoDetails',
+    bookmarkFn: feedHeart,
+    initialBookmarkState: false,
+  });
 
   return (
     <div>

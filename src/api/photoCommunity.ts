@@ -39,6 +39,14 @@ export const feedHeart = async (photoId: any) => {
     console.log(error);
   }
 };
+export const deleteFeed = async (photoId: any) => {
+  try {
+    const res = await customAxios.delete(`/photos/${photoId}`);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const s3GetPresignedUrls = async () => {
   const res = await customAxios.get('/images/photo/presignedUrl');
