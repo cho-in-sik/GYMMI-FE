@@ -9,6 +9,8 @@ import { useInView } from 'react-intersection-observer';
 
 import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
 import noGroup from '@/../public/svgs/noGroup.svg';
+import objectionBell from '@/../public/svgs/workspace/workspaceConfirmaion/objectionBell.svg';
+
 import { workoutConfirmations } from '@/api/workspaceConfirmaion';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 
@@ -46,7 +48,7 @@ export default function Page() {
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage) => {
-      return lastPage?.data.nextPage || undefined;
+      return lastPage?.data.nextPage ? lastPage?.data.nextPage : undefined;
     },
   });
   console.log(workoutConfirmation);
@@ -68,6 +70,11 @@ export default function Page() {
 
   return (
     <div className='h-max px-4 -mt-3 pb-3 bg-[#F1F7FF]'>
+      <Link
+        href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`}
+      >
+        <Image src={objectionBell} alt='objectionBell' />
+      </Link>
       {workoutConfirmation?.pages[0].data?.map(
         (
           workoutConfirmationPage: IworkoutConfirmtionPageProps,
@@ -130,11 +137,10 @@ export default function Page() {
                             {/* <div className='w-[105px] h-[105px]'>
                               <Image
                                 src={
-                                  workoutConfirmationPage.workoutConfirmationImageUrl
+                                  
                                 }
                                 alt='workoutConfirmationImageUrl'
-                                width={105}
-                                height={105}
+                                loader={()=> workoutConfirmationPage.workoutConfirmationImageUrl}
                               />
                             </div> */}
                             <div className='justify-start'>...</div>
@@ -194,8 +200,6 @@ export default function Page() {
                                   workoutConfirmationPage.workoutConfirmationImageUrl
                                 }
                                 alt='workoutConfirmationImageUrl'
-                                width={105}
-                                height={105}
                               />
                             </div> */}
                             <div className='justify-start'>...</div>
