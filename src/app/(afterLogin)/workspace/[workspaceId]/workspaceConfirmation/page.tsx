@@ -45,12 +45,11 @@ export default function Page() {
       return data;
     },
     initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.data?.length < 11 ? undefined : allPages.length;
+    getNextPageParam: (lastPage) => {
+      return lastPage?.data.nextPage || undefined;
     },
   });
   console.log(workoutConfirmation);
-
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
@@ -81,7 +80,11 @@ export default function Page() {
               10
             ) === workoutConfirmationPage.createdAt.substring(0, 10);
           return (
-            <div key={workoutConfirmationPage.workoutConfirmationId}>
+            <div
+              key={`${workoutConfirmationPage.workoutConfirmationId}-${
+                workoutConfirmationPage.objectionId || 'noObjection'
+              }`}
+            >
               {!isSameDateAsPrevious && (
                 <div className='flex justify-center'>
                   <div className='w-20 h-5 my-3 bg-[#F9FAFB] rounded flex justify-center'>
@@ -112,11 +115,10 @@ export default function Page() {
                       }}
                     >
                       {workoutConfirmationPage.isObjection ? (
-                        <div className='w-56 h-14 bg-[#FDFDFD] py-1 px-2 rounded-lg drop-shadow-lg'>
+                        <div className='w-56 h-14 bg-[#FFEDA6] py-1 px-2 rounded-lg drop-shadow-lg'>
                           <span className='text-sm'>
-                            {workoutConfirmationPage.nickname}님의{' '}
-                            {workoutConfirmationPage.createdAt.substring(5, 10)}
-                            의 운동인증이 이의신청 되었어요. ...
+                            {workoutConfirmationPage.nickname}님의 운동인증이
+                            이의신청 되었어요.
                           </span>
                         </div>
                       ) : (
@@ -126,13 +128,15 @@ export default function Page() {
                           </span>
                           <div className='flex gap-x-2 '>
                             {/* <div className='w-[105px] h-[105px]'>
-                          <Image
-                            src={
-                              workoutConfirmationPage.workoutConfirmationImageUrl
-                            }
-                            alt='workoutConfirmationImageUrl'
-                        />
-                        </div> */}
+                              <Image
+                                src={
+                                  workoutConfirmationPage.workoutConfirmationImageUrl
+                                }
+                                alt='workoutConfirmationImageUrl'
+                                width={105}
+                                height={105}
+                              />
+                            </div> */}
                             <div className='justify-start'>...</div>
                           </div>
                         </div>
@@ -174,9 +178,8 @@ export default function Page() {
                       {workoutConfirmationPage.isObjection ? (
                         <div className='w-56 h-14 bg-[#FDFDFD] py-1 px-2 rounded-lg drop-shadow-lg'>
                           <span className='text-sm'>
-                            {workoutConfirmationPage.nickname}님의{' '}
-                            {workoutConfirmationPage.createdAt.substring(5, 10)}
-                            의 운동인증이 이의신청 되었어요. ...
+                            {workoutConfirmationPage.nickname}님의 운동인증이
+                            이의신청 되었어요.
                           </span>
                         </div>
                       ) : (
@@ -186,13 +189,15 @@ export default function Page() {
                           </span>
                           <div className='flex gap-x-2 '>
                             {/* <div className='w-[105px] h-[105px]'>
-                        <Image
-                          src={
-                            workoutConfirmationPage.workoutConfirmationImageUrl
-                          }
-                          alt='workoutConfirmationImageUrl'
-                      />
-                      </div> */}
+                              <Image
+                                src={
+                                  workoutConfirmationPage.workoutConfirmationImageUrl
+                                }
+                                alt='workoutConfirmationImageUrl'
+                                width={105}
+                                height={105}
+                              />
+                            </div> */}
                             <div className='justify-start'>...</div>
                           </div>
                         </div>

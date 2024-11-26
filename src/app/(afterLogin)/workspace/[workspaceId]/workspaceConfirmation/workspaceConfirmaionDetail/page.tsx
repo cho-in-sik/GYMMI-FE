@@ -78,6 +78,7 @@ export default function Page() {
     onSuccess: (data) => {
       console.log('Success:', data);
       alert('이의 신청이 성공적으로 제출되었습니다.');
+      router.push(`/workspace/${workspaceId}/workspaceConfirmation`);
     },
     onError: (error) => {
       console.error('Error:', error);
@@ -88,11 +89,17 @@ export default function Page() {
   const handleReasonPost = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    objectionReason.mutate({
-      workspaceId,
-      workoutConfirmationId,
-      objectionReason: reasonInput,
-    });
+    if (reasonInput.length <= 10) {
+      alert('10자 이상 작성하셔야 합니다.');
+    }
+
+    if (reasonInput.length >= 11) {
+      objectionReason.mutate({
+        workspaceId,
+        workoutConfirmationId,
+        objectionReason: reasonInput,
+      });
+    }
   };
 
   const handleVote = (isObjection: boolean) => {
@@ -184,14 +191,20 @@ export default function Page() {
             </DialogTrigger>
           </div>
         ) : (
-          <div className='w-[360px] h-64 border border-[#E5E7EB] rounded-lg p-3'>
+          <div
+            className={`w-[360px] ${
+              workoutObjection?.data.confirmationComplete ? 'h-44' : 'h-64'
+            } border border-[#E5E7EB] rounded-lg p-3`}
+          >
             <div className='flex'>
               <Image
                 src={objectedWorkoutVoteIcon}
                 alt='objectedWorkoutVoteIcon'
               />
               <span className='text-base text-[#1F2937] ml-1'>
-                이의 신청 투표
+                {workoutObjection?.data.confirmationComplete
+                  ? '투표 결과: 반대'
+                  : '이의 신청 투표'}
               </span>
             </div>
             <p className='text-[10px] text-[#1F2937] my-2'>
@@ -199,36 +212,53 @@ export default function Page() {
             </p>
             <div className='flex justify-end mb-2'>
               <span className='text-[10px] text-[#848D99]'>
-                투표 종료까지 23:58:00{' '}
+                {workoutObjection?.data.confirmationComplete
+                  ? '투표 종료'
+                  : '투표 종료까지 23:58:00'}
+                {' * '}
                 {workoutObjection?.data.voteParticipationCount}명 참여
               </span>
             </div>
-            <ProgressBar
-              comment='찬성하기'
-              progressValue={50}
-              onClick={() => handleVote(true)}
-              isObjectionVote={isObjectionVote === true}
-            />
-            <ProgressBar
-              comment='반대하기'
-              progressValue={30}
-              onClick={() => handleVote(false)}
-              isObjectionVote={isObjectionVote === false}
-            />
-            <div
-              className={`h-11 ${
-                isObjectionVote !== null ||
-                workoutObjection?.data.voteCompletion
-                  ? 'bg-[#3B82F6] text-[#FFFFFF]'
-                  : 'bg-[#EFF6FF] text-[#3B82F6]'
-              } rounded-[35px] flex justify-center`}
-            >
-              <button className='text-base w-full' onClick={handleVotePost}>
-                {workoutObjection?.data.voteCompletion
-                  ? '투표완료'
-                  : '투표하기'}
-              </button>
-            </div>
+            {workoutObjection?.data.confirmationComplete ? (
+              <div className='h-11 bg-[#3B82F6] text-[#FFFFFF] rounded-[35px] mt-4 flex justify-center items-center'>
+                <span className='text-base'>투표 종료</span>
+              </div>
+            ) : (
+              <>
+                <ProgressBar
+                  comment='찬성하기'
+                  progressValue={50}
+                  onClick={() => {
+                    if (!workoutObjection?.data.voteCompletion)
+                      handleVote(true);
+                  }}
+                  isObjectionVote={isObjectionVote === true}
+                />
+                <ProgressBar
+                  comment='반대하기'
+                  progressValue={30}
+                  onClick={() => {
+                    if (!workoutObjection?.data.voteCompletion)
+                      handleVote(false);
+                  }}
+                  isObjectionVote={isObjectionVote === false}
+                />
+                <div
+                  className={`h-11 ${
+                    isObjectionVote !== null ||
+                    workoutObjection?.data.voteCompletion
+                      ? 'bg-[#3B82F6] text-[#FFFFFF]'
+                      : 'bg-[#EFF6FF] text-[#3B82F6]'
+                  } rounded-[35px] flex justify-center`}
+                >
+                  <button className='text-base w-full' onClick={handleVotePost}>
+                    {workoutObjection?.data.voteCompletion
+                      ? '투표완료'
+                      : '투표하기'}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
@@ -260,7 +290,7 @@ export default function Page() {
           <DialogFooter>
             <div>
               <hr className='absolute left-1/2 -translate-x-1/2 w-72 border-l border-[#E5E7EB]' />
-              <div className='flex justify-between mx-7'>
+              <div className='flex justify-between mx-7 items-center'>
                 <DialogClose asChild>
                   <span className='text-sm text-[#B7C4D5]'>cancel</span>
                 </DialogClose>
