@@ -3,8 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { useParams } from 'next/navigation';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
 import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
@@ -47,11 +46,11 @@ export default function Page() {
       return data;
     },
     initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      return lastPage?.data.nextPage ? lastPage?.data.nextPage : undefined;
+    getNextPageParam: (lastPage, allPages) => {
+      return lastPage?.data.length === 0 ? undefined : allPages.length;
     },
   });
-  console.log(workoutConfirmation);
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
@@ -68,24 +67,26 @@ export default function Page() {
       </div>
     );
 
+  const workoutConfirmationPages = workoutConfirmation?.pages.flatMap(
+    (pages) => pages.data
+  );
+
   return (
-    <div className='h-max px-4 -mt-3 pb-3 bg-[#F1F7FF]'>
+    <div className='h-max px-4 -mt-3 pb-3 bg-[#F1F7FF] overflow-y-auto'>
       <Link
         href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`}
       >
         <Image src={objectionBell} alt='objectionBell' />
       </Link>
-      {workoutConfirmation?.pages[0].data?.map(
+      {workoutConfirmationPages?.map(
         (
           workoutConfirmationPage: IworkoutConfirmtionPageProps,
           index: number
         ) => {
           const isSameDateAsPrevious =
             index > 0 &&
-            workoutConfirmation?.pages[0].data[index - 1]?.createdAt.substring(
-              0,
-              10
-            ) === workoutConfirmationPage.createdAt.substring(0, 10);
+            workoutConfirmationPages[index - 1]?.createdAt.substring(0, 10) ===
+              workoutConfirmationPage.createdAt.substring(0, 10);
           return (
             <div
               key={`${workoutConfirmationPage.workoutConfirmationId}-${
@@ -133,16 +134,19 @@ export default function Page() {
                           <span className='text-[#1F2937] text-sm'>
                             운동인증을 올렸어요!
                           </span>
-                          <div className='flex gap-x-2 '>
-                            {/* <div className='w-[105px] h-[105px]'>
+                          <div className='flex gap-x-2 mt-1'>
+                            <div className='w-[105px] h-[105px] flex items-center justify-center overflow-hidden'>
                               <Image
                                 src={
-                                  
+                                  workoutConfirmationPage.workoutConfirmationImageUrl
                                 }
                                 alt='workoutConfirmationImageUrl'
-                                loader={()=> workoutConfirmationPage.workoutConfirmationImageUrl}
+                                loader={({ src }) => src}
+                                width={105}
+                                height={105}
+                                className='object-cover'
                               />
-                            </div> */}
+                            </div>
                             <div className='justify-start'>...</div>
                           </div>
                         </div>
@@ -193,15 +197,19 @@ export default function Page() {
                           <span className='text-[#1F2937] text-sm'>
                             운동인증을 올렸어요!
                           </span>
-                          <div className='flex gap-x-2 '>
-                            {/* <div className='w-[105px] h-[105px]'>
+                          <div className='flex gap-x-2 mt-1'>
+                            <div className='w-[105px] h-[105px] flex items-center overflow-hidden'>
                               <Image
                                 src={
                                   workoutConfirmationPage.workoutConfirmationImageUrl
                                 }
                                 alt='workoutConfirmationImageUrl'
+                                loader={({ src }) => src}
+                                width={105}
+                                height={105}
+                                className='object-cover'
                               />
-                            </div> */}
+                            </div>
                             <div className='justify-start'>...</div>
                           </div>
                         </div>
