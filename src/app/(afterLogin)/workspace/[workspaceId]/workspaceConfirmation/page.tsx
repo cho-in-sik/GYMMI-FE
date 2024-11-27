@@ -76,7 +76,13 @@ export default function Page() {
       <Link
         href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`}
       >
-        <Image src={objectionBell} alt='objectionBell' />
+        <div className=' fixed bottom-10 right-10 z-50'>
+          <Image
+            src={objectionBell}
+            alt='objectionBell'
+            className='w-14 h-14'
+          />
+        </div>
       </Link>
       {workoutConfirmationPages?.map(
         (
@@ -147,7 +153,7 @@ export default function Page() {
                                 className='object-cover'
                               />
                             </div>
-                            <div className='justify-start'>...</div>
+                            <div className='flex items-end'>...</div>
                           </div>
                         </div>
                       )}
@@ -210,7 +216,7 @@ export default function Page() {
                                 className='object-cover'
                               />
                             </div>
-                            <div className='justify-start'>...</div>
+                            <div className='flex items-end'>...</div>
                           </div>
                         </div>
                       )}
