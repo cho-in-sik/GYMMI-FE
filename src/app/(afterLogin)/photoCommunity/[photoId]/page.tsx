@@ -21,21 +21,27 @@ type TPhotoDetail = {
   profileImageUrl: string;
   thumpsUpCount: number;
   nickname: string;
+  hasMyThumbsUp: boolean;
+  isMine: boolean;
 };
 
 export default function Page() {
   const { photoId } = useParams();
-  const { data } = useQuery<TPhotoDetail>({
-    queryKey: ['photoDetails', photoId],
-    queryFn: () => feedDetails(photoId),
-  });
-  console.log(data);
 
-  const { like, toggleBookmark } = useHeart({
-    id: photoId,
+  const photoIdString = Array.isArray(photoId) ? photoId[0] : photoId;
+  const photoIdNumber = Number(photoIdString);
+
+  const { data } = useQuery<TPhotoDetail>({
+    queryKey: ['photoDetails', photoIdNumber],
+    queryFn: () => feedDetails(photoIdNumber),
+  });
+
+  const { like, toggleBookmark, count } = useHeart({
+    id: photoIdNumber,
     queryKey: 'photoDetails',
     bookmarkFn: feedHeart,
-    initialBookmarkState: false,
+    initialBookmarkState: data?.hasMyThumbsUp || false,
+    initialCount: data?.thumpsUpCount || 0,
   });
 
   return (
@@ -53,10 +59,10 @@ export default function Page() {
           />
           <div className="text-base">{data?.nickname}</div>
         </div>
-        <div>
-          <Image src={settings} alt="settings" />
-        </div>
+
+        <div>{data?.isMine && <Image src={settings} alt="settings" />}</div>
       </div>
+
       <div className="bg-[#E5E7EB] w-full h-96 max-w-96 max-h-96 relative mb-4">
         <Image
           src={data?.photoImageUrl!}
@@ -65,10 +71,17 @@ export default function Page() {
           fill
         />
       </div>
+
       <div className="flex justify-start items-center gap-1 mb-3">
-        <Image src={heart} alt="empty-heart" />
-        <span className="text-[#848D99]">{data?.thumpsUpCount}</span>
+        <button onClick={toggleBookmark}>
+          <Image
+            src={like ? filledHeart : heart}
+            alt={like ? 'filled-heart' : 'empty-heart'}
+          />
+        </button>
+        <span className="text-[#848D99]">{count}</span>
       </div>
+
       <div className="text-base font-yungothic leading-5 font-medium mb-2">
         {data?.comment}
       </div>

@@ -1,67 +1,62 @@
 import { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { feedHeart } from '@/api/photoCommunity';
 
-export default function useBookmark({
+export default function useHeart({
   id,
   queryKey,
   bookmarkFn,
   initialBookmarkState,
+  initialCount,
 }: {
-  id: any;
+  id: number | string;
   queryKey: string;
-  bookmarkFn: (id: any) => Promise<any>;
-  initialBookmarkState: boolean | null;
+  bookmarkFn: (id: number | string) => Promise<any>;
+  initialBookmarkState: boolean;
+  initialCount: number;
 }) {
   const queryClient = useQueryClient();
-  const [like, setLike] = useState(initialBookmarkState || false);
+  const [like, setLike] = useState(initialBookmarkState);
+  const [count, setCount] = useState(initialCount);
 
   const mutation = useMutation({
-    mutationFn: async () => {
-      await bookmarkFn(id);
-    },
+    mutationFn: async () => bookmarkFn(id),
     onMutate: async () => {
-      await queryClient.cancelQueries({
-        queryKey: [queryKey, id],
-      });
+      await queryClient.cancelQueries({ queryKey: [queryKey, id] });
 
-      const prevDetails = queryClient.getQueryData([queryKey, id]);
+      const previousData = queryClient.getQueryData([queryKey, id]);
 
       queryClient.setQueryData([queryKey, id], (prev: any) => {
         if (!prev) return prev;
         return {
           ...prev,
+          hasMyThumbsUp: !like,
+          thumpsUpCount: prev.thumpsUpCount + (like ? -1 : 1),
         };
       });
 
-      return { prevDetails };
+      setLike((prev) => !prev);
+      setCount((prev) => prev + (like ? -1 : 1)); // 즉시 반영
+
+      return { previousData };
     },
-    onError: (_error, _, context) => {
-      if (context?.prevDetails) {
-        queryClient.setQueryData([queryKey, id], context.prevDetails);
+    onError: (_error, _variables, context) => {
+      if (context?.previousData) {
+        queryClient.setQueryData([queryKey, id], context.previousData);
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({
-        queryKey: [queryKey, id],
-      });
+      queryClient.invalidateQueries({ queryKey: [queryKey, id] });
     },
   });
 
-  // `initialBookmarkState` 값이 변경될 때 (즉, 서버에서 받아온 `data.bookmark`가 로드될 때) `like` 상태를 업데이트
   useEffect(() => {
-    if (initialBookmarkState !== null) {
-      setLike(initialBookmarkState);
-    }
-  }, [initialBookmarkState]);
+    setLike(initialBookmarkState);
+    setCount(initialCount);
+  }, [initialBookmarkState, initialCount]);
 
   const toggleBookmark = () => {
     mutation.mutate();
-    setLike((prev) => !prev); // 낙관적으로 상태를 업데이트
   };
 
-  return {
-    like,
-    toggleBookmark,
-  };
+  return { like, toggleBookmark, count };
 }
