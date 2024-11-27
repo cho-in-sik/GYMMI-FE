@@ -28,6 +28,7 @@ import {
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
 import { useEffect, useState } from 'react';
+import RemaineTime from './_components/RemaineTime';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -114,7 +115,7 @@ export default function Page() {
       alert('이의 신청 투표 중 오류가 발생했습니다.');
     },
   });
-
+  console.log(workoutObjection?.data.deadline);
   const handleVotePost = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
@@ -140,28 +141,6 @@ export default function Page() {
   if (appovalCount > 100 || rejectionCount > 100) {
     appovalCount === 100 || rejectionCount === 100;
   }
-
-  const [remaineTime, setRemaineTime] = useState('00시 00분');
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      const end = new Date(workoutObjection?.data.deadline).getTime();
-      const remineTime = end - now;
-
-      if (remineTime <= 0) {
-        setRemaineTime('00시 00분');
-        clearInterval(interval);
-      } else {
-        const hours = Math.floor(remineTime / (1000 * 60 * 60));
-        const minutes = Math.floor(
-          (remineTime % (1000 * 60 * 60)) / (1000 * 60)
-        );
-        setRemaineTime(`${hours}시 ${minutes}분`);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [remaineTime]);
 
   return (
     <div className='h-screen px-4'>
@@ -246,9 +225,14 @@ export default function Page() {
             </p>
             <div className='flex justify-end mb-2'>
               <span className='text-[10px] text-[#848D99]'>
-                {!workoutObjection?.data.inInProgress
-                  ? '투표 종료'
-                  : `투표 종료까지 ${remaineTime}`}
+                {!workoutObjection?.data.inInProgress ? (
+                  '투표 종료'
+                ) : (
+                  <>
+                    투표 종료까지{' '}
+                    <RemaineTime deadline={workoutObjection?.data.deadline} />
+                  </>
+                )}
                 {' * '}
                 {workoutObjection?.data.voteParticipationCount}명 참여
               </span>
