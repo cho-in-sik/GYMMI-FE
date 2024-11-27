@@ -77,15 +77,19 @@ export default function Page() {
       <div className="mt-4 flex justify-between items-center mb-4">
         <div className="flex justify-start items-center gap-3">
           {!data?.photoImageUrl ? null : (
-            <Image
-              src={
-                data?.profileImageUrl === 'default.png'
-                  ? basicIcon
-                  : data?.profileImageUrl!
-              }
-              alt="no-image"
-              className="h-11 w-11"
-            />
+            <div className="relative h-11 w-11">
+              <Image
+                src={
+                  data?.profileImageUrl === 'default.png'
+                    ? basicIcon
+                    : data?.profileImageUrl!
+                }
+                alt="profile-image"
+                layout="fill"
+                className="rounded-full"
+                loader={() => s3ImageLoader(data?.photoImageUrl)}
+              />
+            </div>
           )}
 
           <div className="text-base">{data?.nickname}</div>
