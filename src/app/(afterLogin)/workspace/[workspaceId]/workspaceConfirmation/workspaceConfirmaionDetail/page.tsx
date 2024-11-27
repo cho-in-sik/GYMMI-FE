@@ -68,7 +68,6 @@ export default function Page() {
       }),
     enabled: !isObjection,
   });
-  console.log(workoutObjection);
 
   const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
@@ -115,7 +114,7 @@ export default function Page() {
       alert('이의 신청 투표 중 오류가 발생했습니다.');
     },
   });
-  console.log(workoutObjection?.data.deadline);
+
   const handleVotePost = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
@@ -152,6 +151,9 @@ export default function Page() {
             src={workspaceConfirmationDetail?.data.profileImageUrl}
             alt='userProfileIcon'
             className='w-11 h-11'
+            loader={({ src }) => src}
+            width={30}
+            height={30}
           />
         )}
         <div className='flex flex-col ml-3 mt-1'>

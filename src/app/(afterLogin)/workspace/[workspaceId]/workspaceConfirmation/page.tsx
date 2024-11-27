@@ -97,7 +97,7 @@ export default function Page() {
             <div
               key={`${workoutConfirmationPage.workoutConfirmationId}-${
                 workoutConfirmationPage.objectionId || 'noObjection'
-              }`}
+              }-${workoutConfirmationPage.createdAt}`}
             >
               {!isSameDateAsPrevious && (
                 <div className='flex justify-center'>
@@ -123,7 +123,9 @@ export default function Page() {
                         query: {
                           workoutConfirmationId:
                             workoutConfirmationPage.workoutConfirmationId,
-                          isObjection: workoutConfirmationPage.isObjection,
+                          isObjection:
+                            workoutConfirmationPage.isObjection ||
+                            workoutConfirmationPage.objectionId !== null,
                           objectionId: workoutConfirmationPage.objectionId,
                         },
                       }}
@@ -170,6 +172,9 @@ export default function Page() {
                       <Image
                         src={workoutConfirmationPage.profileImageUrl}
                         alt='profileIcon'
+                        loader={({ src }) => src}
+                        width={30}
+                        height={30}
                       />
                     )}
 
@@ -186,7 +191,9 @@ export default function Page() {
                         query: {
                           workoutConfirmationId:
                             workoutConfirmationPage.workoutConfirmationId,
-                          isObjection: workoutConfirmationPage.isObjection,
+                          isObjection:
+                            workoutConfirmationPage.isObjection ||
+                            workoutConfirmationPage.objectionId !== null,
                           objectionId: workoutConfirmationPage.objectionId,
                         },
                       }}
