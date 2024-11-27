@@ -27,7 +27,7 @@ import {
   workoutObjections,
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -68,10 +68,6 @@ export default function Page() {
     enabled: !isObjection,
   });
   console.log(workoutObjection);
-
-  // let approvalCount = (
-  //   workoutObjection?.data.approvalCount /
-  // )
 
   const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
@@ -135,15 +131,37 @@ export default function Page() {
     }
   };
 
-  let appovalCount =
+  const appovalCount =
     (workoutObjection?.data.approvalCount / workoutObjection?.data.headCount) *
     100;
-  let rejectionCount =
+  const rejectionCount =
     (workoutObjection?.data.rejectionCount / workoutObjection?.data.headCount) *
     100;
   if (appovalCount > 100 || rejectionCount > 100) {
     appovalCount === 100 || rejectionCount === 100;
   }
+
+  const [remaineTime, setRemaineTime] = useState('00시 00분');
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const end = new Date(workoutObjection?.data.deadline).getTime();
+      const remineTime = end - now;
+
+      if (remineTime <= 0) {
+        setRemaineTime('00시 00분');
+        clearInterval(interval);
+      } else {
+        const hours = Math.floor(remineTime / (1000 * 60 * 60));
+        const minutes = Math.floor(
+          (remineTime % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        setRemaineTime(`${hours}시 ${minutes}분`);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [remaineTime]);
 
   return (
     <div className='h-screen px-4'>
@@ -205,7 +223,7 @@ export default function Page() {
         ) : (
           <div
             className={`w-[360px] ${
-              workoutObjection?.data.confirmationComplete ? 'h-44' : 'h-64'
+              !workoutObjection?.data.inInProgress ? 'h-44' : 'h-64'
             } border border-[#E5E7EB] rounded-lg p-3`}
           >
             <div className='flex'>
@@ -214,8 +232,12 @@ export default function Page() {
                 alt='objectedWorkoutVoteIcon'
               />
               <span className='text-base text-[#1F2937] ml-1'>
-                {workoutObjection?.data.confirmationComplete
-                  ? '투표 결과: 반대'
+                {!workoutObjection?.data.inInProgress
+                  ? `투표 결과: ${
+                      workoutObjection?.data.confirmationCompletion
+                        ? '찬성'
+                        : '반대'
+                    }`
                   : '이의 신청 투표'}
               </span>
             </div>
@@ -224,14 +246,14 @@ export default function Page() {
             </p>
             <div className='flex justify-end mb-2'>
               <span className='text-[10px] text-[#848D99]'>
-                {workoutObjection?.data.confirmationComplete
+                {!workoutObjection?.data.inInProgress
                   ? '투표 종료'
-                  : '투표 종료까지 23:58:00'}
+                  : `투표 종료까지 ${remaineTime}`}
                 {' * '}
                 {workoutObjection?.data.voteParticipationCount}명 참여
               </span>
             </div>
-            {workoutObjection?.data.confirmationComplete ? (
+            {!workoutObjection?.data.inInProgress ? (
               <div className='h-11 bg-[#3B82F6] text-[#FFFFFF] rounded-[35px] mt-4 flex justify-center items-center'>
                 <span className='text-base'>투표 종료</span>
               </div>
@@ -263,11 +285,16 @@ export default function Page() {
                       : 'bg-[#EFF6FF] text-[#3B82F6]'
                   } rounded-[35px] flex justify-center`}
                 >
-                  <button className='text-base w-full' onClick={handleVotePost}>
-                    {workoutObjection?.data.voteCompletion
-                      ? '투표완료'
-                      : '투표하기'}
-                  </button>
+                  {workoutObjection?.data.voteCompletion ? (
+                    <div className='text-base flex items-center'>투표완료</div>
+                  ) : (
+                    <button
+                      className='text-base w-full'
+                      onClick={handleVotePost}
+                    >
+                      투표하기
+                    </button>
+                  )}
                 </div>
               </>
             )}
