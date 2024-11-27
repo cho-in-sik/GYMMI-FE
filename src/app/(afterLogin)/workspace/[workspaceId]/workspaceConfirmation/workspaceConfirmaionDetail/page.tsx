@@ -135,6 +135,16 @@ export default function Page() {
     }
   };
 
+  let appovalCount =
+    (workoutObjection?.data.approvalCount / workoutObjection?.data.headCount) *
+    100;
+  let rejectionCount =
+    (workoutObjection?.data.rejectionCount / workoutObjection?.data.headCount) *
+    100;
+  if (appovalCount > 100 || rejectionCount > 100) {
+    appovalCount === 100 || rejectionCount === 100;
+  }
+
   return (
     <div className='h-screen px-4'>
       <div className='flex ml-1 mt-1.5'>
@@ -165,13 +175,15 @@ export default function Page() {
           '' ? (
             <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
           ) : (
-            // <Image
-            //   src={
-            //     workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
-            //   }
-            //   alt='Image'
-            // />
-            <></>
+            <Image
+              src={
+                workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
+              }
+              alt='Image'
+              loader={({ src }) => src}
+              width={360}
+              height={360}
+            />
           )}
         </div>
       </div>
@@ -227,7 +239,7 @@ export default function Page() {
               <>
                 <ProgressBar
                   comment='찬성하기'
-                  progressValue={50}
+                  progressValue={appovalCount}
                   onClick={() => {
                     if (!workoutObjection?.data.voteCompletion)
                       handleVote(true);
@@ -236,7 +248,7 @@ export default function Page() {
                 />
                 <ProgressBar
                   comment='반대하기'
-                  progressValue={30}
+                  progressValue={rejectionCount}
                   onClick={() => {
                     if (!workoutObjection?.data.voteCompletion)
                       handleVote(false);
