@@ -42,6 +42,7 @@ export const feedHeart = async (photoId: any) => {
 export const deleteFeed = async (photoId: any) => {
   try {
     const res = await customAxios.delete(`/photos/${photoId}`);
+    console.log(res);
     return res;
   } catch (error) {
     console.log(error);
