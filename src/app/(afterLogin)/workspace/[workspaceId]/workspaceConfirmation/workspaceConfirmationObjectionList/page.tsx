@@ -9,40 +9,50 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { workoutConfirmationObjectionLists } from '@/api/workspaceConfirmaion';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import Link from 'next/link';
+
+interface workoutConfirmationObjectionListPageProps {
+  createdAt: string;
+  objectionId: number;
+  targetWorkerNickname: string;
+  voteCompletion: boolean;
+  workoutConfirmationId: number;
+}
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
   const [statusButton, setStatusButton] = useState('open');
-  console.log(statusButton);
   const [ref, inView] = useInView();
 
-  // const {
-  //   data: workoutConfirmationObjectionList,
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetching,
-  //   isFetchingNextPage,
-  // } = useInfiniteQuery({
-  //   queryKey: ['workoutConfirmations', workspaceId],
-  //   queryFn: async ({ pageParam = 0 }) => {
-  //     const data = await workoutConfirmationObjectionLists({
-  //       workspaceId,
-  //       page: pageParam,
-  //       status: statusButton,
-  //     });
-  //     return data;
-  //   },
-  //   initialPageParam: 0,
-  //   getNextPageParam: (lastPage) => {
-  //     return lastPage?.data.nextPage ? lastPage?.data.nextPage : undefined;
-  //   },
-  // });
+  const {
+    data: workoutConfirmationObjectionList,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['workoutConfirmations', workspaceId, statusButton],
+    queryFn: async ({ pageParam = 0 }) => {
+      const data = await workoutConfirmationObjectionLists({
+        workspaceId,
+        page: pageParam,
+        status: statusButton,
+      });
+      return data;
+    },
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) => {
+      return lastPage?.data.nextPage ? lastPage?.data.nextPage : undefined;
+    },
+  });
+  console.log(workoutConfirmationObjectionList);
+  useEffect(() => {
+    if (inView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  // useEffect(() => {
-  //   if (inView && hasNextPage && !isFetchingNextPage) {
-  //     fetchNextPage();
-  //   }
-  // }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const workoutConfirmationObjectionListPages =
+    workoutConfirmationObjectionList?.pages.flatMap((pages) => pages.data);
 
   return (
     <div className='h-max px-4 pb-3'>
@@ -52,21 +62,67 @@ export default function Page() {
         <ObjectionListButton
           comment='모두'
           onClick={() => setStatusButton('open')}
+          isClick={statusButton === 'open'}
         />
         <ObjectionListButton
           comment='투표 안함'
           onClick={() => setStatusButton('incompletion')}
+          isClick={statusButton === 'incompletion'}
         />
       </div>
-      <div className='flex bg-[#F5F5F5] -mx-4 p-4'>
-        <Image src={objectionBellFill} alt='ogjectionBellFill' />
-        <div className='text-[#1F2937] flex flex-col pl-5 gap-y-1'>
-          <span className='text-base'>
-            인ㅅ1ㄱ1님의 인증이 이의신청되었어요.
-          </span>
-          <span className='text-xs'>24.11.20</span>
-        </div>
-      </div>
+      {workoutConfirmationObjectionListPages?.map(
+        (
+          workoutConfirmationObjectionListPage: workoutConfirmationObjectionListPageProps
+        ) => {
+          return (
+            <Link
+              href={{
+                pathname: `/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmaionDetail`,
+                query: {
+                  workoutConfirmationId:
+                    workoutConfirmationObjectionListPage.workoutConfirmationId,
+                  isObjection:
+                    workoutConfirmationObjectionListPage.objectionId !== null,
+                  objectionId: workoutConfirmationObjectionListPage.objectionId,
+                },
+              }}
+            >
+              <div
+                key={workoutConfirmationObjectionListPage.objectionId}
+                className={`flex ${
+                  workoutConfirmationObjectionListPage.voteCompletion
+                    ? 'bg-[#F5F5F5]'
+                    : 'bg-[FFFFFF]'
+                } -mx-4 p-4`}
+              >
+                <Image
+                  src={objectionBellFill}
+                  alt='ogjectionBellFill'
+                  className={`${
+                    workoutConfirmationObjectionListPage.voteCompletion
+                      ? 'fill-gray-100'
+                      : 'fill-gray-900'
+                  }`}
+                />
+                <div className='text-[#1F2937] flex flex-col pl-5 gap-y-1'>
+                  <span className='text-base'>
+                    {workoutConfirmationObjectionListPage.targetWorkerNickname}
+                    님의 인증이 이의신청되었어요.
+                  </span>
+                  <span className='text-xs'>
+                    {' '}
+                    {workoutConfirmationObjectionListPage.createdAt.substring(
+                      0,
+                      10
+                    )}{' '}
+                  </span>
+                </div>
+              </div>
+            </Link>
+          );
+        }
+      )}
+      <div ref={ref} />
     </div>
   );
 }
