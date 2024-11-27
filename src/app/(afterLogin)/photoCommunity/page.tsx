@@ -58,29 +58,32 @@ export default function Page() {
       <div className="flex justify-center items-center font-galmuri text-xl font-medium -mt-7 mb-6">
         GYMMI Photo
       </div>
-      {chunkedPhotos.map((chunk, chunkIndex) => (
-        <div
-          key={chunkIndex}
-          className="grid grid-cols-2 gap-4 h-full mb-4 relative"
-        >
-          {chunk.map((photo, index) => (
-            <div
-              key={photo.photoId}
-              className={`${cssClasses[index]} relative`}
-            >
-              <Link href={`/photoCommunity/${photo.photoId}`}>
-                <Image
-                  src={photo.photoImageUrl}
-                  alt={`Photo ${photo.photoId}`}
-                  fill
-                  className="rounded-lg object-cover"
-                  loader={() => s3ImageLoader(photo.photoImageUrl)}
-                />
-              </Link>
-            </div>
-          ))}
-        </div>
-      ))}
+      <div className="mb-32">
+        {chunkedPhotos.map((chunk, chunkIndex) => (
+          <div
+            key={chunkIndex}
+            className="grid grid-cols-2 gap-4 h-full mb-4 relative"
+          >
+            {chunk.map((photo, index) => (
+              <div
+                key={photo.photoId}
+                className={`${cssClasses[index]} relative`}
+              >
+                <Link href={`/photoCommunity/${photo.photoId}`}>
+                  <Image
+                    src={photo.photoImageUrl}
+                    alt={`Photo ${photo.photoId}`}
+                    fill
+                    className="rounded-lg object-cover"
+                    loader={() => s3ImageLoader(photo.photoImageUrl)}
+                  />
+                </Link>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+
       <Link href={'/photoCommunity/register'}>
         <div className="fixed bottom-28 right-4 bg-[#3B82F6] rounded-full transform transition-transform duration-200 hover:scale-110 active:scale-95">
           <Image src={registerPhoto} alt="photo-register" />

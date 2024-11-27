@@ -9,7 +9,7 @@ import { useRef, useState } from 'react';
 import cancelPhoto from '@/../public/svgs/workspace/workout/cancelPhoto.svg';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
-import { s3PutPresifnedUrls } from '@/api/workout';
+
 import { postFeed, s3PutPresifnedUrlsPhoto } from '@/api/photoCommunity';
 
 export default function Page() {
@@ -46,7 +46,7 @@ export default function Page() {
 
       try {
         const res = await postFeed(imageUrl, comment);
-        console.log(res);
+
         if (res?.status === 200) {
           router.push(`/photoCommunity/${res.data.id}`);
         }

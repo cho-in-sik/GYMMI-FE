@@ -15,12 +15,14 @@ import { useWorkoutStore } from '@/hooks/useWorkout';
 import { Input } from '@/components/ui/input';
 import { s3PutPresifnedUrls, workout } from '@/api/workout';
 import { useParams, useRouter } from 'next/navigation';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 
 export default function Page() {
   const { workspaceId } = useParams();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [photoCheck, setPhotoCheck] = useState(false);
   const [comment, setComment] = useState('');
+  const [open, setOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<File | null>(null);
 
   const { workoutInfo } = useWorkoutStore();
@@ -63,7 +65,7 @@ export default function Page() {
         const workoutRes = await workout({ workspaceId: id, data });
         console.log(workoutRes);
         if (workoutRes.status === 200) {
-          router.push(`/workspace/${workspaceId}`);
+          setOpen(true);
         }
       } catch (error) {
         console.log(error);
@@ -188,6 +190,20 @@ export default function Page() {
           <span>인증 등록하기</span>
         </button>
       </div>
+      <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
+        <DialogContent className="w-9/12 rounded-lg h-36 font-yungothic">
+          <div className="text-center text-sm mt-4 mb-4">
+            운동 인증을 등록했어요!
+          </div>
+
+          <div
+            className="flex justify-around items-center border-t-[1px] -mx-6"
+            onClick={() => router.push(`/workspace/${workspaceId}`)}
+          >
+            <div className="text-main py-3 px-12">yes</div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
