@@ -1,5 +1,6 @@
 import customAxios from '@/utils/cutstomAxios';
 import axios from 'axios';
+import { Router } from 'next/router';
 
 export const getFeeds = async (pageNumber: any) => {
   try {
@@ -26,8 +27,11 @@ export const feedDetails = async (photoId: any) => {
     const res = await customAxios.get(`/photos/${photoId}`);
 
     return res.data;
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    if (error?.response?.data.errorCode === 'NOT_FOUND') {
+      window.location.href = '/photoCommunity';
+    }
+    console.log('error', error);
   }
 };
 

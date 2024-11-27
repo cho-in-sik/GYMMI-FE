@@ -43,10 +43,12 @@ export default function Page() {
   const photoIdString = Array.isArray(photoId) ? photoId[0] : photoId;
   const photoIdNumber = Number(photoIdString);
 
-  const { data } = useQuery<TPhotoDetail>({
+  const { data, isError } = useQuery<TPhotoDetail>({
     queryKey: ['photoDetails', photoIdNumber],
     queryFn: () => feedDetails(photoIdNumber),
   });
+
+  if (isError) router.push('/photoCommunity');
 
   const { like, toggleBookmark, count } = useHeart({
     id: photoIdNumber,
