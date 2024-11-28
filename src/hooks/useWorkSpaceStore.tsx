@@ -1,4 +1,4 @@
-import { IW, IWorkspaceInputs } from '@/types/\bworkSpace';
+import { IW, IWorkspaceInputs } from '@/types/workSpace';
 import { create } from 'zustand';
 
 const initialValue = {
