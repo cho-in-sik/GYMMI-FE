@@ -39,7 +39,6 @@ export default function Page() {
       return lastPage?.data.length === 0 ? undefined : allPages.length;
     },
   });
-  console.log(workoutConfirmation);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetching) {
@@ -53,7 +52,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className='h-max px-4 -mt-3 pb-3 bg-[#F1F7FF]'>
+      <div className='h-max -mt-3 -mx-4 px-4 pb-3 bg-[#F1F7FF]'>
         {/* <ObjectionBell
           voteInCompeletionCount={
             workoutConfirmationPages.voteInCompeletionCount
@@ -219,15 +218,15 @@ export default function Page() {
             );
           }
         )}
+        {isFetching && (
+          <div className='h-[700px] flex flex-col items-center justify-center bg-[#F1F7FF]'>
+            <Image src={noGroup} alt='noGroup' className='h-[73px]' />
+            <span className='text-[#4B5563] text-sm mt-5'>
+              인증 목록을 불러오는 중입니다.
+            </span>
+          </div>
+        )}
       </div>
-      {isFetching && (
-        <div className='flex flex-col items-center justify-center bg-[#F1F7FF]'>
-          <Image src={noGroup} alt='noGroup' className='h-[73px]' />
-          <span className='text-[#4B5563] text-sm mt-5'>
-            인증 목록을 불러오는 중입니다.
-          </span>
-        </div>
-      )}
       <div ref={ref} style={{ height: 10 }} />
     </div>
   );

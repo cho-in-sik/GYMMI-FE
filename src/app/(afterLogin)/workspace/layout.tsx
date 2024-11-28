@@ -23,12 +23,7 @@ export default function Layout({ children }: Props) {
 
   return (
     <div className='h-full'>
-      <div
-        // className={`px-4 pt-12 ${
-        //   pathName.includes('/workout') ? 'bg-white' : 'bg-custom-gradient2'
-        // }  h-full`}
-        className='px-4 pt-12'
-      >
+      <div className='px-4 pt-12'>
         <div className='flex justify-between'>
           <BackArrow />
           <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
