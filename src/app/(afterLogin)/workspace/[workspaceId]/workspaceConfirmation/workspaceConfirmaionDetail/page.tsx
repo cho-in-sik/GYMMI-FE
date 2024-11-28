@@ -29,6 +29,7 @@ import {
 } from '@/api/workspaceConfirmaion';
 import { useEffect, useState } from 'react';
 import RemaineTime from './_components/RemaineTime';
+import { imageLoader } from '@/utils/image';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -150,8 +151,10 @@ export default function Page() {
           <Image
             src={workspaceConfirmationDetail?.data.profileImageUrl}
             alt='userProfileIcon'
-            className='w-11 h-11'
-            loader={({ src }) => src}
+            className='w-11 h-11 rounded-full'
+            loader={() =>
+              imageLoader(workspaceConfirmationDetail?.data.profileImageUrl)
+            }
             width={30}
             height={30}
           />

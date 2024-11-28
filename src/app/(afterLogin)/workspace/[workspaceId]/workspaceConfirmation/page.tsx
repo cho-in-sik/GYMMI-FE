@@ -12,6 +12,7 @@ import objectionBell from '@/../public/svgs/workspace/workspaceConfirmaion/objec
 
 import { workoutConfirmations } from '@/api/workspaceConfirmaion';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import { imageLoader } from '@/utils/image';
 
 interface IworkoutConfirmtionPageProps {
   createdAt: string;
@@ -172,9 +173,12 @@ export default function Page() {
                       <Image
                         src={workoutConfirmationPage.profileImageUrl}
                         alt='profileIcon'
-                        loader={({ src }) => src}
+                        loader={() =>
+                          imageLoader(workoutConfirmationPage.profileImageUrl)
+                        }
                         width={30}
                         height={30}
+                        className='w-10 h-10 rounded-full'
                       />
                     )}
 
