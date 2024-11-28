@@ -39,6 +39,7 @@ export default function Page() {
       return lastPage?.data.length === 0 ? undefined : allPages.length;
     },
   });
+  console.log(workoutConfirmation);
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetching) {
@@ -53,7 +54,11 @@ export default function Page() {
   return (
     <div>
       <div className='h-max px-4 -mt-3 pb-3 bg-[#F1F7FF]'>
-        <ObjectionBell />
+        {/* <ObjectionBell
+          voteInCompeletionCount={
+            workoutConfirmationPages.voteInCompeletionCount
+          }
+        /> */}
         {workoutConfirmationPages?.map(
           (
             workoutConfirmationPage: IWorkoutConfirmationPageProps,
