@@ -1,4 +1,4 @@
-import { IWorkspace, IWorkspaceDetail } from '@/types/\bworkSpace';
+import { IWorkspace, IWorkspaceDetail } from '@/types/workSpace';
 import { faker } from '@faker-js/faker';
 
 //워크스페이스 목록
