@@ -172,7 +172,7 @@ export default function Page() {
         <span className='text-base text-[#1F2937]'>
           {workspaceConfirmationDetail?.data.comment}
         </span>
-        <div className='w-[360px] h-[360px] bg-[#E5E7EB] mt-5 flex justify-center'>
+        <div className='w-full h-[380px] bg-[#E5E7EB] mt-5 flex justify-center relative'>
           {workspaceConfirmationDetail?.data.workoutConfirmationImageUrl ===
           '' ? (
             <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
@@ -183,8 +183,8 @@ export default function Page() {
               }
               alt='Image'
               loader={({ src }) => src}
-              width={360}
-              height={360}
+              fill
+              sizes='360px'
             />
           )}
         </div>
@@ -195,7 +195,7 @@ export default function Page() {
         {isObjection ? (
           <div
             className={
-              ' w-[360px] h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'
+              ' w-full h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'
             }
           >
             <DialogTrigger asChild>
@@ -206,7 +206,7 @@ export default function Page() {
           </div>
         ) : (
           <div
-            className={`w-[360px] ${
+            className={`w-full ${
               !workoutObjection?.data.inInProgress ? 'h-44' : 'h-64'
             } border border-[#E5E7EB] rounded-lg p-3`}
           >
