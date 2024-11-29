@@ -22,7 +22,7 @@ export default function Layout({ children }: Props) {
   const currentSegment = segments[segments.length - 1];
 
   return (
-    <div className='h-full'>
+    <div>
       <div className='px-4 pt-12'>
         <div className='flex justify-between'>
           <BackArrow />
@@ -43,7 +43,16 @@ export default function Layout({ children }: Props) {
           <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
         </nav>
       </div>
-      <div className='px-4'>{children}</div>
+      <div
+        className={`px-4 ${
+          pathName.includes('/workout') ||
+          pathName.includes('workspaceConfirmation')
+            ? 'bg-white'
+            : 'bg-custom-gradient2'
+        }`}
+      >
+        {children}
+      </div>
     </div>
   );
 }

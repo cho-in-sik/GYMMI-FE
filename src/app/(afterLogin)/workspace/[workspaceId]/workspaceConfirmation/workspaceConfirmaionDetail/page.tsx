@@ -143,7 +143,7 @@ export default function Page() {
   }
 
   return (
-    <div className='h-screen -mx-4 px-4'>
+    <div className='h-screen'>
       <div className='flex ml-1 mt-1.5'>
         {workspaceConfirmationDetail?.data.profileImageUrl === 'default.png' ? (
           <Image src={profileIcon} alt='profileIcon' className='w-11 h-11' />

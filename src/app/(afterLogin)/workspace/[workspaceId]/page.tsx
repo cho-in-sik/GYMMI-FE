@@ -114,7 +114,7 @@ export default function Page() {
   };
 
   return (
-    <div className='h-screen bg-custom-gradient2 -mx-4 px-4'>
+    <div className='h-screen'>
       <Dialog open={isOpen} onOpenChange={handleModalChange}>
         <DialogContent className='w-4/6 rounded-lg'>
           <DialogDescription>

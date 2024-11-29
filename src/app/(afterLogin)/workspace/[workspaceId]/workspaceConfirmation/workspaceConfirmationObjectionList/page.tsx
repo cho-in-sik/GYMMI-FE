@@ -55,7 +55,7 @@ export default function Page() {
     workoutConfirmationObjectionList?.pages.flatMap((pages) => pages.data);
 
   return (
-    <div className='h-max -mx-4 px-4 pb-3'>
+    <div className='h-max pb-3'>
       <span className='text-2xl text-[#374151]'>이의 신청 알림 목록</span>
       <hr className='border-1 border-[#E5E7EB] w-screen -mx-4 mt-6' />
       <div className='flex my-4'>

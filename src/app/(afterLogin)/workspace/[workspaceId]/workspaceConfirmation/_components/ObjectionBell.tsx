@@ -14,19 +14,15 @@ export default function ObjectionBell() {
       href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`}
     >
       <div className=' fixed bottom-10 right-10 z-50'>
-        {/* {voteInCompeletionCount === 0 ? (
-          <Image
-            src={objectionBell}
-            alt='objectionBell'
-            className='w-14 h-14'
-          />
-        ) : (
-          <Image
+        {/* {voteInCompeletionCount === 0 ? ( */}
+        <Image src={objectionBell} alt='objectionBell' className='w-14 h-14' />
+        {/* ) : ( */}
+        {/* <Image
             src={objectionBellFilled}
             alt='objectionBellFilled'
             className='w-14 h-14'
-          />
-        )} */}
+          /> */}
+        {/* )} */}
       </div>
     </Link>
   );

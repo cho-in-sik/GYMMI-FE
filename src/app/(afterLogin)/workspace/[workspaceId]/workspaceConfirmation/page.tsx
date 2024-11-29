@@ -39,7 +39,6 @@ export default function Page() {
       return lastPage?.data.length === 0 ? undefined : allPages.length;
     },
   });
-
   useEffect(() => {
     if (inView && hasNextPage && !isFetching) {
       fetchNextPage();
@@ -51,13 +50,9 @@ export default function Page() {
   );
 
   return (
-    <div>
-      <div className='h-max -mt-3 -mx-4 px-4 pb-3 bg-[#F1F7FF]'>
-        {/* <ObjectionBell
-          voteInCompeletionCount={
-            workoutConfirmationPages.voteInCompeletionCount
-          }
-        /> */}
+    <div className='h-max'>
+      <div className='-mx-4 px-4 -mt-3 pb-3 bg-[#F1F7FF]'>
+        <ObjectionBell />
         {workoutConfirmationPages?.map(
           (
             workoutConfirmationPage: IWorkoutConfirmationPageProps,
