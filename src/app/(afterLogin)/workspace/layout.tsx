@@ -33,14 +33,23 @@ export default function Layout({ children }: Props) {
           </Link>
         </div>
         <nav className='my-3'>
-          <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
-          <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
-            <NavbarItems
-              workspaceId={workspaceId}
-              currentSegment={currentSegment}
-            />
-          </ul>
-          <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+          {currentSegment !== 'workspaceConfirmationObjectionList' && (
+            <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+          )}
+          {currentSegment === 'workspaceConfirmaionDetail' ||
+          currentSegment === 'workspaceConfirmationObjectionList' ? (
+            <></>
+          ) : (
+            <>
+              <ul className='flex text-sm gap-x-11 sm:gap-x-8 lg:gap-x-12 justify-center my-2.5 text-[#E5E7EB]'>
+                <NavbarItems
+                  workspaceId={workspaceId}
+                  currentSegment={currentSegment}
+                />
+              </ul>
+              <hr className='border-1 border-[#E5E7EB] w-screen -mx-4' />
+            </>
+          )}
         </nav>
       </div>
       <div
