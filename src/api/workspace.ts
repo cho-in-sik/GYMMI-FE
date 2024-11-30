@@ -1,5 +1,5 @@
 import { workspace } from '@/constants/queryKey';
-import { IWorkspaceInputs } from '@/types/\bworkSpace';
+import { IWorkspaceInputs } from '@/types/workSpace';
 import customAxios from '@/utils/cutstomAxios';
 
 type SearchProps = {
@@ -52,7 +52,7 @@ const allWorkspaces = async ({ type, keyword = '', page = 0 }: SearchProps) => {
     type = '';
   }
   const res = await customAxios.get(
-    `/workspaces?status=${type}&keyword=${keyword}&page=${page}`
+    `/workspaces?status=${type}&keyword=${keyword}&page=${page}`,
   );
 
   return res;
@@ -66,7 +66,7 @@ const createWorkspace = async (data: any) => {
 const matchPassword = async ({ workspaceId, password }: PasswordCheck) => {
   const res = await customAxios.post(
     `/workspaces/${workspaceId}/match-password`,
-    { password }
+    { password },
   );
 
   return res;
@@ -80,7 +80,7 @@ const joinWorkspace = async ({
   const formData = { password, task };
   const res = await customAxios.post(
     `/workspaces/${workspaceId}/join`,
-    formData
+    formData,
   );
   return res;
 };
@@ -115,7 +115,7 @@ const missionsWorkspace = async (workspaceId: number) => {
 
 const missionsRecord = async ({ workspaceId, userId }: MissionRecord) => {
   const res = await customAxios.get(
-    `/workspaces/${workspaceId}/workings/${userId}`
+    `/workspaces/${workspaceId}/workings/${userId}`,
   );
   return res;
 };
@@ -148,7 +148,7 @@ const workspaceHistorys = async ({
   userId,
 }: TWorkspaceHistory) => {
   const res = customAxios.get(
-    `/workspaces/${workspaceId}/workout-context/${userId}`
+    `/workspaces/${workspaceId}/workout-context/${userId}`,
   );
   return res;
 };
@@ -160,7 +160,7 @@ const historyDetails = async ({
   workoutHistoryId,
 }: THistoryDetail) => {
   const res = customAxios.get(
-    `/workspaces/${workspaceId}/workout-histories/${userId}/${workoutHistoryId}`
+    `/workspaces/${workspaceId}/workout-histories/${userId}/${workoutHistoryId}`,
   );
   return res;
 };

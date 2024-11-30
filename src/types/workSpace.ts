@@ -91,17 +91,17 @@ export interface IInfoWorkData {
   workers: IWorker[];
 }
 
-interface IWorkoutHistory {
+type TWorkoutHistory = {
   id: number;
   isApproved: string;
   createdAt: string;
   sumOfScore: number;
-}
+};
 
-export interface IWorkspaceHistory {
+export type TWorkspaceHistory = {
   totalContributedScore: number;
   bestDailyScore: number;
   totalWorkoutCount: number;
-  scoreGapFromFirst: number;
-  workoutHistories: IWorkoutHistory[];
-}
+  gabScoreFromFirst: number;
+  workoutHistories: TWorkoutHistory[];
+};

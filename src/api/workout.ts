@@ -7,7 +7,7 @@ type TBookmark = {
 };
 
 type TWorkout = {
-  workspaceId: any;
+  workspaceId: number;
   data: {};
 };
 
@@ -35,13 +35,14 @@ const s3GetPresignedUrls = async () => {
 
   return res;
 };
-
 const s3PutPresifnedUrls = async (file: File) => {
   try {
     const {
       data: { imageUrl, presignedUrl },
     } = await s3GetPresignedUrls();
+
     const res = await axios.put(presignedUrl, file, {});
+
     if (res.status === 200) {
       return imageUrl;
     }
