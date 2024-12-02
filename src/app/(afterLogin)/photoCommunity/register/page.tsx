@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 
 import { postFeed, s3PutPresifnedUrlsPhoto } from '@/api/photoCommunity';
+import { compressingImage } from '@/utils/image/compressingImage';
 
 export default function Page() {
   const router = useRouter();
@@ -19,10 +20,12 @@ export default function Page() {
   const [comment, setComment] = useState('');
   const [imagePreview, setImagePreview] = useState<File | null>(null);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagePreview(file);
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+
+    const compressedImage = await compressingImage(e);
+    if (compressedImage) {
+      setImagePreview(compressedImage);
     }
   };
 
