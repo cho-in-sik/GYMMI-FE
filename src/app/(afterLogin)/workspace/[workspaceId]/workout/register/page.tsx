@@ -19,11 +19,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { compressingImage } from '@/utils/image/compressingImage';
 import ButtonLoading from '@/app/(afterLogin)/_components/ButtonLoading';
 import { AxiosError } from 'axios';
-
-interface MyErrorResponse {
-  errorCode: string;
-  message: string;
-}
+import { MyErrorResponse } from '@/types/error';
 
 export default function Page() {
   const { workspaceId } = useParams();

@@ -12,6 +12,9 @@ import { useRouter } from 'next/navigation';
 
 import { postFeed, s3PutPresifnedUrlsPhoto } from '@/api/photoCommunity';
 import { compressingImage } from '@/utils/image/compressingImage';
+import { AxiosError } from 'axios';
+import { MyErrorResponse } from '@/types/error';
+import ButtonLoading from '../../_components/ButtonLoading';
 
 export default function Page() {
   const router = useRouter();
@@ -19,6 +22,7 @@ export default function Page() {
 
   const [comment, setComment] = useState('');
   const [imagePreview, setImagePreview] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files?.length) return;
@@ -44,6 +48,7 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
+    setIsLoading(true);
     if (imagePreview) {
       const imageUrl = await s3PutPresifnedUrlsPhoto(imagePreview);
 
@@ -53,8 +58,19 @@ export default function Page() {
         if (res?.status === 200) {
           router.push(`/photoCommunity/${res.data.id}`);
         }
+        setIsLoading(false);
       } catch (error) {
+        setIsLoading(false);
         console.log(error);
+        const axiosError = error as AxiosError<MyErrorResponse>;
+        if (axiosError.response?.data?.errorCode === 'INVALID_STATE') {
+          alert('에러!');
+        } else {
+          alert(
+            axiosError?.response?.data?.message ||
+              '알 수 없는 에러가 발생했습니다.',
+          );
+        }
       }
     } else {
       alert('이미지를 등록해주세요!');
@@ -130,9 +146,9 @@ export default function Page() {
                imagePreview ? 'bg-main text-white' : 'text-main bg-[#EFF6FF]'
              }`}
           onClick={handleSubmit}
-          disabled={imagePreview ? false : true}
+          disabled={imagePreview ? false : true || isLoading}
         >
-          <span>업로드하기</span>
+          {isLoading ? <ButtonLoading /> : <span>업로드하기</span>}
         </button>
       </div>
     </div>
