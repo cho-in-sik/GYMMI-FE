@@ -17,6 +17,13 @@ import { s3PutPresifnedUrls, workout } from '@/api/workout';
 import { useParams, useRouter } from 'next/navigation';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { compressingImage } from '@/utils/image/compressingImage';
+import ButtonLoading from '@/app/(afterLogin)/_components/ButtonLoading';
+import { AxiosError } from 'axios';
+
+interface MyErrorResponse {
+  errorCode: string;
+  message: string;
+}
 
 export default function Page() {
   const { workspaceId } = useParams();
@@ -25,6 +32,8 @@ export default function Page() {
   const [comment, setComment] = useState('');
   const [open, setOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<File | null>(null);
+
+  const [loading, setLoading] = useState(false);
 
   const { workoutInfo } = useWorkoutStore();
 
@@ -54,6 +63,7 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
+    setLoading(true);
     if (imagePreview) {
       const imageUrl = await s3PutPresifnedUrls(imagePreview);
 
@@ -67,10 +77,21 @@ export default function Page() {
       try {
         const workoutRes = await workout({ workspaceId: id, data });
         console.log(workoutRes);
+        setLoading(false);
         if (workoutRes.status === 200) {
           setOpen(true);
         }
       } catch (error) {
+        setLoading(false);
+        const axiosError = error as AxiosError<MyErrorResponse>;
+        if (axiosError.response?.data?.errorCode === 'INVALID_STATE') {
+          alert('일일 가능한 운동을 초과했어요!');
+        } else {
+          alert(
+            axiosError?.response?.data?.message ||
+              '알 수 없는 에러가 발생했습니다.',
+          );
+        }
         console.log(error);
       }
     } else {
@@ -189,8 +210,9 @@ export default function Page() {
           className={`py-3 w-[90%] bg-main text-white
              rounded-full flex justify-center items-center text-base`}
           onClick={handleSubmit}
+          disabled={loading}
         >
-          <span>인증 등록하기</span>
+          {loading ? <ButtonLoading /> : <span>인증 등록하기</span>}
         </button>
       </div>
       <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
