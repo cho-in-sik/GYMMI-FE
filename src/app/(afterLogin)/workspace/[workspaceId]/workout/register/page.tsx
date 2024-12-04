@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { s3PutPresifnedUrls, workout } from '@/api/workout';
 import { useParams, useRouter } from 'next/navigation';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { compressingImage } from '@/utils/image/compressingImage';
 
 export default function Page() {
   const { workspaceId } = useParams();
@@ -29,10 +30,12 @@ export default function Page() {
 
   const router = useRouter();
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImagePreview(file);
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+
+    const compressedImage = await compressingImage(e);
+    if (compressedImage) {
+      setImagePreview(compressedImage);
     }
   };
 
