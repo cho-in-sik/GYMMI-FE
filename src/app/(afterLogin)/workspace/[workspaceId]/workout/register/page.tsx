@@ -33,7 +33,7 @@ export default function Page() {
   const [open, setOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState<File | null>(null);
 
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { workoutInfo } = useWorkoutStore();
 
@@ -63,7 +63,7 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
+    setIsLoading(true);
     if (imagePreview) {
       const imageUrl = await s3PutPresifnedUrls(imagePreview);
 
@@ -77,12 +77,12 @@ export default function Page() {
       try {
         const workoutRes = await workout({ workspaceId: id, data });
         console.log(workoutRes);
-        setLoading(false);
+        setIsLoading(false);
         if (workoutRes.status === 200) {
           setOpen(true);
         }
       } catch (error) {
-        setLoading(false);
+        setIsLoading(false);
         const axiosError = error as AxiosError<MyErrorResponse>;
         if (axiosError.response?.data?.errorCode === 'INVALID_STATE') {
           alert('일일 가능한 운동을 초과했어요!');
@@ -210,9 +210,9 @@ export default function Page() {
           className={`py-3 w-[90%] bg-main text-white
              rounded-full flex justify-center items-center text-base`}
           onClick={handleSubmit}
-          disabled={loading}
+          disabled={isLoading}
         >
-          {loading ? <ButtonLoading /> : <span>인증 등록하기</span>}
+          {isLoading ? <ButtonLoading /> : <span>인증 등록하기</span>}
         </button>
       </div>
       <Dialog open={open} onOpenChange={(open) => setOpen(open)}>
