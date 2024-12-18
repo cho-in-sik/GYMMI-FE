@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
 import { workoutConfirmations } from '@/api/workspaceConfirmaion';
@@ -11,38 +9,19 @@ import { IWorkoutConfirmationPageProps } from '@/types/workoutConfirmation';
 import ObjectionBell from './_components/ObjectionBell';
 import IsSameDateAsPrevious from './_components/IsSameDataAsPrevious';
 import ConfirmationCompo from './_components/ConfirmationCompo';
+import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
 
   const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
-  // 커스텀 훅으로 분리하기
-  const {
-    data: workoutConfirmation,
-    fetchNextPage,
-    hasNextPage,
-    isFetching,
-  } = useInfiniteQuery({
+  const workoutConfirmation = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId],
-    queryFn: async ({ pageParam = 0 }) => {
-      const data = await workoutConfirmations({
-        workspaceId,
-        page: pageParam,
-      });
-      return data;
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage?.data.length === 0 ? undefined : allPages.length;
-    },
+    dataReqFn: workoutConfirmations,
+    params: { workspaceId },
+    inView,
   });
-
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetching) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetching, fetchNextPage]);
 
   const workoutConfirmationPages = workoutConfirmation?.pages.flatMap(
     (pages) => pages.data

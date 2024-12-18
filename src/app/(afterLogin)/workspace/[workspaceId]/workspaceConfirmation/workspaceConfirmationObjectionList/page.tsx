@@ -1,15 +1,16 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
+import { useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ObjectionListButton from './_components/ObjectionListButton';
 import objectionBellFill from '@/../public/svgs/workspace/workspaceConfirmaion/objectionBellFill.svg';
+
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
-import { useInfiniteQuery } from '@tanstack/react-query';
+import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
 import { workoutConfirmationObjectionLists } from '@/api/workspaceConfirmaion';
-import { useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import Link from 'next/link';
 
 interface workoutConfirmationObjectionListPageProps {
   createdAt: string;
@@ -24,32 +25,12 @@ export default function Page() {
   const [statusButton, setStatusButton] = useState('open');
   const [ref, inView] = useInView();
 
-  const {
-    data: workoutConfirmationObjectionList,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const workoutConfirmationObjectionList = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId, statusButton],
-    queryFn: async ({ pageParam = 0 }) => {
-      const data = await workoutConfirmationObjectionLists({
-        workspaceId,
-        page: pageParam,
-        status: statusButton,
-      });
-      return data;
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      return lastPage?.data.nextPage ? lastPage?.data.nextPage : undefined;
-    },
+    dataReqFn: workoutConfirmationObjectionLists,
+    params: { workspaceId, status: statusButton },
+    inView,
   });
-  console.log(workoutConfirmationObjectionList);
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const workoutConfirmationObjectionListPages =
     workoutConfirmationObjectionList?.pages.flatMap((pages) => pages.data);
@@ -127,7 +108,7 @@ export default function Page() {
           );
         }
       )}
-      <div ref={ref} />
+      <div ref={ref} style={{ height: 10 }} />
     </div>
   );
 }
