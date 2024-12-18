@@ -13,7 +13,7 @@ export default function ObjectionBell() {
     <Link
       href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`}
     >
-      <div className=' fixed bottom-10 right-10 z-50'>
+      <div className=' fixed bottom-14 right-2 z-50'>
         {/* {voteInCompeletionCount === 0 ? ( */}
         <Image src={objectionBell} alt='objectionBell' className='w-14 h-14' />
         {/* ) : ( */}
