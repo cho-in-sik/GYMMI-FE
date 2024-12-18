@@ -7,19 +7,20 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
 import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
-import noGroup from '@/../public/svgs/noGroup.svg';
 
 import { workoutConfirmations } from '@/api/workspaceConfirmaion';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import { imageLoader } from '@/utils/image';
 import { IWorkoutConfirmationPageProps } from '@/types/workoutConfirmation';
 import ObjectionBell from './_components/ObjectionBell';
+import IsSameDateAsPrevious from './_components/IsSameDataAsPrevious';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
 
   const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
+  // 커스텀 훅으로 분리하기
   const {
     data: workoutConfirmation,
     fetchNextPage,
@@ -39,6 +40,7 @@ export default function Page() {
       return lastPage?.data.length === 0 ? undefined : allPages.length;
     },
   });
+
   useEffect(() => {
     if (inView && hasNextPage && !isFetching) {
       fetchNextPage();
@@ -58,28 +60,18 @@ export default function Page() {
             workoutConfirmationPage: IWorkoutConfirmationPageProps,
             index: number
           ) => {
-            const isSameDateAsPrevious =
-              index > 0 &&
-              workoutConfirmationPages[index - 1]?.createdAt.substring(
-                0,
-                10
-              ) === workoutConfirmationPage.createdAt.substring(0, 10);
             return (
               <div
                 key={`${workoutConfirmationPage.workoutConfirmationId}-${
                   workoutConfirmationPage.objectionId || 'noObjection'
                 }-${workoutConfirmationPage.createdAt}`}
               >
-                {!isSameDateAsPrevious && (
-                  <div className='flex justify-center'>
-                    <div className='w-20 h-5 my-3 bg-[#F9FAFB] rounded flex justify-center'>
-                      <span className='text-[10px] text-[#4B5563]'>
-                        {workoutConfirmationPage.createdAt.substring(0, 10)}
-                      </span>
-                    </div>
-                  </div>
-                )}
-
+                {/* 운동 인증에서 같은 날짜의 운동들 & 날짜 컴포넌트 */}
+                <IsSameDateAsPrevious
+                  workoutConfirmationPages={workoutConfirmationPages}
+                  workoutConfirmationPage={workoutConfirmationPage}
+                  index={index}
+                />
                 {workoutConfirmationPage.isMine ? (
                   <div className='my-10'>
                     <div className='ml-10 mt-1 flex justify-end'>
@@ -115,7 +107,7 @@ export default function Page() {
                             </span>
                             <div className='flex gap-x-2 mt-1'>
                               <div className='w-[105px] h-[105px] flex items-center justify-center relative'>
-                                <Image
+                                {/* <Image
                                   src={
                                     workoutConfirmationPage.workoutConfirmationImageUrl
                                   }
@@ -124,7 +116,7 @@ export default function Page() {
                                   fill
                                   sizes='105px'
                                   className='object-cover'
-                                />
+                                /> */}
                               </div>
                               <div className='flex items-end'>...</div>
                             </div>
@@ -186,7 +178,7 @@ export default function Page() {
                             </span>
                             <div className='flex gap-x-2 mt-1'>
                               <div className='w-[105px] h-[105px] flex items-center relative'>
-                                <Image
+                                {/* <Image
                                   src={
                                     workoutConfirmationPage.workoutConfirmationImageUrl
                                   }
@@ -194,7 +186,7 @@ export default function Page() {
                                   loader={({ src }) => src}
                                   fill
                                   className='object-cover'
-                                />
+                                /> */}
                               </div>
                               <div className='flex items-end'>...</div>
                             </div>
@@ -212,14 +204,6 @@ export default function Page() {
               </div>
             );
           }
-        )}
-        {isFetching && (
-          <div className='h-[700px] flex flex-col items-center justify-center bg-[#F1F7FF]'>
-            <Image src={noGroup} alt='noGroup' className='h-[73px]' />
-            <span className='text-[#4B5563] text-sm mt-5'>
-              인증 목록을 불러오는 중입니다.
-            </span>
-          </div>
         )}
       </div>
       <div ref={ref} style={{ height: 10 }} />
