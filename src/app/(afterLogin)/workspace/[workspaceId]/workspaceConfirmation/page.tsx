@@ -1,17 +1,13 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { useEffect } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useInView } from 'react-intersection-observer';
 
-import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
-
 import { workoutConfirmations } from '@/api/workspaceConfirmaion';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
-import { imageLoader } from '@/utils/image';
 import { IWorkoutConfirmationPageProps } from '@/types/workoutConfirmation';
+
 import ObjectionBell from './_components/ObjectionBell';
 import IsSameDateAsPrevious from './_components/IsSameDataAsPrevious';
 import ConfirmationCompo from './_components/ConfirmationCompo';
@@ -51,7 +47,6 @@ export default function Page() {
   const workoutConfirmationPages = workoutConfirmation?.pages.flatMap(
     (pages) => pages.data
   );
-  console.log(workoutConfirmationPages);
 
   return (
     <div className='h-max'>
@@ -74,6 +69,7 @@ export default function Page() {
                   workoutConfirmationPage={workoutConfirmationPage}
                   index={index}
                 />
+                {/* 이의신청 컴포넌트 */}
                 <ConfirmationCompo
                   workoutConfirmationPage={workoutConfirmationPage}
                   workspaceId={workspaceId}
