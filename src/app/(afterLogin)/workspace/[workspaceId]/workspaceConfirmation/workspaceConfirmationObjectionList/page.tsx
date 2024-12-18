@@ -1,24 +1,14 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import ObjectionListButton from './_components/ObjectionListButton';
-import objectionBellFill from '@/../public/svgs/workspace/workspaceConfirmaion/objectionBellFill.svg';
 
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
 import { workoutConfirmationObjectionLists } from '@/api/workspaceConfirmaion';
-
-interface workoutConfirmationObjectionListPageProps {
-  createdAt: string;
-  objectionId: number;
-  targetWorkerNickname: string;
-  voteCompletion: boolean;
-  workoutConfirmationId: number;
-}
+import WorkoutConfirmationObjectionList from './_components/WorkoutConfirmationObjectionList';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
@@ -51,63 +41,12 @@ export default function Page() {
           isClick={statusButton === 'incompletion'}
         />
       </div>
-      {workoutConfirmationObjectionListPages?.map(
-        (
-          workoutConfirmationObjectionListPage: workoutConfirmationObjectionListPageProps
-        ) => {
-          return (
-            <div
-              key={workoutConfirmationObjectionListPage.objectionId}
-              className={`${
-                workoutConfirmationObjectionListPage.voteCompletion
-                  ? 'bg-[#F5F5F5]'
-                  : 'bg-[FFFFFF]'
-              } -mx-4 p-4`}
-            >
-              <Link
-                href={{
-                  pathname: `/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmaionDetail`,
-                  query: {
-                    workoutConfirmationId:
-                      workoutConfirmationObjectionListPage.workoutConfirmationId,
-                    isObjection:
-                      workoutConfirmationObjectionListPage.objectionId !== null,
-                    objectionId:
-                      workoutConfirmationObjectionListPage.objectionId,
-                  },
-                }}
-              >
-                <div className='flex'>
-                  <Image
-                    src={objectionBellFill}
-                    alt='ogjectionBellFill'
-                    className={`${
-                      workoutConfirmationObjectionListPage.voteCompletion
-                        ? 'fill-gray-100'
-                        : 'fill-gray-900'
-                    }`}
-                  />
-                  <div className='text-[#1F2937] flex flex-col pl-5 gap-y-1'>
-                    <span className='text-base'>
-                      {
-                        workoutConfirmationObjectionListPage.targetWorkerNickname
-                      }
-                      님의 인증이 이의신청되었어요.
-                    </span>
-                    <span className='text-xs'>
-                      {' '}
-                      {workoutConfirmationObjectionListPage.createdAt.substring(
-                        0,
-                        10
-                      )}{' '}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          );
+      <WorkoutConfirmationObjectionList
+        workoutConfirmationObjectionListPages={
+          workoutConfirmationObjectionListPages
         }
-      )}
+        workspaceId={workspaceId}
+      />
       <div ref={ref} style={{ height: 10 }} />
     </div>
   );
