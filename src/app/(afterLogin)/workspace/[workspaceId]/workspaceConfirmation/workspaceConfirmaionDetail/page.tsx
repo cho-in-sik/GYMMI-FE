@@ -13,7 +13,6 @@ import {
 } from '@/components/ui/dialog';
 
 import objectedWorkoutVoteIcon from '@/../public/svgs/workspace/workspaceConfirmaion/objectedWorkoutVoteIcon.svg';
-import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
 import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaion/confirmDetailNoImage.svg';
 
 import ProgressBar from './_components/ProgressBar';
@@ -27,9 +26,9 @@ import {
   workoutObjections,
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import RemaineTime from './_components/RemaineTime';
-import { imageLoader } from '@/utils/image';
+import ConfirmationProfileImg from '../_components/ConfirmationProfileImg';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -145,20 +144,11 @@ export default function Page() {
   return (
     <div className='h-screen'>
       <div className='flex ml-1 mt-1.5'>
-        {workspaceConfirmationDetail?.data.profileImageUrl === 'default.png' ? (
-          <Image src={profileIcon} alt='profileIcon' className='w-11 h-11' />
-        ) : (
-          <Image
-            src={workspaceConfirmationDetail?.data.profileImageUrl}
-            alt='userProfileIcon'
-            className='w-11 h-11 rounded-full'
-            loader={() =>
-              imageLoader(workspaceConfirmationDetail?.data.profileImageUrl)
-            }
-            width={30}
-            height={30}
-          />
-        )}
+        <ConfirmationProfileImg
+          profileImageUrlParams={
+            workspaceConfirmationDetail?.data.profileImageUrl
+          }
+        />
         <div className='flex flex-col ml-3 mt-1'>
           <span className='text-base text-[#1F2937]'>
             {workspaceConfirmationDetail?.data.nickname}
