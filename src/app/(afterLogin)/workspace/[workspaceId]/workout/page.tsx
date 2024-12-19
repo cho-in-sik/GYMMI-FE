@@ -100,7 +100,7 @@ export default function Page() {
 
   return (
     <div>
-      <div className='flex justify-start items-center text-xs gap-2 mb-4'>
+      <div className="flex justify-start items-center text-xs gap-2 mb-4">
         <div
           className={`${
             bookmark === 'all'
@@ -124,18 +124,18 @@ export default function Page() {
       </div>
 
       <Drawer open={open} onOpenChange={setOpen}>
-        <div className='w-full flex flex-col justify-center items-center gap-2'>
+        <div className="w-full flex flex-col justify-center items-center gap-2">
           {data?.length === 0 ? (
-            <div className='flex justify-center items-center flex-col absolute inset-0 transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2'>
-              <Image src={noBookmark} alt='no-bookmark' />
-              <span className='text-sm text-[#4B5563] font-normal mt-5'>
+            <div className="flex justify-center items-center flex-col absolute inset-0 transform -translate-y-1/2 -translate-x-1/2 top-1/2 left-1/2">
+              <Image src={noBookmark} alt="no-bookmark" />
+              <span className="text-sm text-[#4B5563] font-normal mt-5">
                 아직 즐겨찾기한 운동이 없어요.
               </span>
             </div>
           ) : (
             data?.map((item: TMission) => (
               <div
-                className='w-full h-16 py-3 px-4 rounded-lg bg-[#FEFCE8] flex justify-between items-center'
+                className="w-full h-16 py-3 px-4 rounded-lg bg-[#FEFCE8] flex justify-between items-center"
                 key={item.id}
                 onClick={() => {
                   setOpen(true);
@@ -143,9 +143,9 @@ export default function Page() {
                   setActiveNumber(getMissionCount(item.id));
                 }}
               >
-                <div className='flex flex-col'>
-                  <h3 className='text-base'>{item.mission}</h3>
-                  <span className='text-xs font-normal'>{`${item.score}점`}</span>
+                <div className="flex flex-col">
+                  <h3 className="text-base">{item.mission}</h3>
+                  <span className="text-xs font-normal">{`${item.score}점`}</span>
                 </div>
 
                 <div>
@@ -153,7 +153,7 @@ export default function Page() {
                     <button>
                       <Image
                         src={isMissionCompleted(item.id) ? filledCheck : plus}
-                        alt='icon'
+                        alt="icon"
                       />
                     </button>
                   </DrawerTrigger>
@@ -163,19 +163,19 @@ export default function Page() {
           )}
         </div>
         <DrawerContent>
-          <div className='w-full max-w-sm'>
+          <div className="w-full max-w-sm">
             <DrawerHeader>
-              <div className='flex justify-between'>
-                <DrawerTitle className='mb-2'>
+              <div className="flex justify-between">
+                <DrawerTitle className="mb-2">
                   {selectedMission
                     ? selectedMission.mission
                     : '선택된 미션이 없습니다'}
                 </DrawerTitle>
                 <div onClick={handleBookmark}>
                   {selectedMission?.isFavorite ? (
-                    <Image src={filledStart} alt='filled-star' />
+                    <Image src={filledStart} alt="filled-star" />
                   ) : (
-                    <Image src={emptyStar} alt='empty-star' />
+                    <Image src={emptyStar} alt="empty-star" />
                   )}
                 </div>
               </div>
@@ -186,25 +186,25 @@ export default function Page() {
             </DrawerHeader>
 
             <DrawerFooter>
-              <div className='w-full py-2 px-5 rounded-full bg-[#F3F4F6] flex justify-between mb-2'>
+              <div className="w-full py-2 px-5 rounded-full bg-[#F3F4F6] flex justify-between mb-2">
                 <button
-                  className='text-2xl'
+                  className="text-2xl"
                   onClick={() =>
                     setActiveNumber((prev) => Math.max(prev - 1, 0))
                   }
                 >
                   -
                 </button>
-                <div className='text-2xl'>{activeNumber}</div>
+                <div className="text-2xl">{activeNumber}</div>
                 <button
-                  className='text-2xl'
+                  className="text-2xl"
                   onClick={() => setActiveNumber((prev) => prev + 1)}
                 >
                   +
                 </button>
               </div>
               <button
-                className='w-full py-3 rounded-full bg-main text-white'
+                className="w-full py-3 rounded-full bg-main text-white"
                 onClick={handleAddClick}
               >
                 추가하기
@@ -214,25 +214,18 @@ export default function Page() {
         </DrawerContent>
       </Drawer>
 
-      <div className='w-full fixed bottom-10'>
+      <div className="w-full fixed bottom-10">
         <button
           className={`py-3 w-[90%] ${
             workoutInfo.missions.length > 0
               ? 'bg-main text-white'
-              : 'bg-[#EFF6FF]'
+              : 'bg-[#EFF6FF] text-main'
           } rounded-full flex justify-center items-center text-base`}
           onClick={() => {
             if (workoutInfo.missions.length <= 0) return;
             router.push(`/workspace/${workspaceId}/workout/register`);
           }}
         >
-          <div className='absolute left-4'>
-            {workoutInfo.missions.length > 0 ? (
-              <Image src={registerOnIcon} alt='registerOnIcon' />
-            ) : (
-              <Image src={registerIcon} alt='registerIcon' />
-            )}
-          </div>
           <span>등록하러 가기</span>
         </button>
       </div>
