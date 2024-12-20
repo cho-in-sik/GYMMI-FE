@@ -40,6 +40,7 @@ export default function Page() {
   const [activeNumber, setActiveNumber] = useState(0);
   const [open, setOpen] = useState(false);
   const [bookmark, setBookmark] = useState('all');
+  const [isEditing, setIsEditing] = useState(false);
   const [selectedMission, setSelectedMission] = useState<TMission | null>(null);
 
   const router = useRouter();
@@ -67,8 +68,22 @@ export default function Page() {
       });
       setActiveNumber(0);
       setOpen(false);
+      setIsEditing(false);
     }
   };
+
+  const handleDrawerOpen = (mission: TMission) => {
+    setOpen(true);
+    setSelectedMission(mission);
+    setActiveNumber(getMissionCount(mission.id));
+
+    if (mission && getMissionCount(mission.id) > 0) {
+      setIsEditing(true);
+    } else {
+      setIsEditing(false);
+    }
+  };
+
   const handleBookmark = async () => {
     try {
       const numId = Number(workspaceId);
@@ -100,29 +115,6 @@ export default function Page() {
 
   return (
     <div>
-      <div className="flex justify-start items-center text-xs gap-2 mb-4">
-        <div
-          className={`${
-            bookmark === 'all'
-              ? 'bg-[#9CA3AF] text-white'
-              : 'bg-[#F9FAFB] text-[#9CA3AF]'
-          } px-3 py-1 rounded-xl`}
-          onClick={() => setBookmark('all')}
-        >
-          전체
-        </div>
-        <div
-          className={`${
-            bookmark === 'bookmark'
-              ? 'bg-[#9CA3AF] text-white'
-              : 'bg-[#F9FAFB] text-[#9CA3AF]'
-          } px-3 py-1 rounded-xl`}
-          onClick={() => setBookmark('bookmark')}
-        >
-          즐겨찾기
-        </div>
-      </div>
-
       <Drawer open={open} onOpenChange={setOpen}>
         <div className="w-full flex flex-col justify-center items-center gap-2">
           {data?.length === 0 ? (
@@ -137,11 +129,7 @@ export default function Page() {
               <div
                 className="w-full h-16 py-3 px-4 rounded-lg bg-[#FEFCE8] flex justify-between items-center"
                 key={item.id}
-                onClick={() => {
-                  setOpen(true);
-                  setSelectedMission(item);
-                  setActiveNumber(getMissionCount(item.id));
-                }}
+                onClick={() => handleDrawerOpen(item)}
               >
                 <div className="flex flex-col">
                   <h3 className="text-base">{item.mission}</h3>
@@ -207,7 +195,7 @@ export default function Page() {
                 className="w-full py-3 rounded-full bg-main text-white"
                 onClick={handleAddClick}
               >
-                추가하기
+                {isEditing ? '변경하기' : '추가하기'}
               </button>
             </DrawerFooter>
           </div>
