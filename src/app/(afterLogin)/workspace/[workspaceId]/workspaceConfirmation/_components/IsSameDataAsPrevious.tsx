@@ -15,7 +15,7 @@ export default function IsSameDateAsPrevious({
     index > 0 &&
     workoutConfirmationPages[index - 1]?.createdAt.substring(0, 10) ===
       workoutConfirmationPage.createdAt.substring(0, 10);
-  console.log(workoutConfirmationPage);
+
   return (
     <div>
       {!isSameDateAsPrevious && (
