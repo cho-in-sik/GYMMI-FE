@@ -158,7 +158,7 @@ export default function Page() {
 
   return (
     <div className='h-screen'>
-      <div className='flex ml-1 mt-1.5'>
+      <div className='flex items-center ml-1 mt-1.5'>
         <ConfirmationProfileImg
           profileImageUrlParams={
             workspaceConfirmationDetail?.data.profileImageUrl
@@ -213,7 +213,7 @@ export default function Page() {
         ) : (
           <div
             className={`w-full ${
-              !workoutObjection?.data.inInProgress ? 'h-44' : 'h-64'
+              !workoutObjection?.data.inInProgress ? 'h-44' : 'h-42'
             } border border-[#E5E7EB] rounded-lg p-3`}
           >
             <div className='flex'>
@@ -249,7 +249,7 @@ export default function Page() {
               </span>
             </div>
             {!workoutObjection?.data.inInProgress ? (
-              <div className='h-11 bg-[#3B82F6] text-[#FFFFFF] rounded-[35px] mt-4 flex justify-center items-center'>
+              <div className='h-11 bg-[#3B82F6] text-[#FFFFFF] rounded-[35px] mt-4 flex justify-center items-center opacity-60'>
                 <span className='text-base'>투표 종료</span>
               </div>
             ) : (
