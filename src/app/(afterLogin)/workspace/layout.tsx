@@ -31,11 +31,13 @@ export default function Layout({ children }: Props) {
       >
         <div className='flex justify-between'>
           <BackArrow />
-          <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
-            <div>
-              <Image className='w-6 h-6' src={settings} alt='settings' />
-            </div>
-          </Link>
+          {currentSegment !== 'workspaceConfirmationObjectionList' && (
+            <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
+              <div>
+                <Image className='w-6 h-6' src={settings} alt='settings' />
+              </div>
+            </Link>
+          )}
         </div>
         <nav className='my-3'>
           {currentSegment !== 'workspaceConfirmationObjectionList' && (
