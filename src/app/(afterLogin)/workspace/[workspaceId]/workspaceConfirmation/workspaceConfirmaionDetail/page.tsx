@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 
 import {
   Dialog,
@@ -15,9 +16,8 @@ import {
 import objectedWorkoutVoteIcon from '@/../public/svgs/workspace/workspaceConfirmaion/objectedWorkoutVoteIcon.svg';
 import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaion/confirmDetailNoImage.svg';
 
-import ProgressBar from './_components/ProgressBar';
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import {
@@ -26,16 +26,14 @@ import {
   workoutObjections,
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
-import { useState } from 'react';
+import ProgressBar from './_components/ProgressBar';
 import RemaineTime from './_components/RemaineTime';
 import ConfirmationProfileImg from '../_components/ConfirmationProfileImg';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
   const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
-
   const router = useRouter();
-
   const workspaceId = useWorkoutIdFromParams();
   const seachParams = useSearchParams();
   const workoutConfirmationId = parseInt(
@@ -69,6 +67,8 @@ export default function Page() {
     enabled: !isObjection,
   });
 
+  const queryClient = useQueryClient();
+
   const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
     onSuccess: (data) => {
@@ -85,11 +85,11 @@ export default function Page() {
   const handleReasonPost = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    if (reasonInput.length <= 10) {
+    if (reasonInput.length < 10) {
       alert('10자 이상 작성하셔야 합니다.');
     }
 
-    if (reasonInput.length >= 11) {
+    if (reasonInput.length >= 10) {
       objectionReason.mutate({
         workspaceId,
         workoutConfirmationId,
@@ -102,13 +102,28 @@ export default function Page() {
     setIsObjection((prev) => (prev === isObjection ? null : isObjection));
   };
 
+  const OBJECTTIONVOTE_QUERYKEY = {
+    workoutObjection: (workspaceId: number, objectionId: number) => [
+      'workoutObjection',
+      workspaceId,
+      objectionId,
+    ],
+  };
+
   const objectionVote = useMutation({
     mutationFn: workoutObjectionsVote,
     onSuccess: (data) => {
       console.log('Success:', data);
       alert('이의 신청 투표가 성공적으로 제출되었습니다.');
-      router.push(`/workspace/${workspaceId}/workspaceConfirmation`);
+
+      queryClient.invalidateQueries({
+        queryKey: OBJECTTIONVOTE_QUERYKEY.workoutObjection(
+          workspaceId,
+          objectionId
+        ),
+      });
     },
+
     onError: (error) => {
       console.error('Error:', error);
       alert('이의 신청 투표 중 오류가 발생했습니다.');
@@ -167,15 +182,16 @@ export default function Page() {
           '' ? (
             <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
           ) : (
-            <Image
-              src={
-                workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
-              }
-              alt='Image'
-              loader={({ src }) => src}
-              fill
-              sizes='360px'
-            />
+            // <Image
+            //   src={
+            //     workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
+            //   }
+            //   alt='Image'
+            //   loader={({ src }) => src}
+            //   fill
+            //   sizes='360px'
+            // />
+            <></>
           )}
         </div>
       </div>
@@ -270,6 +286,7 @@ export default function Page() {
                     <button
                       className='text-base w-full'
                       onClick={handleVotePost}
+                      disabled={objectionVote.isPending}
                     >
                       투표하기
                     </button>
