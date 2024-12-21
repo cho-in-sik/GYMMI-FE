@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
+import profileIconWhite from '@/../public/svgs/workspace/workspaceConfirmaion/profileIconWhite.svg';
 
 import { imageLoader } from '@/utils/image';
 
@@ -14,7 +15,7 @@ export default function ConfirmationProfileImg({
   return (
     <div>
       {profileImageUrlParams === 'default.png' ? (
-        <Image src={profileIcon} alt='profileIcon' />
+        <Image src={profileIconWhite} alt='profileIconWhite' />
       ) : (
         <Image
           src={profileImageUrlParams}
