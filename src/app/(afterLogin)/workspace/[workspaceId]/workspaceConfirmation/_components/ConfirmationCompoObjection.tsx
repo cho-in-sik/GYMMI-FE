@@ -20,6 +20,12 @@ export default function ConfirmationCompoObjection({
         behavior: 'auto',
         block: 'center',
       });
+
+      targetElement?.classList.add('animate-bounce');
+
+      setTimeout(() => {
+        targetElement.classList.remove('animate-bounce');
+      }, 1000);
     }
   };
   return (
