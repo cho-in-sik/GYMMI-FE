@@ -53,7 +53,6 @@ export default function WorkHistoryList({
       }),
     enabled: isToggled,
   });
-
   return (
     <div className='flex'>
       <span className='text-[#9C9EA3] text-[10px]'>
@@ -61,7 +60,10 @@ export default function WorkHistoryList({
         workspaceHistoryData.createdAt ? (
           <></>
         ) : (
-          workspaceHistoryData.createdAt.substring(5, 10)
+          `${workspaceHistoryData.createdAt.substring(
+            5,
+            7
+          )}/${workspaceHistoryData.createdAt.substring(8, 10)}`
         )}
       </span>
       <div className='flex flex-col items-center px-5'>
