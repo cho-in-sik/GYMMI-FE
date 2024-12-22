@@ -70,7 +70,7 @@ export interface IInfoWork {
   workers: IUser[];
 }
 
-interface IWorker {
+export interface IWorker {
   id: number;
   name: string;
   contributeScore: number;
