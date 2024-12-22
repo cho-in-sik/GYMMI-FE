@@ -41,7 +41,7 @@ function Page() {
   const queryData = useUserInfo();
   const { workoutHistoryIds, handleWorkoutHistory } = useWorkoutHistoryIds();
 
-  const { data: workspaceHistoryDatas, status } = useQuery({
+  const { data: workspaceHistoryDatas } = useQuery({
     queryKey: [
       [
         workspaceHistoryDataConst.workspaceHistoryData,
@@ -55,15 +55,6 @@ function Page() {
         userId: queryData.userId,
       }),
   });
-  if (status === 'pending')
-    return (
-      <p className='text-[10px] text-center'>데이터를 불러오는 중입니다.</p>
-    );
-
-  if (status === 'error')
-    return (
-      <p className='text-[10px] text-center'>데이터를 불러올 수 없습니다.</p>
-    );
 
   return (
     <div className='h-screen'>

@@ -4,17 +4,11 @@ import detailVertical from '@/../public/svgs/workspace/workspaceHistory/detailVe
 import detailVerticalIsToggled from '@/../public/svgs/workspace/workspaceHistory/detailVerticalIsToggled.svg';
 
 interface IsToggledImageProps {
-  index: number;
   isToggled: boolean;
-  workoutHistoriesLength: number;
+  isLastIndex: boolean;
 }
 
-function IsToggledImage({
-  index,
-  isToggled,
-  workoutHistoriesLength,
-}: IsToggledImageProps) {
-  const isLastIndex = index === workoutHistoriesLength - 1;
+function IsToggledImage({ isToggled, isLastIndex }: IsToggledImageProps) {
   return (
     <>
       {isLastIndex ? (

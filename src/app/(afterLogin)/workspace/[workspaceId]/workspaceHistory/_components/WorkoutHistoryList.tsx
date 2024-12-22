@@ -35,6 +35,7 @@ export default function WorkHistoryList({
   handleWorkoutHistory,
 }: WorkHistoryListProps) {
   const isToggled = workoutHistoryIds.includes(workspaceHistoryData.id);
+  const isLastIndex = index === workoutHistoriesLength - 1;
 
   const { data: workoutHistorydetails } = useQuery({
     queryKey: [
@@ -53,8 +54,9 @@ export default function WorkHistoryList({
       }),
     enabled: isToggled,
   });
+
   return (
-    <div className='flex'>
+    <div className={`${isLastIndex && 'pb-5'} flex`}>
       <span className='text-[#9C9EA3] text-[10px]'>
         {workspaceHistoryData.createdAt[index] ===
         workspaceHistoryData.createdAt ? (
@@ -71,11 +73,7 @@ export default function WorkHistoryList({
           src={isToggled ? radiusClicked : radius}
           alt={isToggled ? 'radiusClicked' : 'radius'}
         />
-        <IsToggledImage
-          index={index}
-          isToggled={isToggled}
-          workoutHistoriesLength={workoutHistoriesLength}
-        />
+        <IsToggledImage isToggled={isToggled} isLastIndex={isLastIndex} />
       </div>
       <div>
         <div
