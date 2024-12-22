@@ -96,7 +96,7 @@ export default function WorkHistoryList({
         </div>
         <ApproveStatusMsg isApproved={workspaceHistoryData.isApproved} />
         {isToggled && (
-          <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
+          <div className='w-40 min-h-8 bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
             <div>
               {workoutHistorydetails?.data.map(
                 (historyDetail: TDetailHistorys) => (
