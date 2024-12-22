@@ -30,7 +30,7 @@ function WorkspaceGimmiTitle({ queryData }: TWorkspaceGimmiTitleTypes) {
       {queryData && (
         <>
           <WorkspaceTitle name={queryData.name} workout={queryData.workout} />
-          <div className='flex justify-center items-end gap-x-6 h-48 mb-5'>
+          <div className='flex justify-center items-end gap-x-2 h-48 mb-5'>
             <WorkspaceGimmi
               workout={queryData.workout}
               achievementScore={queryData.achievementScore}
