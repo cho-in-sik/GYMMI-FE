@@ -32,7 +32,11 @@ export default function useInfiniteQuerys<
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage: any, allPages) => {
-      return lastPage?.data?.length === 0 ? undefined : allPages.length;
+      if (lastPage.data.data.length < 10) {
+        return undefined;
+      }
+
+      return allPages.length;
     },
   });
 
