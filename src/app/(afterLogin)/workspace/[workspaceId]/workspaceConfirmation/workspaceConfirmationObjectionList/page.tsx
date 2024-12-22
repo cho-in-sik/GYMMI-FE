@@ -13,7 +13,7 @@ import WorkoutConfirmationObjectionList from './_components/WorkoutConfirmationO
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
   const [statusButton, setStatusButton] = useState('open');
-  const [ref, inView] = useInView();
+  const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
   const workoutConfirmationObjectionList = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId, statusButton],

@@ -10,10 +10,10 @@ import ObjectionBell from './_components/ObjectionBell';
 import IsSameDateAsPrevious from './_components/IsSameDataAsPrevious';
 import ConfirmationCompo from './_components/ConfirmationCompo';
 import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
+import { useEffect, useRef } from 'react';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
-
   const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
   const workoutConfirmation = useInfiniteQuerys({
@@ -24,13 +24,16 @@ export default function Page() {
   });
 
   const workoutConfirmationPages = workoutConfirmation?.pages.flatMap(
-    (pages) => pages.data
+    (pages) => pages.data.data
   );
+  const workoutConfirmationVoteInCompletionCount =
+    workoutConfirmation?.pages.flatMap(
+      (pages) => pages.data.voteIncompletionCount
+    );
 
   return (
     <div className='h-max'>
-      <div className='-mx-4 px-4 -mt-3 pb-3 bg-[#F1F7FF]'>
-        <ObjectionBell />
+      <div className='-mx-4 px-4 bg-[#F1F7FF] -mt-3 pb-3'>
         {workoutConfirmationPages?.map(
           (
             workoutConfirmationPage: IWorkoutConfirmationPageProps,
@@ -42,13 +45,11 @@ export default function Page() {
                   workoutConfirmationPage.objectionId || 'noObjection'
                 }-${workoutConfirmationPage.createdAt}`}
               >
-                {/* 운동 인증에서 같은 날짜의 운동들 & 날짜 컴포넌트 */}
                 <IsSameDateAsPrevious
                   workoutConfirmationPages={workoutConfirmationPages}
                   workoutConfirmationPage={workoutConfirmationPage}
                   index={index}
                 />
-                {/* 이의신청 컴포넌트 */}
                 <ConfirmationCompo
                   workoutConfirmationPage={workoutConfirmationPage}
                   workspaceId={workspaceId}
@@ -57,6 +58,12 @@ export default function Page() {
             );
           }
         )}
+        <ObjectionBell
+          workspaceId={workspaceId}
+          workoutConfirmationVoteInCompletionCount={
+            workoutConfirmationVoteInCompletionCount
+          }
+        />
       </div>
       <div ref={ref} style={{ height: 10 }} />
     </div>
