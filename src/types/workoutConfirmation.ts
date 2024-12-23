@@ -9,3 +9,11 @@ export interface IWorkoutConfirmationPageProps {
   isObjection: boolean;
   objectionId: number;
 }
+
+export interface IWorkoutConfirmationObjectionListPageProps {
+  createdAt: string;
+  objectionId: number;
+  targetWorkerNickname: string;
+  voteCompletion: boolean;
+  workoutConfirmationId: number;
+}

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useState } from 'react';
 
 import {
   Dialog,
@@ -13,12 +14,10 @@ import {
 } from '@/components/ui/dialog';
 
 import objectedWorkoutVoteIcon from '@/../public/svgs/workspace/workspaceConfirmaion/objectedWorkoutVoteIcon.svg';
-import profileIcon from '@/../public/svgs/workspace/workspaceConfirmaion/profileIcon.svg';
 import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaion/confirmDetailNoImage.svg';
 
-import ProgressBar from './_components/ProgressBar';
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import {
@@ -27,16 +26,14 @@ import {
   workoutObjections,
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
-import { useEffect, useState } from 'react';
+import ProgressBar from './_components/ProgressBar';
 import RemaineTime from './_components/RemaineTime';
-import { imageLoader } from '@/utils/image';
+import ConfirmationProfileImg from '../_components/ConfirmationProfileImg';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
   const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
-
   const router = useRouter();
-
   const workspaceId = useWorkoutIdFromParams();
   const seachParams = useSearchParams();
   const workoutConfirmationId = parseInt(
@@ -70,6 +67,8 @@ export default function Page() {
     enabled: !isObjection,
   });
 
+  const queryClient = useQueryClient();
+
   const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
     onSuccess: (data) => {
@@ -86,11 +85,11 @@ export default function Page() {
   const handleReasonPost = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
 
-    if (reasonInput.length <= 10) {
+    if (reasonInput.length < 10) {
       alert('10자 이상 작성하셔야 합니다.');
     }
 
-    if (reasonInput.length >= 11) {
+    if (reasonInput.length >= 10) {
       objectionReason.mutate({
         workspaceId,
         workoutConfirmationId,
@@ -103,13 +102,28 @@ export default function Page() {
     setIsObjection((prev) => (prev === isObjection ? null : isObjection));
   };
 
+  const OBJECTTIONVOTE_QUERYKEY = {
+    workoutObjection: (workspaceId: number, objectionId: number) => [
+      'workoutObjection',
+      workspaceId,
+      objectionId,
+    ],
+  };
+
   const objectionVote = useMutation({
     mutationFn: workoutObjectionsVote,
     onSuccess: (data) => {
       console.log('Success:', data);
       alert('이의 신청 투표가 성공적으로 제출되었습니다.');
-      router.push(`/workspace/${workspaceId}/workspaceConfirmation`);
+
+      queryClient.invalidateQueries({
+        queryKey: OBJECTTIONVOTE_QUERYKEY.workoutObjection(
+          workspaceId,
+          objectionId
+        ),
+      });
     },
+
     onError: (error) => {
       console.error('Error:', error);
       alert('이의 신청 투표 중 오류가 발생했습니다.');
@@ -144,21 +158,12 @@ export default function Page() {
 
   return (
     <div className='h-screen'>
-      <div className='flex ml-1 mt-1.5'>
-        {workspaceConfirmationDetail?.data.profileImageUrl === 'default.png' ? (
-          <Image src={profileIcon} alt='profileIcon' className='w-11 h-11' />
-        ) : (
-          <Image
-            src={workspaceConfirmationDetail?.data.profileImageUrl}
-            alt='userProfileIcon'
-            className='w-11 h-11 rounded-full'
-            loader={() =>
-              imageLoader(workspaceConfirmationDetail?.data.profileImageUrl)
-            }
-            width={30}
-            height={30}
-          />
-        )}
+      <div className='flex items-center ml-1 mt-1.5'>
+        <ConfirmationProfileImg
+          profileImageUrlParams={
+            workspaceConfirmationDetail?.data.profileImageUrl
+          }
+        />
         <div className='flex flex-col ml-3 mt-1'>
           <span className='text-base text-[#1F2937]'>
             {workspaceConfirmationDetail?.data.nickname}
@@ -183,8 +188,9 @@ export default function Page() {
               }
               alt='Image'
               loader={({ src }) => src}
-              fill
+              loading='lazy'
               sizes='360px'
+              fill
             />
           )}
         </div>
@@ -207,7 +213,7 @@ export default function Page() {
         ) : (
           <div
             className={`w-full ${
-              !workoutObjection?.data.inInProgress ? 'h-44' : 'h-64'
+              !workoutObjection?.data.inInProgress ? 'h-44' : 'h-42'
             } border border-[#E5E7EB] rounded-lg p-3`}
           >
             <div className='flex'>
@@ -243,7 +249,7 @@ export default function Page() {
               </span>
             </div>
             {!workoutObjection?.data.inInProgress ? (
-              <div className='h-11 bg-[#3B82F6] text-[#FFFFFF] rounded-[35px] mt-4 flex justify-center items-center'>
+              <div className='h-11 bg-[#3B82F6] text-[#FFFFFF] rounded-[35px] mt-4 flex justify-center items-center opacity-60'>
                 <span className='text-base'>투표 종료</span>
               </div>
             ) : (
@@ -280,6 +286,7 @@ export default function Page() {
                     <button
                       className='text-base w-full'
                       onClick={handleVotePost}
+                      disabled={objectionVote.isPending}
                     >
                       투표하기
                     </button>
