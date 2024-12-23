@@ -41,7 +41,7 @@ export default function ConfirmationCompoObjection({
           alt='confirmationIsObjectionArr'
         />
         <span className='text-[#D1D5DB] text-[10px] pl-2'>
-          {workoutConfirmationPage.nickname}님의 인증으로 이동
+          {workoutConfirmationPage.nickname}님의 원본 인증으로 이동
         </span>
       </div>
       <span className='text-sm'>

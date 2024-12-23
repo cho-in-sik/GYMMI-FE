@@ -16,6 +16,9 @@ export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
   const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
+  const scrollBottomRef = useRef<HTMLDivElement | null>(null);
+  const isInitialRender = useRef(true);
+
   const workoutConfirmation = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId],
     dataReqFn: workoutConfirmations,
@@ -31,8 +34,16 @@ export default function Page() {
       (pages) => pages.data.voteIncompletionCount
     );
 
+  useEffect(() => {
+    if (scrollBottomRef.current && isInitialRender) {
+      scrollBottomRef.current?.scrollIntoView({ behavior: 'auto' });
+      isInitialRender.current = false;
+    }
+  }, [workoutConfirmationPages]);
+
   return (
-    <div className='h-max'>
+    <div className='h-full'>
+      <div ref={ref} />
       <div className='-mx-4 px-4 bg-[#F1F7FF] -mt-3 pb-3'>
         {workoutConfirmationPages?.map(
           (
@@ -65,7 +76,7 @@ export default function Page() {
           }
         />
       </div>
-      <div ref={ref} style={{ height: 10 }} />
+      <div ref={scrollBottomRef} />
     </div>
   );
 }
