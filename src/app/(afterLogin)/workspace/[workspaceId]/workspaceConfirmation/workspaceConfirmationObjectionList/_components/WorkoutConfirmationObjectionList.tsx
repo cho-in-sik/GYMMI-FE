@@ -52,11 +52,10 @@ export default function WorkoutConfirmationObjectionList({
                       님의 인증이 이의신청되었어요.
                     </span>
                     <span className='text-xs'>
-                      {' '}
                       {workoutConfirmationObjectionListPage.createdAt.substring(
                         0,
                         10
-                      )}{' '}
+                      )}
                     </span>
                   </div>
                 </div>
