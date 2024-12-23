@@ -182,16 +182,16 @@ export default function Page() {
           '' ? (
             <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
           ) : (
-            // <Image
-            //   src={
-            //     workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
-            //   }
-            //   alt='Image'
-            //   loader={({ src }) => src}
-            //   fill
-            //   sizes='360px'
-            // />
-            <></>
+            <Image
+              src={
+                workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
+              }
+              alt='Image'
+              loader={({ src }) => src}
+              loading='lazy'
+              sizes='360px'
+              fill
+            />
           )}
         </div>
       </div>

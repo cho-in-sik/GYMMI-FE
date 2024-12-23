@@ -35,16 +35,15 @@ export default function ConfirmationCompoConfirm({
           <span className='text-[#1F2937] text-sm'>운동인증을 올렸어요!</span>
           <div className='flex gap-x-2 mt-1'>
             <div className='w-[105px] h-[105px] flex items-center justify-center relative'>
-              {/* <Image
-            src={
-              workoutConfirmationPage.workoutConfirmationImageUrl
-            }
-            alt='workoutConfirmationImageUrl'
-            loader={({ src }) => src}
-            fill
-            sizes='105px'
-            className='object-cover'
-          /> */}
+              <Image
+                src={workoutConfirmationPage.workoutConfirmationImageUrl}
+                alt='workoutConfirmationImageUrl'
+                loader={({ src }) => src}
+                loading='lazy'
+                sizes='105px'
+                fill
+                className='object-cover'
+              />
             </div>
             <div className='flex items-end'>...</div>
           </div>
