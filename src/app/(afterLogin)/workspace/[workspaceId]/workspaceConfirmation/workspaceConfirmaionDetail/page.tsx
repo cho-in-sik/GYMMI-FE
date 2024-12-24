@@ -29,6 +29,7 @@ import {
 import ProgressBar from './_components/ProgressBar';
 import RemaineTime from './_components/RemaineTime';
 import ConfirmationProfileImg from '../_components/ConfirmationProfileImg';
+import ScrollTop from '../_components/ScrollTop';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -158,6 +159,7 @@ export default function Page() {
 
   return (
     <div className='h-screen'>
+      <ScrollTop />
       <div className='flex items-center ml-1 mt-1.5'>
         <ConfirmationProfileImg
           profileImageUrlParams={
