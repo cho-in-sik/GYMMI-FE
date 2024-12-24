@@ -11,7 +11,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
 import { deleteFeed, feedDetails, feedHeart } from '@/api/photoCommunity';
 import { formatDate } from '@/utils/date';
-import { s3ImageLoader } from '@/utils/image';
+import { imageLoader, s3ImageLoader } from '@/utils/image';
 import useHeart from '@/hooks/useHeart';
 import {
   Select,
@@ -50,6 +50,8 @@ export default function Page() {
 
   if (isError) router.push('/photoCommunity');
 
+  console.log(data);
+
   const { like, toggleBookmark, count } = useHeart({
     id: photoIdNumber,
     queryKey: 'photoDetails',
@@ -80,14 +82,20 @@ export default function Page() {
             <div className="relative h-11 w-11">
               <Image
                 src={
-                  data?.profileImageUrl === 'default.png'
-                    ? basicIcon
-                    : data?.profileImageUrl!
+                  data?.profileImageUrl &&
+                  data?.profileImageUrl !== 'default.png'
+                    ? data.profileImageUrl
+                    : basicIcon
                 }
                 alt="profile-image"
                 layout="fill"
                 className="rounded-full"
-                loader={() => s3ImageLoader(data?.photoImageUrl)}
+                loader={
+                  data?.profileImageUrl &&
+                  data?.profileImageUrl !== 'default.png'
+                    ? () => imageLoader(data?.profileImageUrl!)
+                    : undefined
+                }
               />
             </div>
           )}
@@ -99,7 +107,7 @@ export default function Page() {
           <SelectTrigger>
             <div>{data?.isMine && <Image src={settings} alt="settings" />}</div>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="mr-2.5">
             <SelectItem value="delete">
               <div
                 className="flex justify-start items-center"
@@ -122,6 +130,10 @@ export default function Page() {
             alt="detail-image"
             loader={() => s3ImageLoader(data?.photoImageUrl)}
             fill
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center',
+            }}
           />
         )}
       </div>
