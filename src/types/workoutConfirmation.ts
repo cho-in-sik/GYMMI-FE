@@ -26,3 +26,15 @@ export interface IWorkspaceConfirmationDetailProps {
   profileImageUrl: any;
   workoutConfirmationImageUrl: any;
 }
+
+export interface IWorkoutObjectionProps {
+  approvalCount: number;
+  confirmationCompletion: boolean | null;
+  deadline: string;
+  headCount: number;
+  inInProgress: boolean;
+  reason: string;
+  rejectionCount: number;
+  voteCompletion: boolean | null;
+  voteParticipationCount: number;
+}
