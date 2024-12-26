@@ -1,5 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import Image from 'next/image';
 import { ReadonlyURLSearchParams } from 'next/navigation';
@@ -16,15 +16,14 @@ import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParam
 
 interface IConfirmationObjectionCompo {
   seachParams: ReadonlyURLSearchParams;
-  objectionId: number;
 }
 
 export default function ConfirmationObjectionCompo({
   seachParams,
-  objectionId,
 }: IConfirmationObjectionCompo) {
   const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
   const workspaceId = useWorkoutIdFromParams();
+  const objectionId = parseInt(seachParams.get('objectionId') || '0', 10);
 
   const isObjection = seachParams.get('isObjection') === 'false';
 

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+
 import ConfirmationDetailImage from './ConfimationDetailImage';
 import ConfirmationDetailProfile from './ConfirmationDetailProfile';
 import { IWorkspaceConfirmationDetailProps } from '@/types/workoutConfirmation';
