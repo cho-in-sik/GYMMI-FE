@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/dialog';
 
 import objectedWorkoutVoteIcon from '@/../public/svgs/workspace/workspaceConfirmaion/objectedWorkoutVoteIcon.svg';
-import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaion/confirmDetailNoImage.svg';
 
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -31,6 +30,7 @@ import RemaineTime from './_components/RemaineTime';
 import ScrollTop from '../_components/ScrollTop';
 import ConfirmationDetailProfile from './_components/ConfirmationDetailProfile';
 import { IWorkspaceConfirmationDetailProps } from '@/types/workoutConfirmation';
+import ConfirmationDetailImage from './_components/ConfimationDetailImage';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -170,23 +170,9 @@ export default function Page() {
         <span className='text-base text-[#1F2937]'>
           {workspaceConfirmationDetail?.data.comment}
         </span>
-        <div className='w-full h-[380px] bg-[#E5E7EB] mt-5 flex justify-center relative'>
-          {workspaceConfirmationDetail?.data.workoutConfirmationImageUrl ===
-          '' ? (
-            <Image src={confirmDetailNoImage} alt='confirmDetailNoImage' />
-          ) : (
-            <Image
-              src={
-                workspaceConfirmationDetail?.data.workoutConfirmationImageUrl
-              }
-              alt='Image'
-              loader={({ src }) => src}
-              loading='lazy'
-              sizes='360px'
-              fill
-            />
-          )}
-        </div>
+        <ConfirmationDetailImage
+          workspaceConfirmationDetail={workspaceConfirmationDetail?.data}
+        />
       </div>
 
       {/* 이의 신청 팝업창 */}
