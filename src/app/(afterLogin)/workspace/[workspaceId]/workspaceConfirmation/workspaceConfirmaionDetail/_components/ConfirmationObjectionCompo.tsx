@@ -12,20 +12,19 @@ import {
   workoutObjections,
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 
 interface IConfirmationObjectionCompo {
   seachParams: ReadonlyURLSearchParams;
-  workspaceId: number;
   objectionId: number;
 }
 
 export default function ConfirmationObjectionCompo({
   seachParams,
-  workspaceId,
   objectionId,
 }: IConfirmationObjectionCompo) {
-  console.log(seachParams);
   const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
+  const workspaceId = useWorkoutIdFromParams();
 
   const isObjection = seachParams.get('isObjection') === 'false';
 

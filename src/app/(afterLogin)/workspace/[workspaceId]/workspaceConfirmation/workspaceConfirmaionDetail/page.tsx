@@ -12,19 +12,14 @@ import {
 } from '@/components/ui/dialog';
 
 import { DialogDescription } from '@radix-ui/react-dialog';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
-import {
-  workoutConfirmaionsDetail,
-  workoutObjectionReason,
-} from '@/api/workspaceConfirmaion';
+import { workoutObjectionReason } from '@/api/workspaceConfirmaion';
 
 import ScrollTop from '../_components/ScrollTop';
-import ConfirmationDetailProfile from './_components/ConfirmationDetailProfile';
-import { IWorkspaceConfirmationDetailProps } from '@/types/workoutConfirmation';
-import ConfirmationDetailImage from './_components/ConfimationDetailImage';
 import ConfirmationobjectionCompo from './_components/ConfirmationObjectionCompo';
+import ConfirmationDetailCompo from './_components/ConfirmationDetailCompo';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -35,23 +30,7 @@ export default function Page() {
     seachParams.get('workoutConfirmationId') || '0',
     10
   );
-
   const objectionId = parseInt(seachParams.get('objectionId') || '0', 10);
-
-  const { data: workspaceConfirmationDetail } = useQuery<{
-    data: IWorkspaceConfirmationDetailProps;
-  }>({
-    queryKey: [
-      'workspaceConfimationDetail',
-      workspaceId,
-      workoutConfirmationId,
-    ],
-    queryFn: () =>
-      workoutConfirmaionsDetail({
-        workspaceId,
-        workoutConfirmationId,
-      }),
-  });
 
   const objectionReason = useMutation({
     mutationFn: workoutObjectionReason,
@@ -85,23 +64,12 @@ export default function Page() {
   return (
     <div className='h-screen'>
       <ScrollTop />
-      <ConfirmationDetailProfile
-        workspaceConfirmationDetail={workspaceConfirmationDetail?.data}
-      />
-      <div className='my-5'>
-        <span className='text-base text-[#1F2937]'>
-          {workspaceConfirmationDetail?.data.comment}
-        </span>
-        <ConfirmationDetailImage
-          workspaceConfirmationDetail={workspaceConfirmationDetail?.data}
-        />
-      </div>
+      <ConfirmationDetailCompo workoutConfirmationId={workoutConfirmationId} />
 
       {/* 이의 신청 팝업창 */}
       <Dialog>
         <ConfirmationobjectionCompo
           seachParams={seachParams}
-          workspaceId={workspaceId}
           objectionId={objectionId}
         />
 
