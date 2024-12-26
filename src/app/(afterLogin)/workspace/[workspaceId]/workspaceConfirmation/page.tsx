@@ -11,13 +11,14 @@ import IsSameDateAsPrevious from './_components/IsSameDataAsPrevious';
 import ConfirmationCompo from './_components/ConfirmationCompo';
 import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
 import { useEffect, useRef } from 'react';
+import NoDataUI from '../../_components/NoDataUI';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
   const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
   const scrollBottomRef = useRef<HTMLDivElement | null>(null);
-  const isInitialRender = useRef(true);
+  const isInitialRender = useRef<boolean>(true);
 
   const workoutConfirmation = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId],
@@ -35,39 +36,51 @@ export default function Page() {
     );
 
   useEffect(() => {
-    if (scrollBottomRef.current && isInitialRender) {
+    if (
+      isInitialRender.current &&
+      workoutConfirmationPages &&
+      workoutConfirmationPages.length
+    ) {
       scrollBottomRef.current?.scrollIntoView({ behavior: 'auto' });
       isInitialRender.current = false;
     }
   }, [workoutConfirmationPages]);
 
   return (
-    <div className='h-full'>
+    <div className='h-screen'>
       <div ref={ref} />
       <div className='-mx-4 px-4 bg-[#F1F7FF] -mt-3 pb-3'>
-        {workoutConfirmationPages?.map(
-          (
-            workoutConfirmationPage: IWorkoutConfirmationPageProps,
-            index: number
-          ) => {
-            return (
-              <div
-                key={`${workoutConfirmationPage.workoutConfirmationId}-${
-                  workoutConfirmationPage.objectionId || 'noObjection'
-                }-${workoutConfirmationPage.createdAt}`}
-              >
-                <IsSameDateAsPrevious
-                  workoutConfirmationPages={workoutConfirmationPages}
-                  workoutConfirmationPage={workoutConfirmationPage}
-                  index={index}
-                />
-                <ConfirmationCompo
-                  workoutConfirmationPage={workoutConfirmationPage}
-                  workspaceId={workspaceId}
-                />
-              </div>
-            );
-          }
+        {workoutConfirmationPages?.length === 0 ? (
+          <div>
+            <NoDataUI content='아직 운동 인증이 없어요.' />
+          </div>
+        ) : (
+          <div>
+            {workoutConfirmationPages?.map(
+              (
+                workoutConfirmationPage: IWorkoutConfirmationPageProps,
+                index: number
+              ) => {
+                return (
+                  <div
+                    key={`${workoutConfirmationPage.workoutConfirmationId}-${
+                      workoutConfirmationPage.objectionId || 'noObjection'
+                    }-${workoutConfirmationPage.createdAt}`}
+                  >
+                    <IsSameDateAsPrevious
+                      workoutConfirmationPages={workoutConfirmationPages}
+                      workoutConfirmationPage={workoutConfirmationPage}
+                      index={index}
+                    />
+                    <ConfirmationCompo
+                      workoutConfirmationPage={workoutConfirmationPage}
+                      workspaceId={workspaceId}
+                    />
+                  </div>
+                );
+              }
+            )}
+          </div>
         )}
         <ObjectionBell
           workspaceId={workspaceId}
