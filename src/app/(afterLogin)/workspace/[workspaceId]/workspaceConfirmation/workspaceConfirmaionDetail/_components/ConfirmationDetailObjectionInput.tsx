@@ -1,3 +1,5 @@
+'use client';
+
 import { workoutObjectionReason } from '@/api/workspaceConfirmaion';
 import {
   DialogClose,
@@ -55,7 +57,7 @@ export default function ConfirmationDetailObjectionInput({
   return (
     <DialogContent
       className={`w-72 ${
-        reasonInput.length <= 9 ? 'h-[190px]' : 'h-[165px]'
+        reasonInput.length <= 10 ? 'h-[190px]' : 'h-[165px]'
       } rounded-lg`}
     >
       <DialogHeader>
