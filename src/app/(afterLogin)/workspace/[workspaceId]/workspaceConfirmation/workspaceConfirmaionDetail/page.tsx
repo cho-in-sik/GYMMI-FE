@@ -28,8 +28,9 @@ import {
 } from '@/api/workspaceConfirmaion';
 import ProgressBar from './_components/ProgressBar';
 import RemaineTime from './_components/RemaineTime';
-import ConfirmationProfileImg from '../_components/ConfirmationProfileImg';
 import ScrollTop from '../_components/ScrollTop';
+import ConfirmationDetailProfile from './_components/ConfirmationDetailProfile';
+import { IWorkspaceConfirmationDetailProps } from '@/types/workoutConfirmation';
 
 export default function Page() {
   const [reasonInput, setReasonInput] = useState('');
@@ -45,7 +46,9 @@ export default function Page() {
 
   const objectionId = parseInt(seachParams.get('objectionId') || '0', 10);
 
-  const { data: workspaceConfirmationDetail } = useQuery({
+  const { data: workspaceConfirmationDetail } = useQuery<{
+    data: IWorkspaceConfirmationDetailProps;
+  }>({
     queryKey: [
       'workspaceConfimationDetail',
       workspaceId,
@@ -160,21 +163,9 @@ export default function Page() {
   return (
     <div className='h-screen'>
       <ScrollTop />
-      <div className='flex items-center ml-1 mt-1.5'>
-        <ConfirmationProfileImg
-          profileImageUrlParams={
-            workspaceConfirmationDetail?.data.profileImageUrl
-          }
-        />
-        <div className='flex flex-col ml-3 mt-1'>
-          <span className='text-base text-[#1F2937]'>
-            {workspaceConfirmationDetail?.data.nickname}
-          </span>
-          <span className='text-[10px] text-[#848D99]'>
-            {workspaceConfirmationDetail?.data.loginId}
-          </span>
-        </div>
-      </div>
+      <ConfirmationDetailProfile
+        workspaceConfirmationDetail={workspaceConfirmationDetail?.data}
+      />
       <div className='my-5'>
         <span className='text-base text-[#1F2937]'>
           {workspaceConfirmationDetail?.data.comment}
