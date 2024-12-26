@@ -5,7 +5,7 @@ import { Dialog } from '@/components/ui/dialog';
 import { useSearchParams } from 'next/navigation';
 
 import ScrollTop from '../_components/ScrollTop';
-import ConfirmationObjectionCompo from './_components/ConfirmationObjectionCompo';
+import ConfirmationObjectionCompo from './_components/confirmationObjection/ConfirmationObjectionCompo';
 import ConfirmationDetailCompo from './_components/ConfirmationDetailCompo';
 import ConfirmationDetailObjectionInput from './_components/ConfirmationDetailObjectionInput';
 

@@ -8,13 +8,14 @@ import { ReadonlyURLSearchParams } from 'next/navigation';
 import { DialogTrigger } from '@/components/ui/dialog';
 
 import objectedWorkoutVoteIcon from '@/../public/svgs/workspace/workspaceConfirmaion/objectedWorkoutVoteIcon.svg';
-import ProgressBar from './ProgressBar';
-import RemaineTime from './RemaineTime';
+import RemaineTime from '../RemaineTime';
 import {
   workoutObjections,
   workoutObjectionsVote,
 } from '@/api/workspaceConfirmaion';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import ConfirmationObjectionProgressBars from './ConfirmationObjectionProgressBars';
+import { IWorkoutObjectionProps } from '@/types/workoutConfirmation';
 
 interface IConfirmationObjectionCompo {
   seachParams: ReadonlyURLSearchParams;
@@ -23,25 +24,23 @@ interface IConfirmationObjectionCompo {
 export default function ConfirmationObjectionCompo({
   seachParams,
 }: IConfirmationObjectionCompo) {
-  const [isObjectionVote, setIsObjection] = useState<boolean | null>(null);
   const workspaceId = useWorkoutIdFromParams();
+  const [isObjectionVote, setIsObjectionVote] = useState<boolean | null>(null);
   const objectionId = parseInt(seachParams.get('objectionId') || '0', 10);
 
   const isObjection = seachParams.get('isObjection') === 'false';
 
-  const { data: workoutObjection } = useQuery({
-    queryKey: ['workoutObjection', workspaceId, objectionId],
-    queryFn: () =>
-      workoutObjections({
-        workspaceId,
-        objectionId,
-      }),
-    enabled: !isObjection,
-  });
-
-  const handleVote = (isObjection: boolean) => {
-    setIsObjection((prev) => (prev === isObjection ? null : isObjection));
-  };
+  const { data: workoutObjection } = useQuery<{ data: IWorkoutObjectionProps }>(
+    {
+      queryKey: ['workoutObjection', workspaceId, objectionId],
+      queryFn: () =>
+        workoutObjections({
+          workspaceId,
+          objectionId,
+        }),
+      enabled: !isObjection,
+    }
+  );
 
   const queryClient = useQueryClient();
 
@@ -88,16 +87,6 @@ export default function ConfirmationObjectionCompo({
       });
     }
   };
-
-  const appovalCount =
-    (workoutObjection?.data.approvalCount / workoutObjection?.data.headCount) *
-    100;
-  const rejectionCount =
-    (workoutObjection?.data.rejectionCount / workoutObjection?.data.headCount) *
-    100;
-  if (appovalCount > 100 || rejectionCount > 100) {
-    appovalCount === 100 || rejectionCount === 100;
-  }
 
   return (
     <div>
@@ -157,21 +146,10 @@ export default function ConfirmationObjectionCompo({
             </div>
           ) : (
             <div>
-              <ProgressBar
-                comment='찬성하기'
-                progressValue={appovalCount}
-                onClick={() => {
-                  if (!workoutObjection?.data.voteCompletion) handleVote(true);
-                }}
-                isObjectionVote={isObjectionVote === true}
-              />
-              <ProgressBar
-                comment='반대하기'
-                progressValue={rejectionCount}
-                onClick={() => {
-                  if (!workoutObjection?.data.voteCompletion) handleVote(false);
-                }}
-                isObjectionVote={isObjectionVote === false}
+              <ConfirmationObjectionProgressBars
+                isObjectionVote={isObjectionVote}
+                setIsObjectionVote={setIsObjectionVote}
+                workoutObjection={workoutObjection?.data}
               />
               <div
                 className={`h-11 ${
