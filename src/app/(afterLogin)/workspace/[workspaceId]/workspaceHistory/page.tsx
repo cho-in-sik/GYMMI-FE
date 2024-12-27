@@ -16,6 +16,7 @@ import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParam
 
 import type { THistorys, TQueryTypes } from '@/types/workspaceHistory';
 import NoDataUI from '../../_components/NoDataUI';
+import ScrollTop from '../workspaceConfirmation/_components/ScrollTop';
 
 function useUserInfo(): TQueryTypes {
   const searchParams = useSearchParams();
@@ -57,6 +58,7 @@ function Page() {
 
   return (
     <div className='h-screen'>
+      <ScrollTop />
       <WorkspaceGimmiTitle queryData={queryData} />
 
       <WorkspaceScoreBoard
