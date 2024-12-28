@@ -10,12 +10,17 @@ import ObjectionBell from './_components/ObjectionBell';
 import IsSameDateAsPrevious from './_components/IsSameDataAsPrevious';
 import ConfirmationCompo from './_components/ConfirmationCompo';
 import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import NoDataUI from '../../_components/NoDataUI';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
-  const [ref, inView] = useInView({ threshold: 0, delay: 0 });
+  const [initialObserve, setInitialObserve] = useState(false);
+
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    delay: 500,
+  });
 
   const scrollBottomRef = useRef<HTMLDivElement | null>(null);
   const isInitialRender = useRef<boolean>(true);
@@ -24,12 +29,14 @@ export default function Page() {
     queryKey: ['workoutConfirmations', workspaceId],
     dataReqFn: workoutConfirmations,
     params: { workspaceId },
-    inView,
+    inView: inView && initialObserve,
   });
 
-  const workoutConfirmationPages = workoutConfirmation?.pages.flatMap(
-    (pages) => pages.data.data
-  );
+  const workoutConfirmationPages = workoutConfirmation?.pages
+    .slice()
+    .reverse()
+    .flatMap((pages) => pages.data.data);
+
   const workoutConfirmationVoteInCompletionCount =
     workoutConfirmation?.pages.flatMap(
       (pages) => pages.data.voteIncompletionCount
@@ -40,15 +47,20 @@ export default function Page() {
       isInitialRender.current &&
       workoutConfirmationPages &&
       workoutConfirmationPages.length
-    ) {
-      scrollBottomRef.current?.scrollIntoView({ behavior: 'auto' });
-      isInitialRender.current = false;
-    }
+    )
+      setTimeout(() => {
+        scrollBottomRef.current?.scrollIntoView({
+          behavior: 'auto',
+        });
+        isInitialRender.current = false;
+        setTimeout(() => {
+          setInitialObserve(true);
+        }, 100);
+      }, 100);
   }, [workoutConfirmationPages]);
 
   return (
-    <div className='h-screen'>
-      <div ref={ref} />
+    <div className='h-full'>
       <div className='-mx-4 px-4 bg-[#F1F7FF] -mt-3 pb-3'>
         {workoutConfirmationPages?.length === 0 ? (
           <div>
@@ -56,6 +68,7 @@ export default function Page() {
           </div>
         ) : (
           <div>
+            <div ref={ref} />
             {workoutConfirmationPages?.map(
               (
                 workoutConfirmationPage: IWorkoutConfirmationPageProps,
@@ -80,6 +93,7 @@ export default function Page() {
                 );
               }
             )}
+            <div ref={scrollBottomRef} />
           </div>
         )}
         <ObjectionBell
@@ -89,7 +103,6 @@ export default function Page() {
           }
         />
       </div>
-      <div ref={scrollBottomRef} />
     </div>
   );
 }
