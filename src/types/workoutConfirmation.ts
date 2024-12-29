@@ -17,3 +17,24 @@ export interface IWorkoutConfirmationObjectionListPageProps {
   voteCompletion: boolean;
   workoutConfirmationId: number;
 }
+
+export interface IWorkspaceConfirmationDetailProps {
+  comment: string;
+  loginId: string;
+  nickname: string;
+  objectionId: number | null;
+  profileImageUrl: any;
+  workoutConfirmationImageUrl: any;
+}
+
+export interface IWorkoutObjectionProps {
+  approvalCount: number;
+  confirmationCompletion: boolean | null;
+  deadline: string;
+  headCount: number;
+  inInProgress: boolean;
+  reason: string;
+  rejectionCount: number;
+  voteCompletion: boolean | null;
+  voteParticipationCount: number;
+}

@@ -2,6 +2,7 @@ import { IWorkoutConfirmationPageProps } from '@/types/workoutConfirmation';
 import ConfirmationProfile from './ConfirmationProfile';
 import ConfirmationCompoObjection from './ConfirmationCompoObjection';
 import ConfirmationCompoConfirm from './ConfirmationCompoConfirm';
+import ConfirmationCompoTime from './ConfirmationCompoTime';
 
 interface IConfirmationCompoProps {
   workoutConfirmationPage: IWorkoutConfirmationPageProps;
@@ -30,15 +31,9 @@ export default function ConfirmationCompo({
             workspaceId={workspaceId}
           />
         )}
-        <div
-          className={`${
-            workoutConfirmationPage.isMine ? 'mr-2' : 'ml-2'
-          } flex items-end `}
-        >
-          <span className='text-[10px] text-[#9CA3AF]'>
-            {workoutConfirmationPage.createdAt.substring(11, 16)}
-          </span>
-        </div>
+        <ConfirmationCompoTime
+          workoutConfirmationPage={workoutConfirmationPage}
+        />
       </div>
     </div>
   );
