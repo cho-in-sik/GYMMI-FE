@@ -126,14 +126,14 @@ export default function Page() {
       <div className="bg-[#E5E7EB] w-full h-96 max-w-96 max-h-96 relative mb-4">
         {!data?.photoImageUrl ? null : (
           <Image
-            src={data?.photoImageUrl!}
+            src={data?.photoImageUrl!} // 고정된 URL 직접 사용
             alt="detail-image"
-            loader={() => s3ImageLoader(data?.photoImageUrl)}
             fill
             style={{
               objectFit: 'cover',
               objectPosition: 'center',
             }}
+            unoptimized
           />
         )}
       </div>

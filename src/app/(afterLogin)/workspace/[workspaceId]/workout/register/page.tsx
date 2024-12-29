@@ -31,7 +31,7 @@ export default function Page() {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const { workoutInfo } = useWorkoutStore();
+  const { workoutInfo, clearData } = useWorkoutStore();
 
   const router = useRouter();
 
@@ -76,6 +76,7 @@ export default function Page() {
         setIsLoading(false);
         if (workoutRes.status === 200) {
           setOpen(true);
+          clearData();
         }
       } catch (error) {
         setIsLoading(false);
