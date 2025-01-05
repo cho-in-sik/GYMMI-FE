@@ -19,7 +19,6 @@ export default function Page() {
 
   const [ref, inView] = useInView({
     threshold: 0.1,
-    delay: 500,
   });
 
   const scrollBottomRef = useRef<HTMLDivElement | null>(null);
