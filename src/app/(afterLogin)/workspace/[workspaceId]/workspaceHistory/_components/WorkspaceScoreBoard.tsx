@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import verticalLine from '@/../public/svgs/workspace/verticalLine.svg';
+import onePrize from '@/../public/svgs/workspace/workspaceHistory/onePrize.svg';
 import type { TScoreData } from '@/types/workspaceHistory';
 import type { TWorkspaceHistory } from '@/types/workSpace';
 
@@ -11,7 +12,6 @@ interface WorkspaceScoreBoardProps {
 function WorkspaceScoreBoard({
   workspaceHistoryDatas,
 }: WorkspaceScoreBoardProps) {
-  console.log(workspaceHistoryDatas);
   const scoreDatas = [
     {
       id: 1,
@@ -24,6 +24,7 @@ function WorkspaceScoreBoard({
       value: workspaceHistoryDatas?.totalWorkoutCount + '회',
     },
   ];
+
   return (
     <div className='h-14 bg-white rounded-lg mb-4'>
       <div className='w-full' defaultValue='totalScore'>
@@ -52,15 +53,14 @@ function WorkspaceScoreBoard({
           })}
           <div>
             {workspaceHistoryDatas?.gabScoreFromFirst === 0 ? (
-              <div className='ml-3 flex justify-center'>
-                <span>1등</span>
+              <div className='ml-3 pt-1 flex justify-center'>
+                <Image src={onePrize} alt='onePrize' />
               </div>
             ) : (
-              <div className='flex flex-col items-center justify-center'>
+              <div className='flex flex-col items-center justify-center gap-y-1'>
                 <span className='text-[#9C9EA3] text-[10px]'>1등과의 격차</span>
-                <span className='text-[#1F2937] text-base'>
-                  {' '}
-                  {workspaceHistoryDatas?.gabScoreFromFirst}점{' '}
+                <span className='text-[#1F2937] text-sm'>
+                  {workspaceHistoryDatas?.gabScoreFromFirst}점
                 </span>
               </div>
             )}
