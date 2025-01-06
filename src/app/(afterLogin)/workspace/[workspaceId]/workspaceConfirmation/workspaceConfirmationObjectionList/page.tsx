@@ -13,7 +13,7 @@ import WorkoutConfirmationObjectionList from './_components/WorkoutConfirmationO
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
   const [statusButton, setStatusButton] = useState('open');
-  const [ref, inView] = useInView({ threshold: 0, delay: 0 });
+  const [ref, inView] = useInView();
 
   const workoutConfirmationObjectionList = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId, statusButton],
@@ -40,6 +40,11 @@ export default function Page() {
           onClick={() => setStatusButton('incompletion')}
           isClick={statusButton === 'incompletion'}
         />
+        {/* <ObjectionListButton
+          comment='완료됨'
+          onClick={() => setStatusButton('incompletion')}
+          isClick={statusButton === 'incompletion'}
+        /> */}
       </div>
       <WorkoutConfirmationObjectionList
         workoutConfirmationObjectionListPages={
