@@ -29,6 +29,7 @@ import Link from 'next/link';
 import WorkspaceTitle from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceTitle';
 import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceGimmi';
 import { IWorker } from '@/types/workSpace';
+import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
 
 type THistoryType = {
   workspaceId: number;
@@ -116,6 +117,7 @@ export default function Page() {
 
   return (
     <div className='h-screen'>
+      <ScrollTop />
       <Dialog open={isOpen} onOpenChange={handleModalChange}>
         <DialogContent className='w-4/6 rounded-lg'>
           <DialogDescription>
