@@ -2,9 +2,23 @@
 import withPWAInit from '@ducanh2912/next-pwa';
 
 const withPWA = withPWAInit({
-  workboxOptions: {},
   dest: 'public',
-  disable: process.env.NEXT_PUBLIC_MODE === 'development',
+  workboxOptions: {
+    runtimeCaching: [
+      {
+        urlPattern:
+          /^https:\/\/gymmi\.s3\.ap-northeast-2\.amazonaws\.com\/.*\.(png|jpg|jpeg|svg|gif|webp|avif)(\?.*)?$/,
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'image-cache',
+          expiration: {
+            maxEntries: 50, // 최대 50개 이미지 캐시
+            maxAgeSeconds: 30 * 24 * 60 * 60, // 30일
+          },
+        },
+      },
+    ],
+  },
 });
 
 const nextConfig = {
