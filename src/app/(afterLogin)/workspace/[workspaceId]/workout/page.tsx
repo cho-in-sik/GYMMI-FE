@@ -229,6 +229,13 @@ export default function Page() {
         </DrawerContent>
       </Drawer>
 
+      <div
+        className="w-full bg-teal-100 mt-10 text-center"
+        onClick={handleTest}
+      >
+        <button>FCM테스트</button>
+      </div>
+
       <div className="w-full fixed bottom-10">
         <button
           className={`py-3 w-[90%] ${

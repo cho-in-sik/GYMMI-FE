@@ -23,7 +23,7 @@ const useSendPush = () => {
           if (permission === 'granted') {
             const currentToken = await getToken(messaging, {
               vapidKey:
-                'BA7IMG0FzL6yAX3F2fIQsirwLnul46MEvC0HGKbJt9aZQTLap647uLjLaS7VIDODY8fbVSiJ64u_Of0QXLKCk4E',
+                'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
             });
             if (currentToken) {
               setToken(currentToken);

@@ -1,13 +1,13 @@
 import { initializeApp } from 'firebase/app';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyB7c23HokEYKt5hyXt9nH2_Ojhw7hWuU9A',
-  authDomain: 'gymmi-a0438.firebaseapp.com',
-  projectId: 'gymmi-a0438',
-  storageBucket: 'gymmi-a0438.appspot.com',
-  messagingSenderId: '953459196581',
-  appId: '1:953459196581:web:55732bc8a7e2a94e85834c',
+  apiKey: 'AIzaSyBfrXLO5vfWpmoyqO9jqRFn8uEw3nHei1Y',
+  authDomain: 'gymmi-e23b1.firebaseapp.com',
+  projectId: 'gymmi-e23b1',
+  storageBucket: 'gymmi-e23b1.firebasestorage.app',
+  messagingSenderId: '186695108886',
+  appId: '1:186695108886:web:87784a64f0a1aad4e76837',
+  measurementId: 'G-HWG97VJDCD',
 };
 
-// Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
