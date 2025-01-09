@@ -4,6 +4,7 @@ import './globals.css';
 import localFont from 'next/font/local';
 import AppInstallButton from '@/components/AppInstallButton';
 import FCMComponent from '@/components/FCMComponent';
+import Script from 'next/script';
 
 const APP_NAME = 'GYMMI';
 const APP_DEFAULT_TITLE = 'GYMMI';
@@ -129,6 +130,7 @@ export default function RootLayout({
 
       <body>
         <FCMComponent />
+
         {children}
         {/* <AppInstallButton /> */}
       </body>

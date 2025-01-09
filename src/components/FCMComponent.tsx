@@ -30,10 +30,11 @@ export default function FCMComponent() {
     const messaging = getMessaging(firebaseApp);
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log('포그라운드 메시지 수신:', payload);
-      const { title, body, icon } = payload.notification || {};
+      const { title, content, icon } = payload.data || {};
+
       if (Notification.permission === 'granted') {
         new Notification(title || '알림', {
-          body: body || '내용 없음',
+          body: content || '내용 없음',
           icon: icon || '/images/basicIcon.png', // 아이콘 설정
         });
       }
