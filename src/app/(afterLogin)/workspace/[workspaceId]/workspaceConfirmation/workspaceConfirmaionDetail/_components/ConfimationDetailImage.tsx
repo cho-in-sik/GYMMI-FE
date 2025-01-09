@@ -2,6 +2,7 @@ import Image from 'next/image';
 
 import confirmDetailNoImage from '@/../public/svgs/workspace/workspaceConfirmaion/confirmDetailNoImage.svg';
 import { IWorkspaceConfirmationDetailProps } from '@/types/workoutConfirmation';
+import { s3ImageLoader } from '@/utils/image';
 
 interface IConfirmationDetailImage {
   workspaceConfirmationDetail: IWorkspaceConfirmationDetailProps | undefined;
@@ -18,10 +19,14 @@ export default function ConfirmationDetailImage({
         <Image
           src={workspaceConfirmationDetail?.workoutConfirmationImageUrl}
           alt='Image'
-          loader={({ src }) => src}
-          loading='lazy'
+          loader={() =>
+            s3ImageLoader(
+              workspaceConfirmationDetail?.workoutConfirmationImageUrl
+            )
+          }
           sizes='360px'
           fill
+          quality={75}
         />
       )}
     </div>

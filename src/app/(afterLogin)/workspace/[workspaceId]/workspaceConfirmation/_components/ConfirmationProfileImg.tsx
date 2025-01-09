@@ -17,16 +17,20 @@ export default function ConfirmationProfileImg({
         <Image
           src={profileIcon}
           alt='profileIcon'
-          className='border rounded-full w-10 h-10'
+          width={40}
+          height={40}
+          className='border rounded-full'
         />
       ) : (
         <Image
           src={profileImageUrlParams}
           alt='profileIcon'
           loader={() => imageLoader(profileImageUrlParams)}
-          width={30}
-          height={30}
+          width={40}
+          height={40}
           className='w-10 h-10 rounded-full'
+          placeholder='blur'
+          blurDataURL='image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=='
         />
       )}
     </div>
