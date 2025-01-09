@@ -23,14 +23,21 @@ export default function Layout({ children }: Props) {
 
   return (
     <div>
-      <div className='px-4 pt-12'>
+      <div
+        className={`${
+          currentSegment === 'workspaceConfirmation' &&
+          'sticky top-0 bg-white z-10'
+        } px-4 pt-12`}
+      >
         <div className='flex justify-between'>
           <BackArrow />
-          <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
-            <div>
-              <Image className='w-6 h-6' src={settings} alt='settings' />
-            </div>
-          </Link>
+          {currentSegment !== 'workspaceConfirmationObjectionList' && (
+            <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
+              <div>
+                <Image className='w-6 h-6' src={settings} alt='settings' />
+              </div>
+            </Link>
+          )}
         </div>
         <nav className='my-3'>
           {currentSegment !== 'workspaceConfirmationObjectionList' && (

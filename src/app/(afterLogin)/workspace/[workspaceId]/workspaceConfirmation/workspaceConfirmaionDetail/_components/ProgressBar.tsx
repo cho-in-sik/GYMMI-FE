@@ -20,19 +20,21 @@ export default function ProgressBar({
   isObjectionVote,
 }: ProgressProps) {
   return (
-    <div className='relative' onClick={onClick}>
+    <div className='w-full relative' onClick={onClick}>
       <Progress
         indicatorColor='bg-[#FFEDA6]'
         className='h-10 my-2'
         value={progressValue}
       />
       <div
-        className={`w-[290px] text-sm 
+        className={`text-sm 
          ${isObjectionVote ? 'text-[#374151]' : 'text-[#848D99]'}
-         absolute left-5 inset-y-2.5 flex justify-between`}
+         w-5/6 absolute left-5 inset-y-2.5 flex justify-between`}
       >
-        {comment}
-        {isObjectionVote && <Image src={voteChecked} alt='voteChecked' />}
+        <div>{comment}</div>
+        <div>
+          {isObjectionVote && <Image src={voteChecked} alt='voteChecked' />}
+        </div>
       </div>
     </div>
   );

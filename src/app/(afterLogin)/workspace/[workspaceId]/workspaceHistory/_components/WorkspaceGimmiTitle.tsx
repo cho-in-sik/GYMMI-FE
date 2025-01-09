@@ -30,13 +30,13 @@ function WorkspaceGimmiTitle({ queryData }: TWorkspaceGimmiTitleTypes) {
       {queryData && (
         <>
           <WorkspaceTitle name={queryData.name} workout={queryData.workout} />
-          <div className='flex justify-center items-end gap-x-6 h-48 mb-5'>
+          <div className='flex justify-center items-end gap-x-2 h-48 mb-5'>
             <WorkspaceGimmi
               workout={queryData.workout}
               achievementScore={queryData.achievementScore}
             />
             <div className='pb-28 relative'>
-              <span className='text-[#4B5563] text-[10px] absolute top-5 right-5 left-6'>
+              <span className='text-[#4B5563] text-[10px] absolute top-3 left-9 whitespace-pre-line text-center'>
                 {randomMessage}
               </span>
               <Image src={speechBubble3} alt='speechBubble3' />

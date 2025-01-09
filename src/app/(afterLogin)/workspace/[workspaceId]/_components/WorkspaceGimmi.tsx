@@ -12,7 +12,7 @@ type TWorkspaceGimmi = {
 
 function WorkspaceGimmi({ workout, achievementScore }: TWorkspaceGimmi) {
   return (
-    <div className={`${!workout ? 'w-48' : 'w-[136px]'}`}>
+    <div className={`${!workout ? 'w-48' : 'w-40 mb-2'}`}>
       {achievementScore < 25 && achievementScore >= 0 ? (
         <Image src={mainLogo0} alt='mainLogo0' />
       ) : null}

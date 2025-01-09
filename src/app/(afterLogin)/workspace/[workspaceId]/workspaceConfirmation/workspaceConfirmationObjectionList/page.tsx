@@ -1,55 +1,26 @@
 'use client';
 
-import Image from 'next/image';
+import { useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 import ObjectionListButton from './_components/ObjectionListButton';
-import objectionBellFill from '@/../public/svgs/workspace/workspaceConfirmaion/objectionBellFill.svg';
-import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { workoutConfirmationObjectionLists } from '@/api/workspaceConfirmaion';
-import { useEffect, useState } from 'react';
-import { useInView } from 'react-intersection-observer';
-import Link from 'next/link';
 
-interface workoutConfirmationObjectionListPageProps {
-  createdAt: string;
-  objectionId: number;
-  targetWorkerNickname: string;
-  voteCompletion: boolean;
-  workoutConfirmationId: number;
-}
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
+import { workoutConfirmationObjectionLists } from '@/api/workspaceConfirmaion';
+import WorkoutConfirmationObjectionList from './_components/WorkoutConfirmationObjectionList';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
   const [statusButton, setStatusButton] = useState('open');
-  const [ref, inView] = useInView();
+  const [ref, inView] = useInView({ threshold: 0, delay: 0 });
 
-  const {
-    data: workoutConfirmationObjectionList,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  } = useInfiniteQuery({
+  const workoutConfirmationObjectionList = useInfiniteQuerys({
     queryKey: ['workoutConfirmations', workspaceId, statusButton],
-    queryFn: async ({ pageParam = 0 }) => {
-      const data = await workoutConfirmationObjectionLists({
-        workspaceId,
-        page: pageParam,
-        status: statusButton,
-      });
-      return data;
-    },
-    initialPageParam: 0,
-    getNextPageParam: (lastPage) => {
-      return lastPage?.data.nextPage ? lastPage?.data.nextPage : undefined;
-    },
+    dataReqFn: workoutConfirmationObjectionLists,
+    params: { workspaceId, status: statusButton },
+    inView,
   });
-  console.log(workoutConfirmationObjectionList);
-  useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const workoutConfirmationObjectionListPages =
     workoutConfirmationObjectionList?.pages.flatMap((pages) => pages.data);
@@ -70,64 +41,13 @@ export default function Page() {
           isClick={statusButton === 'incompletion'}
         />
       </div>
-      {workoutConfirmationObjectionListPages?.map(
-        (
-          workoutConfirmationObjectionListPage: workoutConfirmationObjectionListPageProps
-        ) => {
-          return (
-            <div
-              key={workoutConfirmationObjectionListPage.objectionId}
-              className={`${
-                workoutConfirmationObjectionListPage.voteCompletion
-                  ? 'bg-[#F5F5F5]'
-                  : 'bg-[FFFFFF]'
-              } -mx-4 p-4`}
-            >
-              <Link
-                href={{
-                  pathname: `/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmaionDetail`,
-                  query: {
-                    workoutConfirmationId:
-                      workoutConfirmationObjectionListPage.workoutConfirmationId,
-                    isObjection:
-                      workoutConfirmationObjectionListPage.objectionId !== null,
-                    objectionId:
-                      workoutConfirmationObjectionListPage.objectionId,
-                  },
-                }}
-              >
-                <div className='flex'>
-                  <Image
-                    src={objectionBellFill}
-                    alt='ogjectionBellFill'
-                    className={`${
-                      workoutConfirmationObjectionListPage.voteCompletion
-                        ? 'fill-gray-100'
-                        : 'fill-gray-900'
-                    }`}
-                  />
-                  <div className='text-[#1F2937] flex flex-col pl-5 gap-y-1'>
-                    <span className='text-base'>
-                      {
-                        workoutConfirmationObjectionListPage.targetWorkerNickname
-                      }
-                      님의 인증이 이의신청되었어요.
-                    </span>
-                    <span className='text-xs'>
-                      {' '}
-                      {workoutConfirmationObjectionListPage.createdAt.substring(
-                        0,
-                        10
-                      )}{' '}
-                    </span>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          );
+      <WorkoutConfirmationObjectionList
+        workoutConfirmationObjectionListPages={
+          workoutConfirmationObjectionListPages
         }
-      )}
-      <div ref={ref} />
+        workspaceId={workspaceId}
+      />
+      <div ref={ref} style={{ height: 10 }} />
     </div>
   );
 }

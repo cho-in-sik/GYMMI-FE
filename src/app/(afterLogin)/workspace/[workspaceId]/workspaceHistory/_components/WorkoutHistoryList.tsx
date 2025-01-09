@@ -35,6 +35,7 @@ export default function WorkHistoryList({
   handleWorkoutHistory,
 }: WorkHistoryListProps) {
   const isToggled = workoutHistoryIds.includes(workspaceHistoryData.id);
+  const isLastIndex = index === workoutHistoriesLength - 1;
 
   const { data: workoutHistorydetails } = useQuery({
     queryKey: [
@@ -55,13 +56,16 @@ export default function WorkHistoryList({
   });
 
   return (
-    <div className='flex'>
+    <div className={`${isLastIndex && 'pb-5'} flex`}>
       <span className='text-[#9C9EA3] text-[10px]'>
         {workspaceHistoryData.createdAt[index] ===
         workspaceHistoryData.createdAt ? (
           <></>
         ) : (
-          workspaceHistoryData.createdAt.substring(5, 10)
+          `${workspaceHistoryData.createdAt.substring(
+            5,
+            7
+          )}/${workspaceHistoryData.createdAt.substring(8, 10)}`
         )}
       </span>
       <div className='flex flex-col items-center px-5'>
@@ -69,11 +73,7 @@ export default function WorkHistoryList({
           src={isToggled ? radiusClicked : radius}
           alt={isToggled ? 'radiusClicked' : 'radius'}
         />
-        <IsToggledImage
-          index={index}
-          isToggled={isToggled}
-          workoutHistoriesLength={workoutHistoriesLength}
-        />
+        <IsToggledImage isToggled={isToggled} isLastIndex={isLastIndex} />
       </div>
       <div>
         <div
@@ -96,7 +96,7 @@ export default function WorkHistoryList({
         </div>
         <ApproveStatusMsg isApproved={workspaceHistoryData.isApproved} />
         {isToggled && (
-          <div className='w-40 min-h-[85px] bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
+          <div className='w-40 min-h-8 bg-[#FDFDFD] drop-shadow-md rounded-lg mt-2 pt-1 pb-2'>
             <div>
               {workoutHistorydetails?.data.map(
                 (historyDetail: TDetailHistorys) => (
