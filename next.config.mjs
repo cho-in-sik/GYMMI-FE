@@ -11,6 +11,15 @@ const nextConfig = {
   // api: {
   //   bodyParser: false,
   // },
+  images: {
+    formats: ['image/avif', 'image/webp'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
   async rewrites() {
     return [
       {
