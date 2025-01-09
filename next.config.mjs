@@ -3,6 +3,7 @@ import withPWAInit from '@ducanh2912/next-pwa';
 
 const withPWA = withPWAInit({
   dest: 'public',
+  skipWaiting: true,
   workboxOptions: {
     runtimeCaching: [
       {
@@ -12,12 +13,19 @@ const withPWA = withPWAInit({
         options: {
           cacheName: 'image-cache',
           expiration: {
-            maxEntries: 50, // 최대 50개 이미지 캐시
+            maxEntries: 50,
             maxAgeSeconds: 30 * 24 * 60 * 60, // 30일
+          },
+          cacheableResponse: {
+            statuses: [0, 200], // 성공적인 응답만 캐시
+          },
+          matchOptions: {
+            ignoreSearch: true, // URL 파라미터 무시
           },
         },
       },
     ],
+    cleanupOutdatedCaches: true, // 오래된 캐시 자동 정리
   },
 });
 
