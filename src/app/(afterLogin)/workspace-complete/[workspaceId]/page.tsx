@@ -7,11 +7,11 @@ import { useRouter } from 'next/navigation';
 import backArrow from '@/../public/svgs/backArrow.svg';
 import onePrize from '@/../public/svgs/workspace/workspaceHistory/onePrize.svg';
 import lastPrize from '@/../public/svgs/workspace/workspaceHistory/lastPrize.svg';
-import completeTask from '@/../public/images/completeTask.png';
 // import { completeWorkspace } from '@/api/workspace';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import OneLastRank from '../_components/OneLastRank';
 import TaskRankMenber from '../_components/TaskRankMenbers';
+import TaskContent from '../_components/TaskContent';
 
 const mockData = {
   task: '맛있는 밥 사주기',
@@ -67,19 +67,8 @@ export default function Page() {
           <span>워크스페이스 목표를</span>
           <span>모두 달성했어요!</span>
         </div>
-        <div className='w-full h-24 bg-[#FFFFFF] rounded-2xl mt-7 flex'>
-          <div className='flex flex-col py-3 pl-6 justify-center'>
-            <span className='pt-2 text-sm text-[#4B5563]'>그룹 테스크</span>
-            <div className='w-52 h-full flex items-center'>
-              <span className='text-2xl text-[#EF4444] font-bold'>
-                {mockData.task}
-              </span>
-            </div>
-          </div>
-          <div className='absolute right-2 top-[70px]'>
-            <Image src={completeTask} alt='completeTask' />
-          </div>
-        </div>
+        <TaskContent task={mockData.task} />
+
         <div className='w-full bg-[#FFFFFF] rounded-2xl mt-3'>
           <div className='px-6 py-5'>
             <div className='text-xl text-[#4B5563] flex flex-col gap-y-1'>
