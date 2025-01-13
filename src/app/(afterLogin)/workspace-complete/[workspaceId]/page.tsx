@@ -13,42 +13,6 @@ import OneLastRank from '../_components/OneLastRank';
 import TaskRankMenber from '../_components/TaskRankMenbers';
 import TaskContent from '../_components/TaskContent';
 
-const mockData = {
-  task: '맛있는 밥 사주기',
-  workers: [
-    {
-      name: '팀원1',
-      rank: 1,
-      contributeScore: 600,
-    },
-    {
-      name: '팀원2',
-      rank: 2,
-      contributeScore: 500,
-    },
-    {
-      name: '팀원3',
-      rank: 3,
-      contributeScore: 300,
-    },
-    {
-      name: '팀원4',
-      rank: 4,
-      contributeScore: 200,
-    },
-    {
-      name: '팀원5',
-      rank: 5,
-      contributeScore: 100,
-    },
-    {
-      name: '팀원6',
-      rank: 6,
-      contributeScore: 50,
-    },
-  ],
-};
-
 export default function Page() {
   const router = useRouter();
   const workspaceId = useWorkoutIdFromParams();
@@ -67,7 +31,7 @@ export default function Page() {
           <span>워크스페이스 목표를</span>
           <span>모두 달성했어요!</span>
         </div>
-        <TaskContent task={mockData.task} />
+        {/* <TaskContent task={completeWorkspaceInfo?.data.task} /> */}
 
         <div className='w-full bg-[#FFFFFF] rounded-2xl mt-3'>
           <div className='px-6 py-5'>
@@ -78,26 +42,26 @@ export default function Page() {
               <span>테스크를 수행해보세요!</span>
             </div>
             <div className='flex justify-between mt-8'>
-              <OneLastRank
+              {/* <OneLastRank
                 rankPrize={onePrize}
-                name={mockData.workers[0].name}
-                contributeScore={mockData.workers[0].contributeScore}
-                rank={mockData.workers[0].rank}
+                name={completeWorkspaceInfo?.data.workers[0].name}
+                contributeScore={completeWorkspaceInfo?.data.workers[0].contributeScore}
+                rank={completeWorkspaceInfo?.data.workers[0].rank}
                 height='32'
-              />
-              <OneLastRank
+              /> */}
+              {/* <OneLastRank
                 rankPrize={lastPrize}
-                name={mockData.workers[mockData.workers.length - 1].name}
+                name={completeWorkspaceInfo?.data.workers[completeWorkspaceInfo?.data.workers.length - 1].name}
                 contributeScore={
-                  mockData.workers[mockData.workers.length - 1].contributeScore
+                  completeWorkspaceInfo?.data.workers[completeWorkspaceInfo?.data.workers.length - 1].contributeScore
                 }
-                rank={mockData.workers[mockData.workers.length - 1].rank}
+                rank={completeWorkspaceInfo?.data.workers[completeWorkspaceInfo?.data.workers.length - 1].rank}
                 height='9'
-              />
+              /> */}
             </div>
             <div className='mt-5 mb-8'>
               <span className='text-[10px] text-[#6B7280] '>팀별 순위</span>
-              <TaskRankMenber workers={mockData.workers} />
+              {/* <TaskRankMenber workers={completeWorkspaceInfo?.data.workers} /> */}
             </div>
           </div>
         </div>
