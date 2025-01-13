@@ -89,35 +89,22 @@ export default function Page() {
               <span>테스크를 수행해보세요!</span>
             </div>
             <div className='flex justify-between mt-8'>
-              <div className='w-40 flex flex-col items-center'>
-                <OneLastRank
-                  rankPrize={onePrize}
-                  rankName={mockData.workers[0].name}
-                  rankContributeScore={mockData.workers[0].contributeScore}
-                />
-                <div className='w-full h-32 bg-[#F3F4F6] rounded-t-lg mt-5 flex items-end justify-center'>
-                  <div className='text-sm text-[#9CA3AF] pb-0.5'>
-                    {' '}
-                    {mockData.workers[0].rank}{' '}
-                  </div>
-                </div>
-              </div>
-              <div className='w-40 flex flex-col items-center justify-end ml-1'>
-                <OneLastRank
-                  rankPrize={lastPrize}
-                  rankName={mockData.workers[mockData.workers.length - 1].name}
-                  rankContributeScore={
-                    mockData.workers[mockData.workers.length - 1]
-                      .contributeScore
-                  }
-                />
-                <div className='w-full h-9 bg-[#F3F4F6] rounded-t-lg mt-5 flex items-end justify-center'>
-                  <div className='text-sm text-[#9CA3AF] pb-0.5'>
-                    {' '}
-                    {mockData.workers[mockData.workers.length - 1].rank}{' '}
-                  </div>
-                </div>
-              </div>
+              <OneLastRank
+                rankPrize={onePrize}
+                name={mockData.workers[0].name}
+                contributeScore={mockData.workers[0].contributeScore}
+                rank={mockData.workers[0].rank}
+                height='32'
+              />
+              <OneLastRank
+                rankPrize={lastPrize}
+                name={mockData.workers[mockData.workers.length - 1].name}
+                contributeScore={
+                  mockData.workers[mockData.workers.length - 1].contributeScore
+                }
+                rank={mockData.workers[mockData.workers.length - 1].rank}
+                height='9'
+              />
             </div>
             <div className='mt-5 mb-8'>
               <span className='text-[10px] text-[#6B7280] '>팀별 순위</span>
