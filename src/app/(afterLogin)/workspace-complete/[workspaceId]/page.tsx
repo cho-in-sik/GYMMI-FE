@@ -1,15 +1,53 @@
 'use client';
 
 import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
+// import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
 import backArrow from '@/../public/svgs/backArrow.svg';
 import onePrize from '@/../public/svgs/workspace/workspaceHistory/onePrize.svg';
 import lastPrize from '@/../public/svgs/workspace/workspaceHistory/lastPrize.svg';
+import taskRank from '@/../public/svgs/workspace/taskRank.svg';
 import completeTask from '@/../public/images/completeTask.png';
-import { completeWorkspace } from '@/api/workspace';
+// import { completeWorkspace } from '@/api/workspace';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import OneLastRank from '../_components/OneLastRank';
+
+const mockData = {
+  task: '맛있는 밥 사주기',
+  workers: [
+    {
+      name: '팀원1',
+      rank: 1,
+      contributeScore: 600,
+    },
+    {
+      name: '팀원2',
+      rank: 2,
+      contributeScore: 500,
+    },
+    {
+      name: '팀원3',
+      rank: 3,
+      contributeScore: 300,
+    },
+    {
+      name: '팀원4',
+      rank: 4,
+      contributeScore: 200,
+    },
+    {
+      name: '팀원5',
+      rank: 5,
+      contributeScore: 100,
+    },
+    {
+      name: '팀원6',
+      rank: 6,
+      contributeScore: 50,
+    },
+  ],
+};
 
 export default function Page() {
   const router = useRouter();
@@ -20,7 +58,7 @@ export default function Page() {
   // });
 
   return (
-    <div className={`w-full h-screen px-5 py-11 bg-[#EFF6FF]`}>
+    <div className={`w-full h-full px-5 py-11 bg-[#EFF6FF]`}>
       <div className='mb-5' onClick={() => router.back()}>
         <Image src={backArrow} alt='backArrow' />
       </div>
@@ -30,11 +68,13 @@ export default function Page() {
           <span>모두 달성했어요!</span>
         </div>
         <div className='w-full h-24 bg-[#FFFFFF] rounded-2xl mt-7 flex'>
-          <div className='flex flex-col gap-y-1 py-3 pl-6 justify-center'>
-            <span className='text-sm text-[#848D99]'>그룹 테스크</span>
-            <span className='text-2xl text-[#EF4444] font-bold'>
-              맛있는 밥 사주기
-            </span>
+          <div className='flex flex-col py-3 pl-6 justify-center'>
+            <span className='pt-2 text-sm text-[#4B5563]'>그룹 테스크</span>
+            <div className='w-52 h-full flex items-center'>
+              <span className='text-2xl text-[#EF4444] font-bold'>
+                {mockData.task}
+              </span>
+            </div>
           </div>
           <div className='absolute right-2 top-[70px]'>
             <Image src={completeTask} alt='completeTask' />
@@ -42,7 +82,7 @@ export default function Page() {
         </div>
         <div className='w-full bg-[#FFFFFF] rounded-2xl mt-3'>
           <div className='px-6 py-5'>
-            <div className='text-xl text-[#9CA3AF] flex flex-col gap-y-1'>
+            <div className='text-xl text-[#4B5563] flex flex-col gap-y-1'>
               <span>
                 <strong className='text-[#EF4444]'>최종순위</strong>를 확인 후
               </span>
@@ -50,51 +90,60 @@ export default function Page() {
             </div>
             <div className='flex justify-between mt-8'>
               <div className='w-40 flex flex-col items-center'>
-                <div className='flex'>
-                  <Image src={onePrize} alt='onePrize' className='w-14 h-14' />
-                  <div className='flex flex-col justify-center items-center'>
-                    <span className='text-xl text-[#4B5563] font-bold'>
-                      1등 닉네임
-                    </span>
-                    <span className='text-[10px] text-[#6B7280]'>
-                      총 1등 점수
-                    </span>
-                  </div>
-                </div>
+                <OneLastRank
+                  rankPrize={onePrize}
+                  rankName={mockData.workers[0].name}
+                  rankContributeScore={mockData.workers[0].contributeScore}
+                />
                 <div className='w-full h-32 bg-[#F3F4F6] rounded-t-lg mt-5 flex items-end justify-center'>
-                  <div className='text-sm text-[#9CA3AF] pb-0.5'>1</div>
+                  <div className='text-sm text-[#9CA3AF] pb-0.5'>
+                    {' '}
+                    {mockData.workers[0].rank}{' '}
+                  </div>
                 </div>
               </div>
               <div className='w-40 flex flex-col items-center justify-end ml-1'>
-                <div className='flex'>
-                  <Image
-                    src={lastPrize}
-                    alt='lastPrize'
-                    className='w-14 h-14'
-                  />
-                  <div className='flex flex-col justify-center items-center'>
-                    <span className='text-xl text-[#4B5563] font-bold'>
-                      꼴등 닉네임
-                    </span>
-                    <span className='text-[10px] text-[#6B7280]'>
-                      꼴등 점수
-                    </span>
-                  </div>
-                </div>
+                <OneLastRank
+                  rankPrize={lastPrize}
+                  rankName={mockData.workers[mockData.workers.length - 1].name}
+                  rankContributeScore={
+                    mockData.workers[mockData.workers.length - 1]
+                      .contributeScore
+                  }
+                />
                 <div className='w-full h-9 bg-[#F3F4F6] rounded-t-lg mt-5 flex items-end justify-center'>
-                  <div className='text-sm text-[#9CA3AF] pb-0.5'>4</div>
+                  <div className='text-sm text-[#9CA3AF] pb-0.5'>
+                    {' '}
+                    {mockData.workers[mockData.workers.length - 1].rank}{' '}
+                  </div>
                 </div>
               </div>
             </div>
             <div className='mt-5 mb-8'>
               <span className='text-[10px] text-[#6B7280] '>팀별 순위</span>
-              <div className='h-12 bg-[#F9FAFB] shadow-md rounded-lg flex items-center mb-2'>
-                <div className='pl-5'>2</div>
-                <div className='w-full px-7 flex justify-between'>
-                  <span className='text-base text-[#7E7E7E]'>팀원 닉네임</span>
-                  <span className='text-base text-[#7E7E7E]'>팀별 점수</span>
+              {mockData.workers.map((worker) => (
+                <div
+                  key={worker.rank}
+                  className='h-12 bg-[#F9FAFB] shadow-md rounded-lg flex items-center mb-3 relative'
+                >
+                  <div className='ml-4'>
+                    <Image src={taskRank} alt='taskRank' />
+                    <span className='absolute left-[23px] top-4 text-xs text-[#6B7280]'>
+                      {worker.rank}
+                    </span>
+                  </div>
+                  <div className='w-full pl-4 pr-7 flex justify-between'>
+                    <span className='text-base text-[#7E7E7E]'>
+                      {' '}
+                      {worker.name}{' '}
+                    </span>
+                    <span className='text-base text-[#7E7E7E]'>
+                      {' '}
+                      {worker.contributeScore} P{' '}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>
