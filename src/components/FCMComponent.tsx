@@ -5,14 +5,21 @@ import { getMessaging, onMessage } from 'firebase/messaging';
 import { firebaseApp } from '@/utils/firebase/firebase';
 
 import useSendPush from '@/hooks/useSendPush';
+import { postFcmToken } from '@/api/fcm';
 
 export default function FCMComponent() {
   const { fcmToken, notificationPermissionStatus } = useSendPush();
 
   useEffect(() => {
     // FCM 토큰 로컬스토리지에 저장
+
     if (fcmToken) {
       localStorage.setItem('fcmToken', fcmToken);
+      const token = localStorage.getItem('accessToken');
+      if (token) {
+        const res = postFcmToken(fcmToken);
+        console.log(res);
+      }
     }
 
     // 알림 권한 요청
@@ -30,12 +37,12 @@ export default function FCMComponent() {
     const messaging = getMessaging(firebaseApp);
     const unsubscribe = onMessage(messaging, (payload) => {
       console.log('포그라운드 메시지 수신:', payload);
-      const { title, content, icon } = payload.data || {};
+      const { title, body } = payload.notification || {};
 
       if (Notification.permission === 'granted') {
         new Notification(title || '알림', {
-          body: content || '내용 없음',
-          icon: icon || '/images/basicIcon.png', // 아이콘 설정
+          body: body || '내용 없음',
+          icon: '/images/basicIcon.png',
         });
       }
     });

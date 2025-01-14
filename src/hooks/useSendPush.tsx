@@ -15,11 +15,9 @@ const useSendPush = () => {
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
           const messaging = getMessaging(firebaseApp);
 
-          // Retrieve the notification permission status
           const permission = await Notification.requestPermission();
           setNotificationPermissionStatus(permission);
 
-          // Check if permission is granted before retrieving the token
           if (permission === 'granted') {
             const currentToken = await getToken(messaging, {
               vapidKey:
