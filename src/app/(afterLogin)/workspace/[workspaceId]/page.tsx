@@ -198,7 +198,7 @@ export default function Page() {
             <div>
               <button
                 // opacity & disabled
-                disabled={infoWork?.data.workers.length === 1 ? true : false}
+                disabled={infoWork?.data.workers.length !== 1 ? true : false}
                 className={`w-40 py-2.5 bg-main text-white text-base rounded-lg ${
                   infoWork?.data.workers.length === 1 && 'opacity-30'
                 }`}
