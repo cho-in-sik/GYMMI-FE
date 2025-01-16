@@ -1,23 +1,20 @@
+'use server';
+
 import admin, { ServiceAccount } from 'firebase-admin';
-import { NextApiRequest, NextApiResponse } from 'next';
 
 interface NotificationData {
-  data: {
-    title: string;
-    body: string;
-    image: string;
-    click_action: string;
-  };
+  title: string;
+  body: string;
+  image?: string;
+  click_action?: string;
   token: string;
 }
-const sendFCMNotification = async (data: NotificationData) => {
+
+export const sendFCMNotification = async (data: NotificationData) => {
   const serviceAccount: ServiceAccount = {
-    projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
-    privateKey: process.env.NEXT_PUBLIC_FIREBASE_PRIVATE_KEY?.replace(
-      /\\n/g,
-      '\n',
-    ),
-    clientEmail: process.env.NEXT_PUBLIC_FIREBASE_CLIENT_EMAIL,
+    projectId: 'gymmi-e23b1',
+    privateKey: 'nrFHJbXNTrLukC1G6AAx_0IwLHPJT7DK9-M_j92cVRs',
+    clientEmail: 'firebase-adminsdk-ib7jp@gymmi-e23b1.iam.gserviceaccount.com',
   };
 
   if (!admin.apps.length) {
@@ -26,7 +23,24 @@ const sendFCMNotification = async (data: NotificationData) => {
     });
   }
 
-  const res = await admin.messaging().send(data);
+  const message = {
+    notification: {
+      title: data.title,
+      body: data.body,
+      image: data.image,
+    },
+    data: {
+      click_action: data.click_action || '/',
+    },
+    token: data.token,
+  };
 
-  return res;
+  try {
+    const response = await admin.messaging().send(message);
+    console.log('Successfully sent message:', response);
+    return response;
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw new Error('Failed to send FCM notification');
+  }
 };
