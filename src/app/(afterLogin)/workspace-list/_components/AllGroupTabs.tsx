@@ -15,12 +15,7 @@ import nextArrow from '@/../public/svgs/nextArrow.svg';
 import Image from 'next/image';
 
 import { useEffect, useState } from 'react';
-import {
-  allWorkspaces,
-  alreadyIn,
-  joinWorkspace,
-  matchPassword,
-} from '@/api/workspace';
+import { allWorkspaces, alreadyIn, joinWorkspace } from '@/api/workspace';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { workspace } from '@/constants/queryKey';
 
@@ -61,25 +56,6 @@ export default function AllGroupTabs() {
       return lastPage?.nextPage || undefined;
     },
   });
-
-  // const nextDialog = async (e: any) => {
-  //   e.preventDefault();
-  //   try {
-  //     const res = await matchPassword({
-  //       workspaceId: currentWorkspaceId,
-  //       password,
-  //     });
-  //     console.log(res);
-
-  //     if (res?.data.sameness === true) {
-  //       setIsFirstDialogOpen(false);
-  //     } else {
-  //       setError('잘못된 비밀번호입니다.');
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();

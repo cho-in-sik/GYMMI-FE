@@ -62,15 +62,6 @@ const createWorkspace = async (data: any) => {
   return res;
 };
 
-const matchPassword = async ({ workspaceId, password }: PasswordCheck) => {
-  const res = await customAxios.post(
-    `/workspaces/${workspaceId}/match-password`,
-    { password }
-  );
-
-  return res;
-};
-
 const joinWorkspace = async ({ password, workspaceId }: JoinWorkspace) => {
   const formData = { password };
   const res = await customAxios.post(
@@ -168,7 +159,6 @@ export {
   startWorkspace,
   leaveWorkspace,
   infoWorkspace,
-  matchPassword,
   missionsWorkspace,
   postMissions,
   missionsRecord,
