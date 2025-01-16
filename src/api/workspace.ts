@@ -10,7 +10,6 @@ type SearchProps = {
 
 type JoinWorkspace = {
   password: string;
-  task: string;
   workspaceId: number;
 };
 
@@ -72,12 +71,8 @@ const matchPassword = async ({ workspaceId, password }: PasswordCheck) => {
   return res;
 };
 
-const joinWorkspace = async ({
-  password,
-  task,
-  workspaceId,
-}: JoinWorkspace) => {
-  const formData = { password, task };
+const joinWorkspace = async ({ password, workspaceId }: JoinWorkspace) => {
+  const formData = { password };
   const res = await customAxios.post(
     `/workspaces/${workspaceId}/join`,
     formData
