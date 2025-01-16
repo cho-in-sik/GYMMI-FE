@@ -48,7 +48,9 @@ export default function Page() {
         />
       </div>
       {workoutConfirmationObjectionListPages?.length === 0 ? (
-        <NoDataUI content='이의신청 알림이 없습니다.' />
+        <div className='h-[500px]'>
+          <NoDataUI content='이의신청 알림이 없습니다.' />
+        </div>
       ) : (
         <WorkoutConfirmationObjectionList
           workoutConfirmationObjectionListPages={
