@@ -108,7 +108,6 @@ export default function Page() {
 
   const handleTest = async () => {
     if (Notification.permission === 'granted') {
-      console.log(1);
       return new Notification('테스트 알림', {
         body: '테스트 내용입니다.',
         icon: '/images/basicIcon.png',

@@ -39,12 +39,12 @@ export default function FCMComponent() {
       console.log('포그라운드 메시지 수신:', payload);
       const { title, body } = payload.notification || {};
 
-      if (Notification.permission === 'granted') {
-        new Notification(title || '알림', {
-          body: body || '내용 없음',
-          icon: '/images/basicIcon.png',
-        });
-      }
+      // if (Notification.permission === 'granted') {
+      //   new Notification(title || '알림', {
+      //     body: body || '내용 없음',
+      //     icon: '/images/basicIcon.png',
+      //   });
+      // }
     });
 
     return () => {

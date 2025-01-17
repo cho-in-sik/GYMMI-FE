@@ -32,22 +32,23 @@ messaging.onBackgroundMessage((payload) => {
 // 푸시 내용을 처리해서 알림으로 띄운다.
 self.addEventListener('push', function (event) {
   console.log('서비스워커푸시이벤트확인', event);
-  if (event.data) {
-    // 알림 메세지일 경우엔 event.data.json().notification;
-    const data = event.data.json().data;
-    const options = {
-      body: data.body,
-      icon: data.image,
-      image: data.image,
-      data: {
-        click_action: data.click_action, // 이 필드는 밑의 클릭 이벤트 처리에 사용됨
-      },
-    };
 
-    event.waitUntil(self.registration.showNotification(data.title, options));
-  } else {
-    console.log('This push event has no data.');
-  }
+  const data = event.data.json(); // JSON 파싱
+  console.log('JSON 데이터:', data);
+  // 알림 메세지일 경우엔 event.data.json().notification;
+
+  const options = {
+    body: data.notification.body,
+    icon: '/images/icon-512x512.png',
+    image: '/images/icon-512x512.png',
+    data: {
+      click_action: data.data.redirectUrl, // 이 필드는 밑의 클릭 이벤트 처리에 사용됨
+    },
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.notification.title, options),
+  );
 });
 
 // 클릭 이벤트 처리
