@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { getMessaging, onMessage } from 'firebase/messaging';
 import { firebaseApp } from '@/utils/firebase/firebase';
 
@@ -52,5 +52,5 @@ export default function FCMComponent() {
     };
   }, [fcmToken]);
 
-  return <div></div>;
+  return null;
 }
