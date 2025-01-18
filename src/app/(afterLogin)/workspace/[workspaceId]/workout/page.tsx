@@ -106,28 +106,6 @@ export default function Page() {
     }
   };
 
-  const handleTest = async () => {
-    if (Notification.permission === 'granted') {
-      return new Notification('테스트 알림', {
-        body: '테스트 내용입니다.',
-        icon: '/images/basicIcon.png',
-      });
-    }
-
-    // try {
-    //   const res = await sendFCMNotification({
-    //     title: '테스트 알림', // 알림 제목
-    //     body: '이것은 테스트 알림입니다.', // 알림 내용
-    //     token: localStorage.getItem('fcmToken') as string, // 실제 클라이언트에서 생성된 FCM 토큰
-    //     image: '/images/basicIcon.png', // 선택: 아이콘 또는 이미지 경로
-    //     click_action: 'https://example.com', // 선택: 알림 클릭 시 이동할 URL
-    //   });
-    //   console.log('FCM 전송 성공:', res);
-    // } catch (error) {
-    //   console.error('FCM 전송 실패:', error);
-    // }
-  };
-
   const getMissionCount = (missionId: number) => {
     const mission = workoutInfo.missions.find((item) => item.id === missionId);
     return mission ? mission.count : 0;
@@ -235,13 +213,6 @@ export default function Page() {
           </div>
         </DrawerContent>
       </Drawer>
-
-      <div
-        className="w-full bg-teal-100 mt-10 text-center"
-        onClick={handleTest}
-      >
-        <button>FCM테스트</button>
-      </div>
 
       <div className="w-full fixed bottom-10">
         <button
