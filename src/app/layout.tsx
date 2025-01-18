@@ -134,7 +134,8 @@ export default function RootLayout({
       </Head>
 
       <body>
-        <DynamicTokenComponent />
+        {/* <DynamicTokenComponent /> */}
+        <FCMComponent />
 
         {children}
         {/* <AppInstallButton /> */}

@@ -27,6 +27,7 @@ import { useWorkoutStore } from '@/hooks/useWorkout';
 import { sendFCMNotification } from '@/action/sendFCM';
 
 import noBookmark from '@/../public/svgs/workspace/workout/noBookmark.svg';
+import useSendPush from '@/hooks/useSendPush';
 
 type TMission = {
   id: number;
@@ -36,6 +37,7 @@ type TMission = {
 };
 
 export default function Page() {
+  const { fcmToken } = useSendPush();
   const { workspaceId } = useParams();
   const { workoutInfo, updateMission } = useWorkoutStore();
   const [activeNumber, setActiveNumber] = useState(0);
@@ -45,6 +47,8 @@ export default function Page() {
   const [selectedMission, setSelectedMission] = useState<TMission | null>(null);
 
   const router = useRouter();
+
+  alert(fcmToken);
 
   const queryClient = useQueryClient();
 
