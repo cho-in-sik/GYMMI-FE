@@ -22,7 +22,7 @@ messaging.onBackgroundMessage((payload) => {
   const notificationTitle = payload.notification?.title || '알림';
   const notificationOptions = {
     body: payload.notification?.body || '내용 없음',
-    icon: payload.notification?.icon || '/images/basicIcon.png',
+    icon: payload.notification?.icon || '../../public/images/basicIcon.png',
   };
 
   self.registration.showNotification(notificationTitle, notificationOptions);
