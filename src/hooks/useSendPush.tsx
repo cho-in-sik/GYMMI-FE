@@ -11,29 +11,34 @@ const useSendPush = () => {
 
   useEffect(() => {
     const retrieveToken = async () => {
-      try {
-        if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        try {
           const messaging = getMessaging(firebaseApp);
 
+          // 알림 권한 요청
           const permission = await Notification.requestPermission();
           setNotificationPermissionStatus(permission);
 
           if (permission === 'granted') {
+            // FCM 토큰 가져오기
             const currentToken = await getToken(messaging, {
               vapidKey:
                 'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
             });
             if (currentToken) {
               setToken(currentToken);
+              console.log('FCM Token:', currentToken);
             } else {
-              console.log(
+              console.warn(
                 'No registration token available. Request permission to generate one.',
               );
             }
           }
+        } catch (error) {
+          console.error('An error occurred while retrieving token:', error);
         }
-      } catch (error) {
-        console.log('An error occurred while retrieving token:', error);
+      } else {
+        console.warn('Service Worker is not supported in this browser.');
       }
     };
 
