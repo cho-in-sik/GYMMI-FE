@@ -20,6 +20,7 @@ const useSendPush = () => {
           setNotificationPermissionStatus(permission);
 
           if (permission === 'granted') {
+            alert('grandted는 됐어');
             // FCM 토큰 가져오기
             const currentToken = await getToken(messaging, {
               vapidKey:
