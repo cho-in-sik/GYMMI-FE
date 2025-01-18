@@ -1,40 +1,51 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { firebaseApp } from '@/utils/firebase/firebase';
 
 const useSendPush = () => {
-  const [fcmToken, setFcmToken] = useState<string | null>(null);
+  const [token, setToken] = useState('');
+  const [notificationPermissionStatus, setNotificationPermissionStatus] =
+    useState('');
 
-  const requestFcmToken = async () => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      try {
-        const messaging = getMessaging(firebaseApp);
+  useEffect(() => {
+    const retrieveToken = async () => {
+      if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+        try {
+          const messaging = getMessaging(firebaseApp);
 
-        // FCM 토큰 요청
-        const currentToken = await getToken(messaging, {
-          vapidKey:
-            'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
-        });
+          // 알림 권한 요청
+          const permission = await Notification.requestPermission();
+          setNotificationPermissionStatus(permission);
 
-        if (currentToken) {
-          setFcmToken(currentToken);
-          console.log('FCM Token:', currentToken);
-        } else {
-          console.warn(
-            'No registration token available. Request permission to generate one.',
-          );
+          if (permission === 'granted') {
+            // FCM 토큰 가져오기
+            const currentToken = await getToken(messaging, {
+              vapidKey:
+                'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
+            });
+            if (currentToken) {
+              setToken(currentToken);
+              console.log('FCM Token:', currentToken);
+            } else {
+              console.warn(
+                'No registration token available. Request permission to generate one.',
+              );
+            }
+          }
+        } catch (error) {
+          console.error('An error occurred while retrieving token:', error);
         }
-      } catch (error) {
-        console.error('Error retrieving FCM token:', error);
+      } else {
+        console.warn('Service Worker is not supported in this browser.');
       }
-    } else {
-      console.warn('Service Worker is not supported in this browser.');
-    }
-  };
+    };
 
-  return { fcmToken, requestFcmToken };
+    retrieveToken();
+  }, []);
+
+  return { fcmToken: token, notificationPermissionStatus };
 };
 
 export default useSendPush;

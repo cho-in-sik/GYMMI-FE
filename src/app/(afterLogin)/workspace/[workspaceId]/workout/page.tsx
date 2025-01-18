@@ -47,7 +47,7 @@ export default function Page() {
 
   const router = useRouter();
 
-  const { requestFcmToken } = useSendPush();
+  // const { requestFcmToken } = useSendPush();
 
   const queryClient = useQueryClient();
 
@@ -121,14 +121,13 @@ export default function Page() {
     if (Notification.permission !== 'granted') {
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
-          requestFcmToken();
           console.log('알림 권한 허용됨');
         } else {
           console.warn('알림 권한 거부됨');
         }
       });
     }
-  }, [requestFcmToken]);
+  });
   return (
     <div>
       <Drawer open={open} onOpenChange={setOpen}>
