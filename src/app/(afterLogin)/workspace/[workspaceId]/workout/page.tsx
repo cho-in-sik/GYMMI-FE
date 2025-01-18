@@ -133,7 +133,7 @@ export default function Page() {
             });
             if (currentToken) {
               localStorage.setItem('fcmToken', currentToken);
-              console.log('FCM Token 저장됨:', currentToken);
+              alert(currentToken);
             } else {
               console.warn('FCM 토큰을 가져올 수 없습니다.');
             }
