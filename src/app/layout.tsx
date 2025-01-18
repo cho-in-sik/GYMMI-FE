@@ -2,16 +2,14 @@ import type { Metadata, Viewport } from 'next';
 import Head from 'next/head';
 import './globals.css';
 import localFont from 'next/font/local';
+import dynamic from 'next/dynamic';
 import AppInstallButton from '@/components/AppInstallButton';
 import FCMComponent from '@/components/FCMComponent';
-import Script from 'next/script';
 
 const APP_NAME = 'GYMMI';
 const APP_DEFAULT_TITLE = 'GYMMI';
 const APP_TITLE_TEMPLATE = 'GYMMI - PWA App';
 const APP_DESCRIPTION = 'GYMMI is the BEST!';
-
-// const inter = Inter({ subsets: ['latin'] });
 
 const yungothic = localFont({
   src: '../../public/fonts/yungothic320.ttf',
@@ -107,6 +105,13 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
+const DynamicTokenComponent = dynamic(
+  () => import('@/components/FCMComponent'),
+  {
+    loading: () => <p className="text-white">..</p>,
+  },
+);
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -129,7 +134,7 @@ export default function RootLayout({
       </Head>
 
       <body>
-        <FCMComponent />
+        <DynamicTokenComponent />
 
         {children}
         {/* <AppInstallButton /> */}
