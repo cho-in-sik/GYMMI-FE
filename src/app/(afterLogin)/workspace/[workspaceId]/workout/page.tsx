@@ -28,6 +28,8 @@ import { sendFCMNotification } from '@/action/sendFCM';
 
 import noBookmark from '@/../public/svgs/workspace/workout/noBookmark.svg';
 import useSendPush from '@/hooks/useSendPush';
+import { getMessaging, getToken } from 'firebase/messaging';
+import { firebaseApp } from '@/utils/firebase/firebase';
 
 type TMission = {
   id: number;
@@ -118,16 +120,36 @@ export default function Page() {
     getMissionCount(missionId) > 0;
 
   useEffect(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission().then((permission) => {
+    const requestNotificationPermissionAndToken = async () => {
+      if (Notification.permission !== 'granted') {
+        const permission = await Notification.requestPermission();
         if (permission === 'granted') {
           console.log('알림 권한 허용됨');
+          try {
+            const messaging = getMessaging(firebaseApp);
+            const currentToken = await getToken(messaging, {
+              vapidKey:
+                'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
+            });
+            if (currentToken) {
+              localStorage.setItem('fcmToken', currentToken);
+              console.log('FCM Token 저장됨:', currentToken);
+            } else {
+              console.warn('FCM 토큰을 가져올 수 없습니다.');
+            }
+          } catch (error) {
+            console.error('FCM 토큰 요청 중 오류 발생:', error);
+          }
         } else {
           console.warn('알림 권한 거부됨');
         }
-      });
-    }
-  });
+      } else {
+        console.log('알림 권한이 이미 허용되었습니다.');
+      }
+    };
+
+    requestNotificationPermissionAndToken();
+  }, []);
   return (
     <div>
       <Drawer open={open} onOpenChange={setOpen}>
