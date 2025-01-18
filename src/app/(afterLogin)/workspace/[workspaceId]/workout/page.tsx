@@ -37,7 +37,6 @@ type TMission = {
 };
 
 export default function Page() {
-  const { fcmToken } = useSendPush();
   const { workspaceId } = useParams();
   const { workoutInfo, updateMission } = useWorkoutStore();
   const [activeNumber, setActiveNumber] = useState(0);
@@ -48,7 +47,7 @@ export default function Page() {
 
   const router = useRouter();
 
-  alert(fcmToken);
+  const { requestFcmToken } = useSendPush();
 
   const queryClient = useQueryClient();
 
@@ -122,13 +121,14 @@ export default function Page() {
     if (Notification.permission !== 'granted') {
       Notification.requestPermission().then((permission) => {
         if (permission === 'granted') {
+          requestFcmToken();
           console.log('알림 권한 허용됨');
         } else {
           console.warn('알림 권한 거부됨');
         }
       });
     }
-  }, []);
+  }, [requestFcmToken]);
   return (
     <div>
       <Drawer open={open} onOpenChange={setOpen}>
