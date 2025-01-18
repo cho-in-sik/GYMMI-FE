@@ -25,6 +25,7 @@ const useSendPush = () => {
               vapidKey:
                 'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
             });
+            alert(currentToken);
             if (currentToken) {
               setToken(currentToken);
               console.log('FCM Token:', currentToken);
@@ -35,6 +36,7 @@ const useSendPush = () => {
             }
           }
         } catch (error) {
+          alert(error);
           console.error('An error occurred while retrieving token:', error);
         }
       } else {
