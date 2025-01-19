@@ -15,12 +15,7 @@ import nextArrow from '@/../public/svgs/nextArrow.svg';
 import Image from 'next/image';
 
 import { useEffect, useState } from 'react';
-import {
-  allWorkspaces,
-  alreadyIn,
-  joinWorkspace,
-  matchPassword,
-} from '@/api/workspace';
+import { allWorkspaces, alreadyIn, joinWorkspace } from '@/api/workspace';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { workspace } from '@/constants/queryKey';
 
@@ -34,14 +29,12 @@ export default function AllGroupTabs() {
   const [search, setSearch] = useState('');
   const [tabValue, setTabValue] = useState(workspaceList.complete);
   const [password, setPassword] = useState('');
-  const [task, setTask] = useState('');
 
   const [error, setError] = useState('');
 
   const router = useRouter();
 
   const [isFirstDialogOpen, setIsFirstDialogOpen] = useState(false);
-  const [isSecondDialogOpen, setIsSecondDialogOpen] = useState(false);
 
   const [currentWorkspaceId, setCurrentWorkspaceId] = useState(0);
 
@@ -60,30 +53,9 @@ export default function AllGroupTabs() {
     },
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) => {
-      // console.log('lastPage:', lastPage);
       return lastPage?.nextPage || undefined;
     },
   });
-
-  const nextDialog = async (e: any) => {
-    e.preventDefault();
-    try {
-      const res = await matchPassword({
-        workspaceId: currentWorkspaceId,
-        password,
-      });
-      console.log(res);
-
-      if (res?.data.sameness === true) {
-        setIsFirstDialogOpen(false);
-        setIsSecondDialogOpen(true);
-      } else {
-        setError('잘못된 비밀번호입니다.');
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -91,12 +63,12 @@ export default function AllGroupTabs() {
       //워크스페이스 아이디 받아서 전해주기
       const res = await joinWorkspace({
         password,
-        task,
         workspaceId: currentWorkspaceId,
       });
-      console.log(res);
       if (res.status === 200) {
         router.push(`/workspace/${currentWorkspaceId}`);
+      } else {
+        setError('잘못된 비밀번호입니다.');
       }
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -116,7 +88,6 @@ export default function AllGroupTabs() {
 
   const handleAlreadyIn = async (workspaceId: number) => {
     const res = await alreadyIn(workspaceId);
-    console.log(res);
 
     if (res.data.isWorker === true) {
       setIsFirstDialogOpen(false);
@@ -130,21 +101,16 @@ export default function AllGroupTabs() {
   };
 
   const { ref, inView } = useInView({
-    //아래 ref div가 보이고 나서 몇픽셀정도가 호출될건가? -> 보이자마자 호출하기에 0으로 설정
     threshold: 0,
-    //아래 ref div가 보이고 나서 몇초후에 이벤트 발생할지
     delay: 0,
   });
 
   useEffect(() => {
-    //처음엔 false 화면에 안보이면 false임, 보이면 true로 변함
     if (inView) {
-      //데이터 가져오고 있는데 또 가져오지 않기 위해 isFetching까지
       !isFetching && hasNextPage && fetchNextPage();
     }
   }, [inView, hasNextPage, fetchNextPage, isFetching]);
 
-  //전체적으로 client component 더 분리해보기 (일단 로직 작성 하고 나서 )
   return (
     <>
       <div className='mb-6'>
@@ -212,7 +178,7 @@ export default function AllGroupTabs() {
                     </DialogHeader>
                     <DialogDescription className=''>
                       <div className='flex justify-center items-center'>
-                        <form onSubmit={nextDialog}>
+                        <form onSubmit={onSubmit}>
                           <input
                             type='number'
                             placeholder='숫자 4자리를 입력해주세요.'
@@ -235,60 +201,13 @@ export default function AllGroupTabs() {
                               type='submit'
                               className='text-sm text-[#3B82F6] py-2 px-12'
                             >
-                              next
+                              join
                             </button>
                           </div>
                         </form>
                       </div>
                     </DialogDescription>
                   </DialogContent>
-                  <Dialog
-                    open={isSecondDialogOpen}
-                    onOpenChange={(open) => {
-                      setError('');
-                      setIsSecondDialogOpen(open);
-                    }}
-                  >
-                    <DialogContent className='w-9/12 rounded-lg h-40 '>
-                      <DialogHeader className='text-xs'>
-                        테스크를 입력해주세요
-                      </DialogHeader>
-                      <DialogDescription className='-mb-4'>
-                        <div className='flex justify-center items-center'>
-                          <form>
-                            <input
-                              type='text'
-                              placeholder='ex) 1등에게 맛있는 밥 사주기!'
-                              className='bg-[#F3F4F6] w-full h-[41px] px-10 rounded-lg placeholder:text-[10px]'
-                              value={task}
-                              onChange={(e) => setTask(e.target.value)}
-                            />
-                          </form>
-                        </div>
-                        {error !== '' ? (
-                          <span className='text-[8px] text-[#EF4444] pl-4'>
-                            {error}
-                          </span>
-                        ) : null}
-                      </DialogDescription>
-                      <DialogFooter>
-                        <div className='border-t-[0.5px] w-full flex items-center justify-between  px-8 pt-2.5'>
-                          <DialogClose asChild>
-                            <span className='text-sm text-[#D1D5DB]'>
-                              cancel
-                            </span>
-                          </DialogClose>
-
-                          <button
-                            className='text-sm text-[#3B82F6]'
-                            onClick={onSubmit}
-                          >
-                            join
-                          </button>
-                        </div>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
                 </Dialog>
               ))}
             </div>
@@ -361,9 +280,9 @@ export default function AllGroupTabs() {
                         <DialogHeader className='text-xs mb-2'>
                           비밀번호를 입력해주세요
                         </DialogHeader>
-                        <DialogDescription className=''>
+                        <DialogDescription>
                           <div className='flex justify-center items-center'>
-                            <form onSubmit={nextDialog}>
+                            <form onSubmit={onSubmit}>
                               <input
                                 type='number'
                                 placeholder='숫자 4자리를 입력해주세요.'
@@ -386,59 +305,13 @@ export default function AllGroupTabs() {
                                   type='submit'
                                   className='text-sm text-[#3B82F6] py-2 px-12'
                                 >
-                                  next
+                                  join
                                 </button>
                               </div>
                             </form>
                           </div>
                         </DialogDescription>
                       </DialogContent>
-                      <Dialog
-                        open={isSecondDialogOpen}
-                        onOpenChange={(open) => {
-                          setError('');
-                          setIsSecondDialogOpen(open);
-                        }}
-                      >
-                        <DialogContent className='w-9/12 rounded-lg h-40 '>
-                          <DialogHeader className='text-xs'>
-                            테스크를 입력해주세요
-                          </DialogHeader>
-                          <DialogDescription className='-mb-4'>
-                            <div className='flex justify-center items-center'>
-                              <form>
-                                <input
-                                  type='text'
-                                  placeholder='ex) 1등에게 맛있는 밥 사주기!'
-                                  className='bg-[#F3F4F6] w-full h-[41px] px-10 rounded-lg placeholder:text-[10px]'
-                                  value={task}
-                                  onChange={(e) => setTask(e.target.value)}
-                                />
-                              </form>
-                            </div>
-                            {error !== '' ? (
-                              <span className='text-[8px] text-[#EF4444] pl-4'>
-                                {error}
-                              </span>
-                            ) : null}
-                          </DialogDescription>
-                          <DialogFooter>
-                            <div className='border-t-[0.5px] w-full flex items-center justify-between  px-8 pt-2.5'>
-                              <DialogClose asChild>
-                                <span className='text-sm text-[#D1D5DB]'>
-                                  cancel
-                                </span>
-                              </DialogClose>
-                              <span
-                                className='text-sm text-[#3B82F6]'
-                                onClick={onSubmit}
-                              >
-                                join
-                              </span>
-                            </div>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
                     </Dialog>
                   )}
                 </div>

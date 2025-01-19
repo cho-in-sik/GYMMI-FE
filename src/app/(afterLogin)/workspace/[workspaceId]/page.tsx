@@ -21,14 +21,16 @@ import { workspace } from '@/constants/queryKey';
 import { imageLoader } from '@/utils/image';
 
 import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import WorkspaceTitle from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceTitle';
 import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceGimmi';
 import { IWorker } from '@/types/workSpace';
+import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
 
 type THistoryType = {
   workspaceId: number;
@@ -39,8 +41,7 @@ type THistoryType = {
 };
 
 export default function Page() {
-  const { workspaceId } = useParams();
-  const workspaceIdNumber = Number(workspaceId);
+  const workspaceIdNumber = useWorkoutIdFromParams();
 
   const router = useRouter();
 
@@ -51,24 +52,12 @@ export default function Page() {
     queryFn: () => infoWorkspace(workspaceIdNumber),
   });
 
-  const [isOpen, setIsOpen] = useState(false);
-
   let achievementScore =
     (infoWork?.data.achievementScore / infoWork?.data.goalScore) * 100;
 
   if (achievementScore > 100) {
     achievementScore = 100;
   }
-
-  useEffect(() => {
-    if (infoWork?.data.status === 'COMPLETED') {
-      setIsOpen(true);
-    }
-  }, [infoWork]);
-
-  const handleModalChange = (open: any) => {
-    setIsOpen(open);
-  };
 
   const handleUserId = (user: { userId: number; isMyself: boolean }) => {
     clickPageMove({
@@ -116,30 +105,12 @@ export default function Page() {
 
   return (
     <div className='h-screen'>
-      <Dialog open={isOpen} onOpenChange={handleModalChange}>
-        <DialogContent className='w-4/6 rounded-lg'>
-          <DialogDescription>
-            <div className='mb-4 text-center text-black'>
-              워크스페이스 목표를 모두 달성했어요! <br /> 테스크를 확인하러
-              갈까요?
-            </div>
-          </DialogDescription>
-          <DialogFooter className='border-t-[1px]'>
-            <div className='pt-4 flex justify-between text-gray-600'>
-              <DialogClose asChild>
-                <div className='text-sm rounded-lg text-[#D1D5DB] px-4 '>
-                  cancel
-                </div>
-              </DialogClose>
-              <Link href={`/workspace-complete/${workspaceIdNumber}`}>
-                <div className='text-sm rounded-lg text-blue-500 px-4 '>
-                  yes
-                </div>
-              </Link>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ScrollTop />
+      <WorkspaceCompleteModal
+        workspaceId={workspaceIdNumber}
+        status={infoWork?.data.status}
+        isObjectionInProgress={infoWork?.data.isObjectionInProgress}
+      />
 
       <div className='mb-14'>
         <WorkspaceTitle name={infoWork?.data.name} workout={workout} />
@@ -227,7 +198,7 @@ export default function Page() {
             <div>
               <button
                 // opacity & disabled
-                disabled={infoWork?.data.workers.length === 1 ? true : false}
+                disabled={infoWork?.data.workers.length !== 1 ? true : false}
                 className={`w-40 py-2.5 bg-main text-white text-base rounded-lg ${
                   infoWork?.data.workers.length === 1 && 'opacity-30'
                 }`}
