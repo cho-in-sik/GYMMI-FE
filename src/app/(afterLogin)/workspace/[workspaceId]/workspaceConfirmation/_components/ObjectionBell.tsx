@@ -15,9 +15,11 @@ export default function ObjectionBell({
   workspaceId,
   workoutConfirmationVoteInCompletionCount,
 }: IObjectionProps) {
-  const voteInCompeletionCount = workoutConfirmationVoteInCompletionCount?.some(
-    (count) => count > 0
-  );
+  const voteInCompeletionCount =
+    workoutConfirmationVoteInCompletionCount?.reduce((acc, cur) => {
+      return acc + cur;
+    }, 0);
+
   return (
     <Link
       href={`/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`}
@@ -25,7 +27,9 @@ export default function ObjectionBell({
       <div className='fixed bottom-14 right-2 z-50'>
         {voteInCompeletionCount ? (
           <div className='relative'>
-            <span className='h-3 w-3 animate-ping absolute top-1 right-2 rounded-full bg-sky-400 opacity-75' />
+            <div className='h-5 w-5 absolute right-1 bottom-10 rounded-full bg-[#ffffff]'>
+              <span className='pl-[5px]'>{voteInCompeletionCount}</span>
+            </div>
             <Image
               src={objectionBellFilled}
               alt='objectionBellFilled'

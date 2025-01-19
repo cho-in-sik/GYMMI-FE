@@ -1,5 +1,9 @@
 import customAxios from '@/utils/cutstomAxios';
 
+interface IconfirmationDetailVoteMutationProps {
+  workspaceId: number;
+}
+
 interface IworkoutConfirmationsProps {
   workspaceId: number;
   page: number;
@@ -35,6 +39,13 @@ const workoutConfirmations = async ({
   const res = customAxios.get(
     `/workspaces/${workspaceId}/workout-confirmations?pageNumber=${page}`
   );
+  return res;
+};
+
+const confirmationDetailVoteMutationFn = async ({
+  workspaceId,
+}: IconfirmationDetailVoteMutationProps) => {
+  const res = customAxios.post(`/workspaces/${workspaceId}/objections`);
   return res;
 };
 
@@ -95,6 +106,7 @@ const workoutConfirmationObjectionLists = async ({
 
 export {
   workoutConfirmations,
+  confirmationDetailVoteMutationFn,
   workoutConfirmaionsDetail,
   workoutObjectionReason,
   workoutObjections,

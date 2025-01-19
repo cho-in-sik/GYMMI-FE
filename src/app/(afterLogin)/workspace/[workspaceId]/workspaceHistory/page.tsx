@@ -71,7 +71,9 @@ function Page() {
             {'<개인별 운동 히스토리 목록>'}
           </span>
           {workspaceHistoryDatas?.data.workoutHistories.length === 0 ? (
-            <NoDataUI content={'아직 운동 히스토리가 없어요.'} />
+            <div className='h-[230px]'>
+              <NoDataUI content={'아직 운동 히스토리가 없어요.'} />
+            </div>
           ) : (
             <div className='pt-4 pl-6'>
               {workspaceHistoryDatas?.data.workoutHistories.map(

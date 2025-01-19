@@ -10,7 +10,6 @@ type SearchProps = {
 
 type JoinWorkspace = {
   password: string;
-  task: string;
   workspaceId: number;
 };
 
@@ -52,7 +51,7 @@ const allWorkspaces = async ({ type, keyword = '', page = 0 }: SearchProps) => {
     type = '';
   }
   const res = await customAxios.get(
-    `/workspaces?status=${type}&keyword=${keyword}&page=${page}`,
+    `/workspaces?status=${type}&keyword=${keyword}&page=${page}`
   );
 
   return res;
@@ -63,24 +62,11 @@ const createWorkspace = async (data: any) => {
   return res;
 };
 
-const matchPassword = async ({ workspaceId, password }: PasswordCheck) => {
-  const res = await customAxios.post(
-    `/workspaces/${workspaceId}/match-password`,
-    { password },
-  );
-
-  return res;
-};
-
-const joinWorkspace = async ({
-  password,
-  task,
-  workspaceId,
-}: JoinWorkspace) => {
-  const formData = { password, task };
+const joinWorkspace = async ({ password, workspaceId }: JoinWorkspace) => {
+  const formData = { password };
   const res = await customAxios.post(
     `/workspaces/${workspaceId}/join`,
-    formData,
+    formData
   );
   return res;
 };
@@ -115,7 +101,7 @@ const missionsWorkspace = async (workspaceId: number) => {
 
 const missionsRecord = async ({ workspaceId, userId }: MissionRecord) => {
   const res = await customAxios.get(
-    `/workspaces/${workspaceId}/workings/${userId}`,
+    `/workspaces/${workspaceId}/workings/${userId}`
   );
   return res;
 };
@@ -133,7 +119,7 @@ const userMissions = async (workspaceId: number) => {
 };
 
 const completeWorkspace = async (workspaceId: number) => {
-  const res = await customAxios.get(`/workspaces/${workspaceId}/tasks`);
+  const res = await customAxios.get(`/workspaces/${workspaceId}/result`);
   return res;
 };
 
@@ -148,7 +134,7 @@ const workspaceHistorys = async ({
   userId,
 }: TWorkspaceHistory) => {
   const res = customAxios.get(
-    `/workspaces/${workspaceId}/workout-context/${userId}`,
+    `/workspaces/${workspaceId}/workout-context/${userId}`
   );
   return res;
 };
@@ -160,7 +146,7 @@ const historyDetails = async ({
   workoutHistoryId,
 }: THistoryDetail) => {
   const res = customAxios.get(
-    `/workspaces/${workspaceId}/workout-histories/${userId}/${workoutHistoryId}`,
+    `/workspaces/${workspaceId}/workout-histories/${userId}/${workoutHistoryId}`
   );
   return res;
 };
@@ -173,7 +159,6 @@ export {
   startWorkspace,
   leaveWorkspace,
   infoWorkspace,
-  matchPassword,
   missionsWorkspace,
   postMissions,
   missionsRecord,

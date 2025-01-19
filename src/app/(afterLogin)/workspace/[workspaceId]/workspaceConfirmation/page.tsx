@@ -2,7 +2,10 @@
 
 import { useInView } from 'react-intersection-observer';
 
-import { workoutConfirmations } from '@/api/workspaceConfirmaion';
+import {
+  confirmationDetailVoteMutationFn,
+  workoutConfirmations,
+} from '@/api/workspaceConfirmaion';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import { IWorkoutConfirmationPageProps } from '@/types/workoutConfirmation';
 
@@ -12,6 +15,7 @@ import ConfirmationCompo from './_components/ConfirmationCompo';
 import useInfiniteQuerys from '@/hooks/workoutConfirmation/ useInfiniteQuerys';
 import { useEffect, useRef, useState } from 'react';
 import NoDataUI from '../../_components/NoDataUI';
+import { useMutation } from '@tanstack/react-query';
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
@@ -19,7 +23,6 @@ export default function Page() {
 
   const [ref, inView] = useInView({
     threshold: 0.1,
-    delay: 500,
   });
 
   const scrollBottomRef = useRef<HTMLDivElement | null>(null);
@@ -30,6 +33,16 @@ export default function Page() {
     dataReqFn: workoutConfirmations,
     params: { workspaceId },
     inView: inView && initialObserve,
+  });
+
+  const confirmationDetailVoteMutation = useMutation({
+    mutationFn: () => confirmationDetailVoteMutationFn({ workspaceId }),
+    onSuccess: () => {
+      console.log('상세 인증 투표 상태 요청 성공');
+    },
+    onError: () => {
+      console.error('상세 인증 투표 상태 에러 발생');
+    },
   });
 
   const workoutConfirmationPages = workoutConfirmation?.pages
@@ -60,10 +73,10 @@ export default function Page() {
   }, [workoutConfirmationPages]);
 
   return (
-    <div className='h-full'>
+    <div className='min-h-[500px] h-full'>
       <div className='-mx-4 px-4 bg-[#F1F7FF] -mt-3 pb-3'>
         {workoutConfirmationPages?.length === 0 ? (
-          <div>
+          <div className='h-[705px]'>
             <NoDataUI content='아직 운동 인증이 없어요.' />
           </div>
         ) : (
@@ -85,10 +98,14 @@ export default function Page() {
                       workoutConfirmationPage={workoutConfirmationPage}
                       index={index}
                     />
-                    <ConfirmationCompo
-                      workoutConfirmationPage={workoutConfirmationPage}
-                      workspaceId={workspaceId}
-                    />
+                    <div
+                      onClick={() => confirmationDetailVoteMutation.mutate()}
+                    >
+                      <ConfirmationCompo
+                        workoutConfirmationPage={workoutConfirmationPage}
+                        workspaceId={workspaceId}
+                      />
+                    </div>
                   </div>
                 );
               }
