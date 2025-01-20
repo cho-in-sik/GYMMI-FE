@@ -14,7 +14,7 @@ export default function ConfirmationCompo({
   workspaceId,
 }: IConfirmationCompoProps) {
   return (
-    <div className='my-10'>
+    <div className='mt-7 mb-12'>
       <ConfirmationProfile workoutConfirmationPage={workoutConfirmationPage} />
       <div
         className={`${

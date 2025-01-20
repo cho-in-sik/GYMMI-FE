@@ -24,9 +24,11 @@ export default function ConfirmationDetailImage({
               workspaceConfirmationDetail?.workoutConfirmationImageUrl
             )
           }
-          sizes='360px'
           fill
-          quality={75}
+          style={{
+            objectFit: 'cover',
+            objectPosition: 'center',
+          }}
         />
       )}
     </div>
