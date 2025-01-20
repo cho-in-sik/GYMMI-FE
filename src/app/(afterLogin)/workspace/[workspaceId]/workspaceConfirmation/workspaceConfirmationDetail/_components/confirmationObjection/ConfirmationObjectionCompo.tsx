@@ -123,7 +123,7 @@ export default function ConfirmationObjectionCompo({
                 : '이의 신청 투표'}
             </span>
           </div>
-          <p className='text-[10px] text-[#1F2937] my-2'>
+          <p className='text-xs font-medium text-[#1F2937] my-2'>
             {workoutObjection?.data.reason}
           </p>
           <div className='flex justify-end mb-2 mr-3'>
