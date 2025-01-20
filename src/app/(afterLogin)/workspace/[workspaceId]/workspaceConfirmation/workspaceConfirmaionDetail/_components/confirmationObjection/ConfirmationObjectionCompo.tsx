@@ -93,11 +93,11 @@ export default function ConfirmationObjectionCompo({
       {isObjection ? (
         <div
           className={
-            ' w-full h-11 bg-[#EFF6FF] rounded-[35px] flex justify-center'
+            ' w-full h-11 bg-[#3B82F6] rounded-[35px] flex justify-center'
           }
         >
           <DialogTrigger asChild>
-            <button className='w-full text-base text-[#848D99]'>
+            <button className='w-full text-base text-[#ffffff]'>
               이의 신청하기
             </button>
           </DialogTrigger>
