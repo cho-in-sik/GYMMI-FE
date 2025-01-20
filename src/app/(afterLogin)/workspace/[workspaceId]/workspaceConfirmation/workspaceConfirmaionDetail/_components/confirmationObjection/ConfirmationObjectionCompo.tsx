@@ -117,8 +117,8 @@ export default function ConfirmationObjectionCompo({
               {!workoutObjection?.data.inInProgress
                 ? `투표 결과: ${
                     workoutObjection?.data.confirmationCompletion
-                      ? '찬성'
-                      : '반대'
+                      ? '반대'
+                      : '찬성'
                   }`
                 : '이의 신청 투표'}
             </span>
