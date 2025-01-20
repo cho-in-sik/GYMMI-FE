@@ -200,7 +200,7 @@ export default function Page() {
                 // opacity & disabled
                 disabled={infoWork?.data.workers.length !== 1 ? true : false}
                 className={`w-[171px] py-2.5 bg-main text-white text-base rounded-lg ${
-                  infoWork?.data.workers.length === 1 && 'opacity-30'
+                  infoWork?.data.workers.length === 1 && 'opacity-40'
                 }`}
                 onClick={handleStart}
               >
@@ -210,10 +210,8 @@ export default function Page() {
             <div>
               <button
                 disabled={infoWork?.data.workers.length > 1 ? true : false}
-                className={`w-[171px] py-2.5 text-main text-base rounded-lg ${
-                  infoWork?.data.workers.length > 1
-                    ? 'bg-custom-blue'
-                    : 'bg-white'
+                className={`w-[171px] py-2.5 bg-[#ffffff] text-main text-base rounded-lg ${
+                  infoWork?.data.workers.length > 1 && 'opacity-60'
                 }`}
                 onClick={handleLeave}
               >
