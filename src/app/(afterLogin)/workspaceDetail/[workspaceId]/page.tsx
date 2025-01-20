@@ -44,7 +44,9 @@ export default function Page() {
 
   return (
     <div className='px-6 py-12 h-screen'>
-      <BackArrow />
+      <div className='w-6'>
+        <BackArrow />
+      </div>
       <div className='relative h-full mt-5 flex flex-col justify-between'>
         <div>
           <div className='mb-9'>
