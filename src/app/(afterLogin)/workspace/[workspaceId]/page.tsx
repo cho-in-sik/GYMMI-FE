@@ -167,7 +167,7 @@ export default function Page() {
                           <Image
                             src={creator}
                             alt='creator'
-                            className='absolute -top-1 -left-1 z-10'
+                            className='absolute -top-1 -left-1 z-0'
                           />
                         )}
                         {user.profileImage === 'default.png' ? (
