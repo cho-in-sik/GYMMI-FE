@@ -227,7 +227,7 @@ export default function Page() {
         <DialogTrigger asChild>
           {infoWork?.data.status === 'PREPARING' &&
             infoWork?.data.isCreator === false && (
-              <div className='px-7 fixed bottom-11 left-0 w-full'>
+              <div className='w-full px-4 fixed bottom-11 left-0'>
                 <button className='w-full py-3.5 bg-main text-white text-base rounded-lg'>
                   그룹 나가기
                 </button>
