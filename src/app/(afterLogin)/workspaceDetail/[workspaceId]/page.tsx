@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
@@ -11,16 +10,18 @@ import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParam
 
 export default function Page() {
   const workspaceId = useWorkoutIdFromParams();
-  const router = useRouter();
 
   const [task, setTask] = useState('');
   const [tag, setTag] = useState('');
   const [description, setDescription] = useState('');
 
-  const { data: workspaceSetting, status } = useQuery({
+  const [isEditBtn, setIsEditBtn] = useState(false);
+
+  const { data: workspaceSetting } = useQuery({
     queryKey: ['workspaceDetail', workspaceId],
     queryFn: () => detailWorkspace(workspaceId),
   });
+  console.log(workspaceSetting);
 
   useEffect(() => {
     if (workspaceSetting) {
@@ -33,10 +34,8 @@ export default function Page() {
   const handleUpdate = async () => {
     const data = { tag, description, task };
     try {
-      const res = await detailUpdate({ workspaceId, data, task });
-      if (res.status === 200) {
-        router.refresh();
-      }
+      setIsEditBtn(false);
+      await detailUpdate({ workspaceId, data, task });
     } catch (error) {
       console.log(error);
     }
@@ -63,6 +62,7 @@ export default function Page() {
             isCreator={workspaceSetting?.data.isCreator}
             isPreparing={workspaceSetting?.data.isPreparing}
             textAreaOnChange={setTask}
+            setIsEditBtn={setIsEditBtn}
           />
           <WorkspaceSettingTextArea
             textAreaName='그룹 태그'
@@ -72,6 +72,7 @@ export default function Page() {
             isCreator={workspaceSetting?.data.isCreator}
             isPreparing={workspaceSetting?.data.isPreparing}
             textAreaOnChange={setTag}
+            setIsEditBtn={setIsEditBtn}
           />
           <WorkspaceSettingTextArea
             textAreaName='그룹 설명'
@@ -81,10 +82,11 @@ export default function Page() {
             isCreator={workspaceSetting?.data.isCreator}
             isPreparing={workspaceSetting?.data.isPreparing}
             textAreaOnChange={setDescription}
+            setIsEditBtn={setIsEditBtn}
           />
         </div>
 
-        {workspaceSetting?.data.isCreator && (
+        {workspaceSetting?.data.isCreator && isEditBtn && (
           <div className='w-full flex justify-center items-center bg-main rounded-lg py-3 mb-10'>
             <button className='text-white text-base' onClick={handleUpdate}>
               수정 완료하기
