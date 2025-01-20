@@ -73,14 +73,14 @@ export default function Page() {
   }, [workoutConfirmationPages]);
 
   return (
-    <div className='min-h-[500px] h-full'>
+    <div>
       <div className='-mx-4 px-4 bg-[#F1F7FF] -mt-3 pb-3'>
         {workoutConfirmationPages?.length === 0 ? (
           <div className='h-[705px]'>
             <NoDataUI content='아직 운동 인증이 없어요.' />
           </div>
         ) : (
-          <div>
+          <div className='min-h-[705px] h-full'>
             <div ref={ref} />
             {workoutConfirmationPages?.map(
               (

@@ -31,6 +31,7 @@ import { IWorker } from '@/types/workSpace';
 import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 type THistoryType = {
   workspaceId: number;
@@ -167,7 +168,7 @@ export default function Page() {
                           <Image
                             src={creator}
                             alt="creator"
-                            className="absolute -top-1 -left-1 z-10"
+                            className="absolute -top-1 -left-1 z-0"
                           />
                         )}
                         {user.profileImage === 'default.png' ? (
@@ -198,9 +199,9 @@ export default function Page() {
             <div>
               <button
                 // opacity & disabled
-                disabled={infoWork?.data.workers.length === 1 ? true : false}
-                className={`w-40 py-2.5 bg-main text-white text-base rounded-lg ${
-                  infoWork?.data.workers.length === 1 && 'opacity-30'
+                disabled={infoWork?.data.workers.length !== 1 ? true : false}
+                className={`w-[171px] py-2.5 bg-main text-white text-base rounded-lg ${
+                  infoWork?.data.workers.length === 1 && 'opacity-40'
                 }`}
                 onClick={handleStart}
               >
@@ -210,10 +211,8 @@ export default function Page() {
             <div>
               <button
                 disabled={infoWork?.data.workers.length > 1 ? true : false}
-                className={`w-40 py-2.5 text-main text-base rounded-lg ${
-                  infoWork?.data.workers.length > 1
-                    ? 'bg-custom-blue'
-                    : 'bg-white'
+                className={`w-[171px] py-2.5 bg-[#ffffff] text-main text-base rounded-lg ${
+                  infoWork?.data.workers.length > 1 && 'opacity-60'
                 }`}
                 onClick={handleLeave}
               >
@@ -227,32 +226,32 @@ export default function Page() {
         <DialogTrigger asChild>
           {infoWork?.data.status === 'PREPARING' &&
             infoWork?.data.isCreator === false && (
-              <div className="px-7 fixed bottom-11 left-0 w-full">
+              <div className="w-full px-4 fixed bottom-11 left-0">
                 <button className="w-full py-3.5 bg-main text-white text-base rounded-lg">
                   그룹 나가기
                 </button>
               </div>
             )}
         </DialogTrigger>
-        <DialogContent className="w-4/6 rounded-lg h-[138px]">
-          <DialogDescription className="flex items-center justify-center -mb-6">
-            <span className="text-[#1F2937]">그룹을 나가시겠습니까?</span>
+        <DialogTitle></DialogTitle>
+        <DialogContent className="w-9/12 h-36 rounded-lg">
+          <DialogDescription className="flex items-end justify-center my-4">
+            <span className="text-[#1F2937] text-sm">
+              그룹을 나가시겠습니까?
+            </span>
           </DialogDescription>
-          <DialogFooter>
-            <div className="w-full flex items-center justify-between text-sm font-light">
-              <DialogClose asChild>
-                <span className="text-sm bg-main py-1 px-7 rounded-lg text-white">
-                  cancel
-                </span>
-              </DialogClose>
-              <span
-                className="text-sm bg-[#EFF6FF] py-1 px-10 rounded-lg text-main"
-                onClick={handleLeave}
-              >
-                yes
-              </span>
-            </div>
-          </DialogFooter>
+
+          <div className="flex justify-around items-center border-t-[1px] -mx-6 pt-3.5">
+            <DialogClose asChild>
+              <span className="text-sm rounded-lg text-main">cancel</span>
+            </DialogClose>
+            <span
+              className="text-sm rounded-lg text-[#D1D5DB]"
+              onClick={handleLeave}
+            >
+              yes
+            </span>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

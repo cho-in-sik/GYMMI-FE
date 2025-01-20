@@ -22,8 +22,8 @@ import { workspace } from '@/constants/queryKey';
 import { workspaceList } from '@/constants/workSpace';
 import { useInView } from 'react-intersection-observer';
 import { useRouter } from 'next/navigation';
-import { AxiosError } from 'axios';
 import NoWorkspace from './NoWorkspace';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 export default function AllGroupTabs() {
   const [search, setSearch] = useState('');
@@ -31,7 +31,6 @@ export default function AllGroupTabs() {
   const [password, setPassword] = useState('');
 
   const [error, setError] = useState('');
-
   const router = useRouter();
 
   const [isFirstDialogOpen, setIsFirstDialogOpen] = useState(false);
@@ -61,18 +60,18 @@ export default function AllGroupTabs() {
     e.preventDefault();
     try {
       //워크스페이스 아이디 받아서 전해주기
-      const res = await joinWorkspace({
-        password,
-        workspaceId: currentWorkspaceId,
-      });
-      if (res.status === 200) {
-        router.push(`/workspace/${currentWorkspaceId}`);
-      } else {
-        setError('잘못된 비밀번호입니다.');
+      if (password.length === 4) {
+        const res = await joinWorkspace({
+          password,
+          workspaceId: currentWorkspaceId,
+        });
+        if (res.status === 200) {
+          router.push(`/workspace/${currentWorkspaceId}`);
+        }
       }
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        setError(error.response?.data.message);
+    } catch (error: any) {
+      if (error.response.status === 400) {
+        setError('비밀번호가 일치하지 않습니다.');
       }
       console.error(error);
     }
@@ -173,25 +172,27 @@ export default function AllGroupTabs() {
                     </div>
                   </DialogTrigger>
                   <DialogContent className='w-9/12 rounded-lg h-44'>
-                    <DialogHeader className='text-xs mb-2'>
-                      비밀번호를 입력해주세요
-                    </DialogHeader>
+                    <DialogTitle>
+                      <DialogHeader className='text-xs mb-2'>
+                        비밀번호를 입력해주세요
+                      </DialogHeader>
+                    </DialogTitle>
                     <DialogDescription className=''>
                       <div className='flex justify-center items-center'>
                         <form onSubmit={onSubmit}>
                           <input
                             type='number'
                             placeholder='숫자 4자리를 입력해주세요.'
-                            className='bg-[#F3F4F6] w-56 h-[41px] px-2 rounded-lg placeholder:text-[10px]'
+                            className='bg-[#F3F4F6] w-full h-[41px] px-2 rounded-lg placeholder:text-[10px]'
                             value={password}
                             onChange={(e) => handlePassword(e)}
                           />
                           {error !== '' && (
-                            <span className='text-[8px] text-[#EF4444] pl-4'>
+                            <span className='text-[8px] text-[#EF4444] pl-1'>
                               {error}
                             </span>
                           )}
-                          <div className='flex justify-around items-center border-t-[1px] -mx-6 my-2'>
+                          <div className='flex justify-around items-center border-t-[1px] -mx-6'>
                             <DialogClose asChild>
                               <span className='text-sm text-[#D1D5DB] py-2 px-12 border-r-[1px]'>
                                 cancel
@@ -276,34 +277,43 @@ export default function AllGroupTabs() {
                           </div>
                         </div>
                       </DialogTrigger>
-                      <DialogContent className='w-9/12 rounded-lg h-44'>
-                        <DialogHeader className='text-xs mb-2'>
-                          비밀번호를 입력해주세요
+                      <DialogContent className='w-9/12 rounded-lg h-44 p-0'>
+                        <DialogHeader className='flex justify-end'>
+                          <DialogTitle className='text-xs'>
+                            비밀번호를 입력해주세요
+                          </DialogTitle>
                         </DialogHeader>
                         <DialogDescription>
-                          <div className='flex justify-center items-center'>
+                          <div className='w-full h-full'>
                             <form onSubmit={onSubmit}>
-                              <input
-                                type='number'
-                                placeholder='숫자 4자리를 입력해주세요.'
-                                className='bg-[#F3F4F6] w-56 h-[41px] px-2 rounded-lg placeholder:text-[10px]'
-                                value={password}
-                                onChange={(e) => handlePassword(e)}
-                              />
-                              {error !== '' && (
-                                <span className='text-[8px] text-[#EF4444] pl-4'>
+                              <div className='mx-8'>
+                                <input
+                                  type='number'
+                                  placeholder='숫자 4자리를 입력해주세요.'
+                                  className='bg-[#F3F4F6] w-full h-11 py-4 pl-4 rounded-lg placeholder:text-[10px]'
+                                  value={password}
+                                  onChange={(e) => handlePassword(e)}
+                                />
+                              </div>
+                              {error && (
+                                <span className='ml-8 text-[8px] text-[#EF4444]'>
                                   {error}
                                 </span>
                               )}
-                              <div className='flex justify-around items-center border-t-[1px] -mx-6 my-2'>
+                              <div
+                                className={`w-full border-t-[1px] ${
+                                  error ? 'mt-3 pt-3' : 'mt-6 pt-4'
+                                } flex justify-around items-center`}
+                              >
                                 <DialogClose asChild>
-                                  <span className='text-sm text-[#D1D5DB] py-2 px-12 border-r-[1px]'>
+                                  <span className='text-sm text-[#D1D5DB]'>
                                     cancel
                                   </span>
                                 </DialogClose>
+
                                 <button
                                   type='submit'
-                                  className='text-sm text-[#3B82F6] py-2 px-12'
+                                  className='text-sm text-[#3B82F6]'
                                 >
                                   join
                                 </button>
