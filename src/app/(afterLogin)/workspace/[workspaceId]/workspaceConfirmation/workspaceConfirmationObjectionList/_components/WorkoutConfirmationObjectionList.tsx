@@ -31,7 +31,7 @@ export default function WorkoutConfirmationObjectionList({
             >
               <Link
                 href={{
-                  pathname: `/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmaionDetail`,
+                  pathname: `/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationDetail`,
                   query: {
                     workoutConfirmationId:
                       workoutConfirmationObjectionListPage.workoutConfirmationId,
