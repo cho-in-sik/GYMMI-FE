@@ -31,6 +31,7 @@ import { IWorker } from '@/types/workSpace';
 import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 type THistoryType = {
   workspaceId: number;
@@ -232,25 +233,25 @@ export default function Page() {
               </div>
             )}
         </DialogTrigger>
-        <DialogContent className='w-4/6 rounded-lg h-[138px]'>
-          <DialogDescription className='flex items-center justify-center -mb-6'>
-            <span className='text-[#1F2937]'>그룹을 나가시겠습니까?</span>
+        <DialogTitle></DialogTitle>
+        <DialogContent className='w-9/12 h-36 rounded-lg'>
+          <DialogDescription className='flex items-end justify-center my-4'>
+            <span className='text-[#1F2937] text-sm'>
+              그룹을 나가시겠습니까?
+            </span>
           </DialogDescription>
-          <DialogFooter>
-            <div className='w-full flex items-center justify-between text-sm font-light'>
-              <DialogClose asChild>
-                <span className='text-sm bg-main py-1 px-7 rounded-lg text-white'>
-                  cancel
-                </span>
-              </DialogClose>
-              <span
-                className='text-sm bg-[#EFF6FF] py-1 px-10 rounded-lg text-main'
-                onClick={handleLeave}
-              >
-                yes
-              </span>
-            </div>
-          </DialogFooter>
+
+          <div className='flex justify-around items-center border-t-[1px] -mx-6 pt-3.5'>
+            <DialogClose asChild>
+              <span className='text-sm rounded-lg text-main'>cancel</span>
+            </DialogClose>
+            <span
+              className='text-sm rounded-lg text-[#D1D5DB]'
+              onClick={handleLeave}
+            >
+              yes
+            </span>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
