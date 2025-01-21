@@ -17,7 +17,7 @@ export default function OneLastRank({
 }: OneLastRankProps) {
   return (
     <div className='w-40 flex flex-col items-center justify-end ml-1'>
-      <div className='flex gap-x-4'>
+      <div className='flex gap-x-3'>
         <Image src={rankPrize} alt='RankPrize' className='w-14 h-14' />
         <div className='flex flex-col justify-center items-center'>
           <span className='text-xl text-[#4B5563] font-bold'>{name}</span>
