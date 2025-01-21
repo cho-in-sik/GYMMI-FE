@@ -251,7 +251,7 @@ export default function Page() {
                 </button>
               </div>
               <button
-                className="w-full py-3 rounded-full bg-main text-white"
+                className="w-full py-3 rounded-full bg-main text-white mb-4"
                 onClick={handleAddClick}
               >
                 {isEditing ? '변경하기' : '추가하기'}
