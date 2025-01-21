@@ -12,7 +12,6 @@ import {
   DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogTrigger,
 } from '@/components/ui/dialog';
 
@@ -37,7 +36,6 @@ import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 type THistoryType = {
   workspaceId: number;
   userId: number | null;
-  name: string;
   workout: boolean;
   achievementScore: number;
 };
@@ -68,7 +66,6 @@ export default function Page() {
     clickPageMove({
       workspaceId: workspaceIdNumber,
       userId: user.userId,
-      name: infoWork?.data.name,
       workout,
       achievementScore,
     });
@@ -100,7 +97,6 @@ export default function Page() {
   const clickPageMove = ({
     workspaceId,
     userId,
-    name,
     workout,
     achievementScore,
   }: THistoryType) => {

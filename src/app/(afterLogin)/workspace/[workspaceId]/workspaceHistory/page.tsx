@@ -21,7 +21,6 @@ import ScrollTop from '../workspaceConfirmation/_components/ScrollTop';
 function useUserInfo(): TQueryTypes {
   const searchParams = useSearchParams();
   const userId = parseInt(searchParams.get('userId') || '0', 10);
-  const name = searchParams.get('name');
   const workout = searchParams.get('workout') === 'false';
   const achievementScore = parseInt(
     searchParams.get('achievementScore') || '0',
@@ -30,7 +29,6 @@ function useUserInfo(): TQueryTypes {
 
   return {
     userId,
-    name: name || '',
     workout,
     achievementScore,
   };
@@ -59,7 +57,10 @@ function Page() {
   return (
     <div className='h-screen'>
       <ScrollTop />
-      <WorkspaceGimmiTitle queryData={queryData} />
+      <WorkspaceGimmiTitle
+        queryData={queryData}
+        personNickName={workspaceHistoryDatas?.data.nickname}
+      />
 
       <WorkspaceScoreBoard
         workspaceHistoryDatas={workspaceHistoryDatas?.data}

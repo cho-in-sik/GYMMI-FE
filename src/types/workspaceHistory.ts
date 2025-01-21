@@ -13,7 +13,6 @@ type THistorys = {
 
 type TQueryTypes = {
   userId: number;
-  name: string;
   workout: boolean;
   achievementScore: number;
 };
