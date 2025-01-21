@@ -84,16 +84,20 @@ export default function AllGroupTabs() {
   };
 
   const handleAlreadyIn = async (workspaceId: number) => {
-    const res = await alreadyIn(workspaceId);
+    try {
+      const res = await alreadyIn(workspaceId);
 
-    if (res.data.isWorker === true) {
-      setIsFirstDialogOpen(false);
-      router.push(`/workspace/${workspaceId}`);
-      return;
-    }
-    if (res.data.isFull) {
-      setIsFirstDialogOpen(false);
-      alert('방 인원이 전부 찼습니다!');
+      if (res.data.isWorker === true) {
+        setIsFirstDialogOpen(false);
+        router.push(`/workspace/${workspaceId}`);
+        return;
+      }
+      if (res.data.isFull) {
+        setIsFirstDialogOpen(false);
+        alert('방 인원이 전부 찼습니다!');
+      }
+    } catch (error) {
+      setIsFirstDialogOpen(true);
     }
   };
 
@@ -264,17 +268,15 @@ export default function AllGroupTabs() {
                         setCurrentWorkspaceId(item.id); // workspaceId 저장
                       }}
                     >
-                      <DialogTrigger
-                        asChild
+                      <div
                         onClick={() => handleAlreadyIn(item.id)}
+                        className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'
                       >
-                        <div className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'>
-                          <h1 className='text-[22px]'>{item.name}</h1>
-                          <div>
-                            <Image src={nextArrow} alt='next-arrow' />
-                          </div>
+                        <h1 className='text-[22px]'>{item.name}</h1>
+                        <div>
+                          <Image src={nextArrow} alt='next-arrow' />
                         </div>
-                      </DialogTrigger>
+                      </div>
                       <DialogContent className='w-9/12 rounded-lg h-44 p-0'>
                         <DialogHeader className='flex justify-end'>
                           <DialogTitle className='text-xs'>
