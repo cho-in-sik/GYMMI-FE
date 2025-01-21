@@ -27,8 +27,10 @@ export default function ObjectionBell({
       <div className='fixed bottom-14 right-2 z-50'>
         {voteInCompeletionCount ? (
           <div className='relative'>
-            <div className='h-5 w-5 absolute right-1 bottom-10 rounded-full bg-[#ffffff]'>
-              <span className='pl-[5px]'>{voteInCompeletionCount}</span>
+            <div className='h-5 w-5 absolute right-1 bottom-9 rounded-full bg-[#ffffff] drop-shadow-md'>
+              <span className='text-sm absolute right-2 left-1'>
+                {voteInCompeletionCount}
+              </span>
             </div>
             <Image
               src={objectionBellFilled}
