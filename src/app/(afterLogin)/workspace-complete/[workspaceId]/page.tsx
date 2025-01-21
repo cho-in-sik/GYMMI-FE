@@ -21,6 +21,11 @@ export default function Page() {
     queryFn: () => completeWorkspace(workspaceId),
   });
 
+  const lastWorker =
+    completeWorkspaceInfo?.data.workers[
+      completeWorkspaceInfo?.data.workers.length - 1
+    ];
+
   return (
     <div className={`w-full min-h-[844px] h-full px-5 py-11 bg-[#EFF6FF]`}>
       <div className='mb-5' onClick={() => router.back()}>
@@ -53,21 +58,9 @@ export default function Page() {
               />
               <OneLastRank
                 rankPrize={lastPrize}
-                name={
-                  completeWorkspaceInfo?.data.workers[
-                    completeWorkspaceInfo?.data.workers.length - 1
-                  ].name
-                }
-                contributeScore={
-                  completeWorkspaceInfo?.data.workers[
-                    completeWorkspaceInfo?.data.workers.length - 1
-                  ].contributeScore
-                }
-                rank={
-                  completeWorkspaceInfo?.data.workers[
-                    completeWorkspaceInfo?.data.workers.length - 1
-                  ].rank
-                }
+                name={lastWorker.name}
+                contributeScore={lastWorker.contributeScore}
+                rank={lastWorker.rank}
                 height='9'
               />
             </div>
