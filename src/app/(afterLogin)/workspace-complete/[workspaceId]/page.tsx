@@ -22,7 +22,7 @@ export default function Page() {
   });
 
   return (
-    <div className={`w-full h-full px-5 py-11 bg-[#EFF6FF]`}>
+    <div className={`w-full min-h-[844px] h-full px-5 py-11 bg-[#EFF6FF]`}>
       <div className='mb-5' onClick={() => router.back()}>
         <Image src={backArrow} alt='backArrow' />
       </div>
@@ -49,7 +49,7 @@ export default function Page() {
                   completeWorkspaceInfo?.data.workers[0].contributeScore
                 }
                 rank={completeWorkspaceInfo?.data.workers[0].rank}
-                height='32'
+                height='36'
               />
               <OneLastRank
                 rankPrize={lastPrize}
@@ -73,7 +73,9 @@ export default function Page() {
             </div>
             <div className='mt-5 mb-8'>
               <span className='text-[10px] text-[#6B7280] '>팀별 순위</span>
-              <TaskRankMenber workers={completeWorkspaceInfo?.data.workers} />
+              <TaskRankMenber
+                workers={completeWorkspaceInfo?.data.workers.slice(1)}
+              />
             </div>
           </div>
         </div>
