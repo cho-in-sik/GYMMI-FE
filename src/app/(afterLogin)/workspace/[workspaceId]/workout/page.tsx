@@ -30,6 +30,7 @@ import noBookmark from '@/../public/svgs/workspace/workout/noBookmark.svg';
 import useSendPush from '@/hooks/useSendPush';
 import { getMessaging, getToken } from 'firebase/messaging';
 import { firebaseApp } from '@/utils/firebase/firebase';
+import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 
 type TMission = {
   id: number;
@@ -41,11 +42,14 @@ type TMission = {
 export default function Page() {
   const { workspaceId } = useParams();
   const { workoutInfo, updateMission } = useWorkoutStore();
+  const { workSpaceStatus } = useWorkSpaceStatus();
   const [activeNumber, setActiveNumber] = useState(0);
   const [open, setOpen] = useState(false);
   const [bookmark, setBookmark] = useState('all');
   const [isEditing, setIsEditing] = useState(false);
   const [selectedMission, setSelectedMission] = useState<TMission | null>(null);
+
+  console.log('@워크스페이스상태', workSpaceStatus);
 
   const router = useRouter();
 
@@ -263,6 +267,7 @@ export default function Page() {
 
       <div className="w-full fixed bottom-10">
         <button
+          disabled={workSpaceStatus === 'PREPARING'}
           className={`py-3 w-[90%] ${
             workoutInfo.missions.length > 0
               ? 'bg-main text-white'

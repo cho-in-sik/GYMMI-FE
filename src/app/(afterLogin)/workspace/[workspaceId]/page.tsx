@@ -22,7 +22,7 @@ import { imageLoader } from '@/utils/image';
 
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 
 import WorkspaceTitle from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceTitle';
@@ -32,6 +32,7 @@ import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 
 type THistoryType = {
   workspaceId: number;
@@ -43,15 +44,18 @@ type THistoryType = {
 
 export default function Page() {
   const workspaceIdNumber = useWorkoutIdFromParams();
+  const { updateStatus, clearData } = useWorkSpaceStatus();
 
   const router = useRouter();
 
   const [workout, setWorkout] = useState(false);
 
-  const { data: infoWork } = useQuery({
+  const { data: infoWork, isSuccess } = useQuery({
     queryKey: [workspace.info, workspaceIdNumber, workout],
     queryFn: () => infoWorkspace(workspaceIdNumber),
   });
+
+  console.log(infoWork);
 
   let achievementScore =
     (infoWork?.data.achievementScore / infoWork?.data.goalScore) * 100;
@@ -103,6 +107,14 @@ export default function Page() {
     const queryString = `?userId=${userId}&name=${name}&workout=${workout}&achievementScore=${achievementScore}`;
     router.push(`/workspace/${workspaceId}/workspaceHistory${queryString}`);
   };
+
+  useEffect(() => {
+    if (isSuccess && infoWork?.data.status) {
+      updateStatus(infoWork?.data?.status);
+    } else {
+      clearData();
+    }
+  }, [infoWork, isSuccess, updateStatus, clearData]);
 
   return (
     <div className="h-screen">
