@@ -152,6 +152,28 @@ export default function Page() {
   }, []);
   return (
     <div>
+      <div className="flex justify-start items-center text-xs gap-2 mb-4">
+        <div
+          className={`${
+            bookmark === 'all'
+              ? 'bg-[#9CA3AF] text-white'
+              : 'bg-[#F9FAFB] text-[#9CA3AF]'
+          } px-3 py-1 rounded-xl`}
+          onClick={() => setBookmark('all')}
+        >
+          전체
+        </div>
+        <div
+          className={`${
+            bookmark === 'bookmark'
+              ? 'bg-[#9CA3AF] text-white'
+              : 'bg-[#F9FAFB] text-[#9CA3AF]'
+          } px-3 py-1 rounded-xl`}
+          onClick={() => setBookmark('bookmark')}
+        >
+          즐겨찾기
+        </div>
+      </div>
       <Drawer open={open} onOpenChange={setOpen}>
         <div className="w-full flex flex-col justify-center items-center gap-2">
           {data?.length === 0 ? (
