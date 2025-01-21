@@ -60,14 +60,12 @@ export default function AllGroupTabs() {
     e.preventDefault();
     try {
       //워크스페이스 아이디 받아서 전해주기
-      if (password.length === 4) {
-        const res = await joinWorkspace({
-          password,
-          workspaceId: currentWorkspaceId,
-        });
-        if (res.status === 200) {
-          router.push(`/workspace/${currentWorkspaceId}`);
-        }
+      const res = await joinWorkspace({
+        password,
+        workspaceId: currentWorkspaceId,
+      });
+      if (res.status === 200) {
+        router.push(`/workspace/${currentWorkspaceId}`);
       }
     } catch (error: any) {
       if (error.response.status === 400) {
