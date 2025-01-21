@@ -15,9 +15,13 @@ import { cheerUpMessages } from '@/constants/cheerUpMessage';
 
 type TWorkspaceGimmiTitleTypes = {
   queryData: TQueryTypes | null;
+  personNickName: string;
 };
 
-function WorkspaceGimmiTitle({ queryData }: TWorkspaceGimmiTitleTypes) {
+function WorkspaceGimmiTitle({
+  queryData,
+  personNickName,
+}: TWorkspaceGimmiTitleTypes) {
   const [randomMessage, setRandomMessage] = useState(``);
 
   useEffect(() => {
@@ -29,7 +33,7 @@ function WorkspaceGimmiTitle({ queryData }: TWorkspaceGimmiTitleTypes) {
     <div>
       {queryData && (
         <>
-          <WorkspaceTitle name={queryData.name} workout={queryData.workout} />
+          <WorkspaceTitle name={personNickName} workout={queryData.workout} />
           <div className='flex justify-center items-end gap-x-2 h-48 mb-5'>
             <WorkspaceGimmi
               workout={queryData.workout}
