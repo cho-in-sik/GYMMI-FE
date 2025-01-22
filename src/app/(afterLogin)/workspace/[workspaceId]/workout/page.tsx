@@ -27,6 +27,10 @@ import { useWorkoutStore } from '@/hooks/useWorkout';
 import { sendFCMNotification } from '@/action/sendFCM';
 
 import noBookmark from '@/../public/svgs/workspace/workout/noBookmark.svg';
+import useSendPush from '@/hooks/useSendPush';
+import { getMessaging, getToken } from 'firebase/messaging';
+import { firebaseApp } from '@/utils/firebase/firebase';
+import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 
 type TMission = {
   id: number;
@@ -38,13 +42,18 @@ type TMission = {
 export default function Page() {
   const { workspaceId } = useParams();
   const { workoutInfo, updateMission } = useWorkoutStore();
+  const { workSpaceStatus } = useWorkSpaceStatus();
   const [activeNumber, setActiveNumber] = useState(0);
   const [open, setOpen] = useState(false);
   const [bookmark, setBookmark] = useState('all');
   const [isEditing, setIsEditing] = useState(false);
   const [selectedMission, setSelectedMission] = useState<TMission | null>(null);
 
+  console.log('@워크스페이스상태', workSpaceStatus);
+
   const router = useRouter();
+
+  // const { requestFcmToken } = useSendPush();
 
   const queryClient = useQueryClient();
 
@@ -115,18 +124,60 @@ export default function Page() {
     getMissionCount(missionId) > 0;
 
   useEffect(() => {
-    if (Notification.permission !== 'granted') {
-      Notification.requestPermission().then((permission) => {
+    const requestNotificationPermissionAndToken = async () => {
+      if (Notification.permission !== 'granted') {
+        const permission = await Notification.requestPermission();
         if (permission === 'granted') {
           console.log('알림 권한 허용됨');
+          try {
+            const messaging = getMessaging(firebaseApp);
+            const currentToken = await getToken(messaging, {
+              vapidKey:
+                'BCfFDqn6mJDC_unugYg5-MuS4nYZWmY40sI3GKNqanCX8wIyL4QQM8yVpyN_uLqDqNP52lppWC9upzAJADfaoGY',
+            });
+            if (currentToken) {
+              localStorage.setItem('fcmToken', currentToken);
+              alert(currentToken);
+            } else {
+              console.warn('FCM 토큰을 가져올 수 없습니다.');
+            }
+          } catch (error) {
+            console.error('FCM 토큰 요청 중 오류 발생:', error);
+          }
         } else {
           console.warn('알림 권한 거부됨');
         }
-      });
-    }
+      } else {
+        console.log('알림 권한이 이미 허용되었습니다.');
+      }
+    };
+
+    requestNotificationPermissionAndToken();
   }, []);
   return (
     <div>
+      <div className="flex justify-start items-center text-xs gap-2 mb-4">
+        <div
+          className={`${
+            bookmark === 'all'
+              ? 'bg-[#9CA3AF] text-white'
+              : 'bg-[#F9FAFB] text-[#9CA3AF]'
+          } px-3 py-1 rounded-xl`}
+          onClick={() => setBookmark('all')}
+        >
+          전체
+        </div>
+        <div
+          className={`${
+            bookmark === 'bookmark'
+              ? 'bg-[#9CA3AF] text-white'
+              : 'bg-[#F9FAFB] text-[#9CA3AF]'
+          } px-3 py-1 rounded-xl`}
+          onClick={() => setBookmark('bookmark')}
+        >
+          즐겨찾기
+        </div>
+      </div>
       <Drawer open={open} onOpenChange={setOpen}>
         <div className="w-full flex flex-col justify-center items-center gap-2">
           {data?.length === 0 ? (
@@ -204,7 +255,7 @@ export default function Page() {
                 </button>
               </div>
               <button
-                className="w-full py-3 rounded-full bg-main text-white"
+                className="w-full py-3 rounded-full bg-main text-white mb-4"
                 onClick={handleAddClick}
               >
                 {isEditing ? '변경하기' : '추가하기'}
@@ -216,6 +267,7 @@ export default function Page() {
 
       <div className="w-full fixed bottom-10">
         <button
+          disabled={workSpaceStatus === 'PREPARING'}
           className={`py-3 w-[90%] ${
             workoutInfo.missions.length > 0
               ? 'bg-main text-white'

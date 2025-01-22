@@ -1,6 +1,8 @@
-importScripts('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
 importScripts(
-  'https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js',
+  'https://www.gstatic.com/firebasejs/10.4.0/firebase-app-compat.js',
+);
+importScripts(
+  'https://www.gstatic.com/firebasejs/10.4.0/firebase-messaging-compat.js',
 );
 
 // Firebase 초기화

@@ -8,7 +8,7 @@ import useSendPush from '@/hooks/useSendPush';
 import { postFcmToken } from '@/api/fcm';
 
 export default function FCMComponent() {
-  const { fcmToken, notificationPermissionStatus } = useSendPush();
+  const { fcmToken } = useSendPush();
 
   useEffect(() => {
     if (typeof window !== 'undefined' && fcmToken) {
