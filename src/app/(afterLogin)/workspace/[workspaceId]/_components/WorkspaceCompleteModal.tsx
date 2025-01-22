@@ -27,6 +27,9 @@ export default function WorkspaceCompleteModal({
     if (status === 'COMPLETED') {
       setIsOpen(true);
     }
+    if (status === 'FULLY_COMPLETED') {
+      setIsOpen(true);
+    }
   }, [status]);
 
   const handleModalChange = (open: boolean) => {
