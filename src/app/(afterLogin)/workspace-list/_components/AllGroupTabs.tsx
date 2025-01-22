@@ -113,7 +113,7 @@ export default function AllGroupTabs() {
   }, [inView, hasNextPage, fetchNextPage, isFetching]);
 
   return (
-    <>
+    <div>
       <div className='mb-6'>
         <input
           type='text'
@@ -229,7 +229,9 @@ export default function AllGroupTabs() {
               {data?.pages[0].data.map((item: any) => (
                 <div
                   key={item.id}
-                  className='w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6'
+                  className={`w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6 ${
+                    item.status === 'FULLY_COMPLETED' && 'opacity-50'
+                  }`}
                   onClick={() => handleAlreadyIn(item.id)}
                 >
                   <h2 className='text-[22px] -mb-3 text-white'>{item.name}</h2>
@@ -252,7 +254,9 @@ export default function AllGroupTabs() {
                 <div key={item.key}>
                   {item.status === workspaceList.inProgress ? (
                     <div
-                      className='w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6'
+                      className={`w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6 ${
+                        item.status === 'FULLY_COMPLETED' && 'opacity-50'
+                      }`}
                       onClick={() => handleAlreadyIn(item.id)}
                     >
                       <h2 className='text-[22px] -mb-3 text-white'>
@@ -340,6 +344,6 @@ export default function AllGroupTabs() {
         </TabsContent>
       </Tabs>
       <div ref={ref} style={{ height: 10 }} />
-    </>
+    </div>
   );
 }
