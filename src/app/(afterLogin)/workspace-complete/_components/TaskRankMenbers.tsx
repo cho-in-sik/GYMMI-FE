@@ -15,7 +15,7 @@ interface TaskRankMenbersProps {
 export default function TaskRankMenbers({ workers }: TaskRankMenbersProps) {
   return (
     <div>
-      {workers.map((worker) => (
+      {workers?.map((worker) => (
         <div
           key={worker.rank}
           className='h-12 bg-[#F9FAFB] shadow-md rounded-lg flex items-center mb-3 relative'
