@@ -21,7 +21,6 @@ export default function MyWorkspacelits() {
       ) : (
         <div>
           {data?.data.map((item: any) => {
-            console.log(item);
             return (
               <Link href={`/workspace/${item.id}`} key={item.id}>
                 <div
@@ -30,7 +29,7 @@ export default function MyWorkspacelits() {
                       ? 'bg-[#FEF9C3] '
                       : 'bg-[#60A5FA] '
                   } w-full rounded-lg p-4 mb-7 ${
-                    item.status === 'COMPLETED' ? 'opacity-50' : null
+                    item.status === 'FULLY_COMPLETED' ? 'opacity-50' : null
                   }`}
                 >
                   <div
