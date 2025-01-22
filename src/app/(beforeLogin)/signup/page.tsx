@@ -34,6 +34,8 @@ export default function Page() {
   const [idCheck, setIdCheck] = useState(false);
   const [niknameCheck, setNicknameCheck] = useState(false);
 
+  const [loading, setLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -111,6 +113,7 @@ export default function Page() {
       setError('nickname', { message: '닉네임 중복확인이 필요합니다.' });
       return;
     }
+    setLoading(true);
     try {
       const res = await postSignup({
         loginId: data.id,
@@ -126,6 +129,7 @@ export default function Page() {
     } catch (error) {
       console.error(error);
     } finally {
+      setLoading(false);
       reset();
     }
   };
@@ -160,6 +164,7 @@ export default function Page() {
               //   verliffyDuplicate(duplicationType.loginId, id),
               // )}
               onClick={() => verliffyDuplicate(duplicationType.loginId, id)}
+              disabled={loading || isSubmitting}
             >
               중복확인
             </button>
@@ -243,6 +248,7 @@ export default function Page() {
             onClick={() =>
               verliffyDuplicate(duplicationType.nickname, nickname)
             }
+            disabled={loading || isSubmitting}
           >
             중복확인
           </button>
@@ -278,7 +284,7 @@ export default function Page() {
 
       <div
         className="fixed w-full left-0 bottom-8 px-6"
-        onClick={handleSubmit(onsubmit)}
+        onClick={!loading && !isSubmitting ? handleSubmit(onsubmit) : undefined}
       >
         <AuthButton
           title="회원가입"
