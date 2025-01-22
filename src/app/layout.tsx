@@ -131,10 +131,12 @@ export default function RootLayout({
           type="font/ttf"
           crossOrigin="anonymous"
         />
+        <link rel="manifest" href="/manifest.json" />
       </Head>
 
       <body>
-        <DynamicTokenComponent />
+        {/* <DynamicTokenComponent /> */}
+        <FCMComponent />
 
         {children}
         {/* <AppInstallButton /> */}
