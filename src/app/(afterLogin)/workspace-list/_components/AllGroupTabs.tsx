@@ -56,8 +56,6 @@ export default function AllGroupTabs() {
     },
   });
 
-  console.log(currentWorkspaceId);
-
   const onSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -165,11 +163,12 @@ export default function AllGroupTabs() {
                   <DialogTrigger
                     asChild
                     onClick={() => handleAlreadyIn(item.id)}
-                    className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'
                   >
-                    <h1 className='text-[22px]'>{item.name}</h1>
-                    <div>
-                      <Image src={nextArrow} alt='next-arrow' />
+                    <div className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'>
+                      <h1 className='text-[22px]'>{item.name}</h1>
+                      <div>
+                        <Image src={nextArrow} alt='next-arrow' />
+                      </div>
                     </div>
                   </DialogTrigger>
                   <DialogContent className='w-9/12 rounded-lg h-44 p-0'>
@@ -277,11 +276,12 @@ export default function AllGroupTabs() {
                       <DialogTrigger
                         asChild
                         onClick={() => handleAlreadyIn(item.id)}
-                        className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'
                       >
-                        <h1 className='text-[22px]'>{item.name}</h1>
-                        <div>
-                          <Image src={nextArrow} alt='next-arrow' />
+                        <div className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'>
+                          <h1 className='text-[22px]'>{item.name}</h1>
+                          <div>
+                            <Image src={nextArrow} alt='next-arrow' />
+                          </div>
                         </div>
                       </DialogTrigger>
                       <DialogContent className='w-9/12 rounded-lg h-44 p-0'>
