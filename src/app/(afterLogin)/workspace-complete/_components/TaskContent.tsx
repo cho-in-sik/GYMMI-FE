@@ -16,7 +16,7 @@ export default function TaskContent({ task }: TaskContentProps) {
         </div>
       </div>
       <div className='absolute right-2 top-[70px]'>
-        <Image src={completeTask} alt='completeTask' />
+        <Image src={completeTask} alt='completeTask' className='w-56 h-56' />
       </div>
     </div>
   );
