@@ -18,7 +18,7 @@ const refreshAccessToken = async () => {
       `${process.env.NEXT_PUBLIC_BASE_URL}auth/reissue`,
       {
         refreshToken,
-      }
+      },
     );
     console.log(res);
 
@@ -33,7 +33,7 @@ const refreshAccessToken = async () => {
     console.error('Failed to refresh token', error);
     // refresh token도 유효하지 않다면 로그아웃 처리 또는 사용자에게 로그인 요청
     localStorage.clear();
-    window.location.href = '/login'; // 로그인 페이지로 리다이렉트
+    // window.location.href = '/login'; // 로그인 페이지로 리다이렉트
   }
 };
 
@@ -51,7 +51,7 @@ customAxios.interceptors.response.use(
       return customAxios(originalRequest);
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 customAxios.interceptors.request.use(
@@ -64,7 +64,7 @@ customAxios.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default customAxios;

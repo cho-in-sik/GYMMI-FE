@@ -19,7 +19,7 @@ const NotFound: NextPage = () => {
       </div>
 
       <div onClick={() => router.back()} className="fixed bottom-10">
-        <button className="bg-main text-white rounded-sm py-2.5 px-28">
+        <button className="bg-main text-white rounded-full py-2.5 px-36">
           뒤로가기
         </button>
       </div>
