@@ -12,6 +12,7 @@ interface WorkspaceSettingTextAreaProps {
   isPreparing: boolean;
   textAreaOnChange: Dispatch<SetStateAction<string>> | any;
   setIsEditBtn: Dispatch<SetStateAction<boolean>>;
+  error: string;
 }
 
 export default function WorkspaceSettingTextArea({
@@ -23,9 +24,11 @@ export default function WorkspaceSettingTextArea({
   isPreparing,
   textAreaOnChange,
   setIsEditBtn,
+  error,
 }: WorkspaceSettingTextAreaProps) {
   const taskArea = id === 'task' && !isPreparing;
   const tagArea = id === 'tag' && value.length >= 10;
+  const tagError = id === 'tag' && error.length !== 0;
 
   return (
     <div className='mb-9 relative'>
@@ -54,6 +57,7 @@ export default function WorkspaceSettingTextArea({
           태그는 10자까지만 가능합니다.
         </div>
       )}
+      {tagError && <div className='text-[10px] text-[#EF4444]'>{error}</div>}
     </div>
   );
 }
