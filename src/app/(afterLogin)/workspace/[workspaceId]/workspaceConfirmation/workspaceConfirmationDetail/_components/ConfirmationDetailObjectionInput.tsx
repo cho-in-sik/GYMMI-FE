@@ -34,7 +34,7 @@ export default function ConfirmationDetailObjectionInput({
     },
     onError: (error) => {
       console.error('Error:', error);
-      alert('이의 신청 제출 중 오류가 발생했습니다.');
+      alert('워크스페이스가 진행중일 때, 이의신청이 가능합니다.');
     },
   });
 
