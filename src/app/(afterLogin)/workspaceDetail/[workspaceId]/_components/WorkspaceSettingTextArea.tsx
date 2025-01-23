@@ -39,7 +39,9 @@ export default function WorkspaceSettingTextArea({
         disabled={!isCreator || taskArea}
         id={id}
         placeholder={placeholder}
-        className='w-full h-20 bg-[#F9FAFB] rounded-lg p-3 mt-5 placeholder:text-xs placeholder:pt-1'
+        className={`w-full h-20 bg-[#F9FAFB] rounded-lg p-3 mt-5 placeholder:text-xs placeholder:pt-1 ${
+          value && 'text-base text-[#1F2937]'
+        }`}
         value={value}
         onChange={(e) => textAreaOnChange(e.target.value)}
       />
