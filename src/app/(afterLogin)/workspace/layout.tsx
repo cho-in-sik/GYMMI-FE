@@ -9,6 +9,8 @@ import settings from '@/../public/svgs/workspace/settings.svg';
 import BackArrow from '../_components/BackArrow';
 import NavbarItems from './_components/NavbarItems';
 
+import home from '@/../public/svgs/home.svg';
+
 type Props = {
   children: ReactNode;
 };
@@ -20,7 +22,6 @@ export default function Layout({ children }: Props) {
   const pathName = usePathname();
   const segments = pathName.split('/');
   const currentSegment = segments[segments.length - 1];
-
   return (
     <div>
       <div
@@ -30,7 +31,13 @@ export default function Layout({ children }: Props) {
         } px-4 pt-12`}
       >
         <div className='flex justify-between'>
-          <BackArrow />
+          {currentSegment === workspaceId ? (
+            <Link href={'/'}>
+              <Image src={home} alt='homeIcon' className='w-6 h-6' />
+            </Link>
+          ) : (
+            <BackArrow />
+          )}
           {currentSegment !== 'workspaceConfirmationObjectionList' && (
             <Link href={`/workspaceDetail/${workspaceIdNumber}`}>
               <div>

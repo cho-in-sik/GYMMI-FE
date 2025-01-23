@@ -17,11 +17,12 @@ export default function Page() {
 
   const [isEditBtn, setIsEditBtn] = useState(false);
 
+  const [error, setError] = useState('');
+
   const { data: workspaceSetting } = useQuery({
     queryKey: ['workspaceDetail', workspaceId],
     queryFn: () => detailWorkspace(workspaceId),
   });
-  console.log(workspaceSetting);
 
   useEffect(() => {
     if (workspaceSetting) {
@@ -35,9 +36,13 @@ export default function Page() {
     const data = { tag, description, task };
     try {
       setIsEditBtn(false);
+      setError('');
       await detailUpdate({ workspaceId, data, task });
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      if (error.response.status === 400) {
+        setError('태그는 한글, 영어만 가능합니다.');
+      }
     }
   };
 
@@ -63,6 +68,7 @@ export default function Page() {
             isPreparing={workspaceSetting?.data.isPreparing}
             textAreaOnChange={setTask}
             setIsEditBtn={setIsEditBtn}
+            error={error}
           />
           <WorkspaceSettingTextArea
             textAreaName='그룹 태그'
@@ -73,6 +79,7 @@ export default function Page() {
             isPreparing={workspaceSetting?.data.isPreparing}
             textAreaOnChange={setTag}
             setIsEditBtn={setIsEditBtn}
+            error={error}
           />
           <WorkspaceSettingTextArea
             textAreaName='그룹 설명'
@@ -83,6 +90,7 @@ export default function Page() {
             isPreparing={workspaceSetting?.data.isPreparing}
             textAreaOnChange={setDescription}
             setIsEditBtn={setIsEditBtn}
+            error={error}
           />
         </div>
 
