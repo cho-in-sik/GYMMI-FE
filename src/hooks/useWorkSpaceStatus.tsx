@@ -5,10 +5,10 @@ export const useWorkSpaceStatus = create<{
   updateStatus: (status: string) => void;
   clearData: () => void;
 }>((set) => ({
-  workSpaceStatus: 'PREPARING',
+  workSpaceStatus: 'IN_PROGRESS',
   updateStatus: (status: string) =>
     set(() => ({
       workSpaceStatus: status,
     })),
-  clearData: () => set({ workSpaceStatus: 'PREPARING' }),
+  clearData: () => set({ workSpaceStatus: 'IN_PROGRESS' }),
 }));

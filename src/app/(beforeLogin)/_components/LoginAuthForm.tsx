@@ -35,7 +35,9 @@ export default function LoginAuthForm() {
       localStorage.clear();
       localStorage.setItem('accessToken', res.data.accessToken);
       localStorage.setItem('refreshToken', res.data.refreshToken);
-      router.push('/');
+      if (res.status === 200) {
+        router.push('/');
+      }
     } catch (error) {
       console.error(error);
       if (error instanceof AxiosError) {
