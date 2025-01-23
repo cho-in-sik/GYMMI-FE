@@ -22,8 +22,6 @@ export default function Layout({ children }: Props) {
   const pathName = usePathname();
   const segments = pathName.split('/');
   const currentSegment = segments[segments.length - 1];
-  console.log('current', currentSegment);
-  console.log('workspaceId', workspaceId);
   return (
     <div>
       <div
