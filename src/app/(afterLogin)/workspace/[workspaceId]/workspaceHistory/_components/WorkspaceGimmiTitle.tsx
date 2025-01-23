@@ -32,7 +32,7 @@ function WorkspaceGimmiTitle({
   return (
     <div>
       {queryData && (
-        <>
+        <div>
           <WorkspaceTitle name={personNickName} workout={queryData.workout} />
           <div className='flex justify-center items-end gap-x-2 h-48 mb-5'>
             <WorkspaceGimmi
@@ -52,7 +52,7 @@ function WorkspaceGimmiTitle({
               <Image src={speechBubble1} alt='speechBubble1' />
             </div>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

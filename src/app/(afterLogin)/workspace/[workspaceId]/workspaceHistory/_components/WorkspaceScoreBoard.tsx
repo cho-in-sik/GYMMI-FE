@@ -29,7 +29,7 @@ function WorkspaceScoreBoard({
     <div className='h-14 bg-white rounded-lg mb-4'>
       <div className='w-full' defaultValue='totalScore'>
         <div className='flex gap-x-4 pl-7 pt-2 justify-items-center'>
-          <div className='flex flex-col items-center'>
+          <div className='flex flex-col items-center justify-center'>
             <span className='text-[#9C9EA3] text-[10px]'>총 점수</span>
             <span className='text-[#1F2937] text-base'>
               {workspaceHistoryDatas?.totalContributedScore}점

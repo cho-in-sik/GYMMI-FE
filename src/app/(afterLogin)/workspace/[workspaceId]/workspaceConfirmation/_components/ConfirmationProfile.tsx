@@ -17,7 +17,7 @@ export default function ConfirmationProfile({
           />
 
           <div className='ml-2 mt-1 justify-center'>
-            <span className='text-[#1F2937] text-xs'>
+            <span className='text-[#1F2937] text-sm'>
               {workoutConfirmationPage.nickname}
             </span>
           </div>

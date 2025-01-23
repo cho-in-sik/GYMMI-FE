@@ -27,8 +27,8 @@ export default function ObjectionBell({
       <div className='fixed bottom-14 right-2 z-50'>
         {voteInCompeletionCount ? (
           <div className='relative'>
-            <div className='h-5 w-5 absolute right-1 bottom-9 rounded-full bg-[#ffffff] drop-shadow-md'>
-              <span className='text-sm absolute right-2 left-1'>
+            <div className='h-5 w-5 rounded-full bg-[#ffffff] drop-shadow-md absolute right-1'>
+              <span className='w-full h-full flex items-center justify-center text-sm'>
                 {voteInCompeletionCount}
               </span>
             </div>

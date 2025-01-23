@@ -55,6 +55,7 @@ export default function AllGroupTabs() {
       return lastPage?.nextPage || undefined;
     },
   });
+  const allGroupeTabsData = data?.pages.flatMap((pages) => pages.data);
 
   const onSubmit = async (e: any) => {
     e.preventDefault();
@@ -88,12 +89,10 @@ export default function AllGroupTabs() {
       const res = await alreadyIn(workspaceId);
 
       if (res.data.isWorker === true) {
-        setIsFirstDialogOpen(false);
         router.push(`/workspace/${workspaceId}`);
         return;
       }
       if (res.data.isFull) {
-        setIsFirstDialogOpen(false);
         alert('방 인원이 전부 찼습니다!');
       }
     } catch (error) {
@@ -113,7 +112,7 @@ export default function AllGroupTabs() {
   }, [inView, hasNextPage, fetchNextPage, isFetching]);
 
   return (
-    <>
+    <div>
       <div className='mb-6'>
         <input
           type='text'
@@ -149,9 +148,9 @@ export default function AllGroupTabs() {
         </TabsList>
         <div className='border-b-2 mt-2 w-full mb-4'></div>
         <TabsContent value='before-p' className='relative'>
-          {data?.pages[0].data.length !== 0 ? (
+          {allGroupeTabsData?.length !== 0 ? (
             <div>
-              {data?.pages[0].data.map((item: any) => (
+              {allGroupeTabsData?.map((item: any) => (
                 <Dialog
                   key={item.id}
                   open={isFirstDialogOpen}
@@ -160,11 +159,11 @@ export default function AllGroupTabs() {
                     setCurrentWorkspaceId(item.id); // workspaceId 저장
                   }}
                 >
-                  <DialogTrigger
-                    asChild
-                    onClick={() => handleAlreadyIn(item.id)}
-                  >
-                    <div className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'>
+                  <DialogTrigger asChild>
+                    <div
+                      onClick={() => handleAlreadyIn(item.id)}
+                      className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'
+                    >
                       <h1 className='text-[22px]'>{item.name}</h1>
                       <div>
                         <Image src={nextArrow} alt='next-arrow' />
@@ -224,12 +223,14 @@ export default function AllGroupTabs() {
           )}
         </TabsContent>
         <TabsContent value='ing-p' className='relative'>
-          {data?.pages[0].data.length !== 0 ? (
+          {allGroupeTabsData?.length !== 0 ? (
             <div>
-              {data?.pages[0].data.map((item: any) => (
+              {allGroupeTabsData?.map((item: any) => (
                 <div
                   key={item.id}
-                  className='w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6'
+                  className={`w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6 ${
+                    item.status === 'FULLY_COMPLETED' && 'opacity-50'
+                  }`}
                   onClick={() => handleAlreadyIn(item.id)}
                 >
                   <h2 className='text-[22px] -mb-3 text-white'>{item.name}</h2>
@@ -246,13 +247,15 @@ export default function AllGroupTabs() {
           )}
         </TabsContent>
         <TabsContent value='all' className='relative'>
-          {data?.pages[0].data.length !== 0 ? (
+          {allGroupeTabsData?.length !== 0 ? (
             <div>
-              {data?.pages[0].data.map((item: any) => (
-                <div key={item.key}>
+              {allGroupeTabsData?.map((item: any) => (
+                <div key={item.id}>
                   {item.status === workspaceList.inProgress ? (
                     <div
-                      className='w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6'
+                      className={`w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6 ${
+                        item.status === 'FULLY_COMPLETED' && 'opacity-50'
+                      }`}
                       onClick={() => handleAlreadyIn(item.id)}
                     >
                       <h2 className='text-[22px] -mb-3 text-white'>
@@ -273,11 +276,11 @@ export default function AllGroupTabs() {
                         setCurrentWorkspaceId(item.id); // workspaceId 저장
                       }}
                     >
-                      <DialogTrigger
-                        asChild
-                        onClick={() => handleAlreadyIn(item.id)}
-                      >
-                        <div className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'>
+                      <DialogTrigger asChild>
+                        <div
+                          onClick={() => handleAlreadyIn(item.id)}
+                          className='w-full h-20 bg-[#FEF9C3] rounded-lg flex justify-between items-center px-3.5 my-6'
+                        >
                           <h1 className='text-[22px]'>{item.name}</h1>
                           <div>
                             <Image src={nextArrow} alt='next-arrow' />
@@ -340,6 +343,6 @@ export default function AllGroupTabs() {
         </TabsContent>
       </Tabs>
       <div ref={ref} style={{ height: 10 }} />
-    </>
+    </div>
   );
 }
