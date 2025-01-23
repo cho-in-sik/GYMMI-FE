@@ -250,7 +250,7 @@ export default function AllGroupTabs() {
           {allGroupeTabsData?.length !== 0 ? (
             <div>
               {allGroupeTabsData?.map((item: any) => (
-                <div key={item.key}>
+                <div key={item.id}>
                   {item.status === workspaceList.inProgress ? (
                     <div
                       className={`w-full h-20 bg-[#60A5FA] rounded-lg flex justify-evenly items-start px-3.5 flex-col my-6 ${
