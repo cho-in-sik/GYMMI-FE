@@ -128,7 +128,6 @@ export default function Page() {
       if (Notification.permission !== 'granted') {
         const permission = await Notification.requestPermission();
         if (permission === 'granted') {
-          console.log('알림 권한 허용됨');
           try {
             const messaging = getMessaging(firebaseApp);
             const currentToken = await getToken(messaging, {
@@ -137,7 +136,6 @@ export default function Page() {
             });
             if (currentToken) {
               localStorage.setItem('fcmToken', currentToken);
-              alert(currentToken);
             } else {
               console.warn('FCM 토큰을 가져올 수 없습니다.');
             }
