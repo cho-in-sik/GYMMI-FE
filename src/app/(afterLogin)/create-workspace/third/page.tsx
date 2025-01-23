@@ -57,11 +57,16 @@ export default function Page() {
       const res = await createWorkspace(data);
 
       if (res.status === 200) {
+        setError('');
         clearData();
         router.push(`/workspace-list/mygroup`);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+
+      if (error.response.status === 400) {
+        setError('태그는 한글, 영어만 가능합니다.');
+      }
 
       if (error instanceof AxiosError) {
         if (error.response?.status === 500) {
@@ -112,18 +117,23 @@ export default function Page() {
         >
           선택) 그룹을 나타내는 태그를 적어주세요!
         </Label>
-        <div className='flex items-center relative'>
+        <div className='flex flex-col'>
           <Input
             type='text'
             id='tag'
             maxLength={10}
             placeholder='헬스, 러닝, 필라테스 등'
-            className='w-[210px] h-[52px] bg-[#F9FAFB] placeholder:text-base placeholder:text-[#D1D5DB] mr-1'
+            className='w-full h-[52px] bg-[#F9FAFB] placeholder:text-base placeholder:text-[#D1D5DB] mr-1'
             onChange={handleFormChange}
             value={tag}
           />
-          <div className='w-full absolute left-44 -bottom-6'>
-            <span className='text-xs text-[#D1D5DB] text-right'>{`${tag.length}/10`}</span>
+          <div className='w-full flex justify-between items-center'>
+            {error && (
+              <span className='text-[10px] text-[#F87171]'>{error}</span>
+            )}
+            <div className=''>
+              <span className='text-xs text-[#D1D5DB] text-right'>{`${tag.length}/10`}</span>
+            </div>
           </div>
         </div>
       </div>
