@@ -24,10 +24,7 @@ export default function WorkspaceCompleteModal({
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (status === 'COMPLETED') {
-      setIsOpen(true);
-    }
-    if (status === 'FULLY_COMPLETED') {
+    if (status === 'COMPLETED' || status === 'FULLY_COMPLETED') {
       setIsOpen(true);
     }
   }, [status]);
@@ -38,7 +35,7 @@ export default function WorkspaceCompleteModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleModalChange}>
-      <DialogTitle />
+      <DialogTitle></DialogTitle>
       <DialogContent className='w-4/6 rounded-lg'>
         <DialogDescription>
           <div className='text-center text-black'>
@@ -73,10 +70,9 @@ export default function WorkspaceCompleteModal({
                   ? `/workspace/${workspaceId}/workspaceConfirmation/workspaceConfirmationObjectionList`
                   : `/workspace-complete/${workspaceId}`
               }
+              className='className=text-sm rounded-lg text-blue-500 px-4 '
             >
-              <button className='text-sm rounded-lg text-blue-500 px-4 '>
-                yes
-              </button>
+              yes
             </Link>
           </div>
         </DialogFooter>

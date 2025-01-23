@@ -249,7 +249,7 @@ export default function Page() {
 
           <div className='flex justify-around items-center border-t-[1px] -mx-6 pt-3.5'>
             <DialogClose asChild>
-              <span className='text-sm rounded-lg text-main'>cancel</span>
+              <button className='text-sm rounded-lg text-main'>cancel</button>
             </DialogClose>
             <span
               className='text-sm rounded-lg text-[#D1D5DB]'
