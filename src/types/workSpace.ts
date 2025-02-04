@@ -80,6 +80,13 @@ export interface IWorker {
   profileImage: string;
 }
 
+export type THistoryType = {
+  workspaceId: number;
+  userId: number;
+  workout: boolean;
+  achievementScore: number;
+};
+
 export interface IInfoWorkData {
   name: string;
   headCount: number;

@@ -1,9 +1,6 @@
 'use client';
 
-import noImage from '@/../public/images/deafultProfile.png';
-
 import good from '@/../public/svgs/good.svg';
-import creator from '@/../public/svgs/creator.svg';
 
 import { Progress } from '@/components/ui/progress';
 
@@ -17,7 +14,6 @@ import {
 
 import { infoWorkspace, leaveWorkspace, startWorkspace } from '@/api/workspace';
 import { workspace } from '@/constants/queryKey';
-import { imageLoader } from '@/utils/image';
 
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
@@ -26,22 +22,15 @@ import Image from 'next/image';
 
 import WorkspaceTitle from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceTitle';
 import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceGimmi';
-import { IWorker } from '@/types/workSpace';
 import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
-
-type THistoryType = {
-  workspaceId: number;
-  userId: number | null;
-  workout: boolean;
-  achievementScore: number;
-};
+import WorkspaceUser from './_components/WorkspaceUser';
 
 export default function Page() {
-  const workspaceIdNumber = useWorkoutIdFromParams();
+  const workspaceId = useWorkoutIdFromParams();
   const { updateStatus, clearData } = useWorkSpaceStatus();
 
   const router = useRouter();
@@ -49,8 +38,8 @@ export default function Page() {
   const [workout, setWorkout] = useState(false);
 
   const { data: infoWork, isSuccess } = useQuery({
-    queryKey: [workspace.info, workspaceIdNumber, workout],
-    queryFn: () => infoWorkspace(workspaceIdNumber),
+    queryKey: [workspace.info, workspaceId, workout],
+    queryFn: () => infoWorkspace(workspaceId),
   });
 
   let achievementScore =
@@ -60,21 +49,12 @@ export default function Page() {
     achievementScore = 100;
   }
 
-  const handleUserId = (user: { userId: number; isMyself: boolean }) => {
-    clickPageMove({
-      workspaceId: workspaceIdNumber,
-      userId: user.userId,
-      workout,
-      achievementScore,
-    });
-  };
-
   const handleStart = async () => {
     try {
-      const res = await startWorkspace(workspaceIdNumber);
-      console.log(res);
+      const res = await startWorkspace(workspaceId);
+
       if (res.status === 200) {
-        window.location.replace(`/workspace/${workspaceIdNumber}`);
+        window.location.replace(`/workspace/${workspaceId}`);
       }
     } catch (error: any) {
       alert(error.response.data.message);
@@ -82,24 +62,14 @@ export default function Page() {
   };
   const handleLeave = async () => {
     try {
-      const res = await leaveWorkspace(workspaceIdNumber);
-      console.log(res);
+      const res = await leaveWorkspace(workspaceId);
+
       if (res.status === 200) {
         router.push('/workspace-list/mygroup');
       }
     } catch (error) {
       console.log(error);
     }
-  };
-
-  const clickPageMove = ({
-    workspaceId,
-    userId,
-    workout,
-    achievementScore,
-  }: THistoryType) => {
-    const queryString = `?userId=${userId}&name=${name}&workout=${workout}&achievementScore=${achievementScore}`;
-    router.push(`/workspace/${workspaceId}/workspaceHistory${queryString}`);
   };
 
   useEffect(() => {
@@ -114,7 +84,7 @@ export default function Page() {
     <div className='h-screen'>
       <ScrollTop />
       <WorkspaceCompleteModal
-        workspaceId={workspaceIdNumber}
+        workspaceId={workspaceId}
         status={infoWork?.data.status}
         isObjectionInProgress={infoWork?.data.isObjectionInProgress}
       />
@@ -142,60 +112,14 @@ export default function Page() {
             <Image src={good} alt='good' className='w-5 h-5 mr-1.5' />
             <span className='text-xs text-[#4B5563]'>획득 점수</span>
           </div>
-          {/* 여기에 유저들 매핑해주기 */}
-          <div className='overflow-auto'>
-            {infoWork?.data.workers
-              .sort((a: IWorker, b: IWorker) => {
-                if (a.isMyself && !b.isMyself) return -1;
-                if (!a.isMyself && b.isMyself) return 1;
-                return 0;
-              })
-              .map((user: IWorker) => {
-                return (
-                  <div
-                    className='mb-4 text-[#4B5563]'
-                    key={user.id}
-                    onClick={() => {
-                      setWorkout(true);
 
-                      handleUserId({
-                        userId: user.id,
-                        isMyself: user.isMyself,
-                      });
-                    }}
-                  >
-                    <div
-                      className={`w-full h-16 ${
-                        user.isMyself ? 'bg-[#C8F68B]' : 'bg-[#FFFFFF] '
-                      } rounded-xl flex items-center justify-between px-3.5`}
-                    >
-                      <div className='h-8 w-8 rounded-full bg-white mr-3.5 flex items-center justify-center relative'>
-                        {user.isCreator && (
-                          <Image
-                            src={creator}
-                            alt='creator'
-                            className='absolute -top-1 -left-1 z-[1]'
-                          />
-                        )}
-                        {user.profileImage === 'default.png' ? (
-                          <Image src={noImage} alt='no-image' />
-                        ) : (
-                          <Image
-                            className='rounded-full'
-                            src={user.profileImage}
-                            alt='profil-image'
-                            layout='fill'
-                            loader={() => imageLoader(user.profileImage)}
-                          />
-                        )}
-                      </div>
-                      <div className='flex-1'>{user.name}</div>
-                      <div>{`${user.contributeScore} P`}</div>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
+          {/* 여기에 유저들 매핑해주기 */}
+          <WorkspaceUser
+            infoWorkUser={infoWork?.data.workers}
+            setWorkout={setWorkout}
+            workout={workout}
+            achievementScore={achievementScore}
+          />
         </div>
       </div>
       {/* 조건으로 유저 닉네임과 방장 같으면 뭐시기 넣어주기 */}
