@@ -105,3 +105,12 @@ export type TWorkspaceHistory = {
   gabScoreFromFirst: number;
   workoutHistories: TWorkoutHistory[];
 };
+
+export interface IAllGroupeTabsDataProps {
+  achievementScore: number;
+  createdAt: string;
+  goalScore: number;
+  id: number;
+  name: string;
+  status: string;
+}
