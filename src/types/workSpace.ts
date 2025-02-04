@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 interface IMission {
   mission: string;
   score: number;
@@ -78,6 +80,13 @@ export interface IWorker {
   isCreator: boolean;
   isMyself: boolean;
   profileImage: string;
+}
+
+export interface IWorkspaceUserProps {
+  infoWorkUser: IWorker[];
+  setWorkout: Dispatch<SetStateAction<boolean>>;
+  workout: boolean;
+  achievementScore: number;
 }
 
 export type THistoryType = {

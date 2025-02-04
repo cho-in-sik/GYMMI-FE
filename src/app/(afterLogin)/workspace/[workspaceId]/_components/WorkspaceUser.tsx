@@ -1,18 +1,12 @@
 import Image from 'next/image';
-import { IWorker, THistoryType } from '@/types/workSpace';
-import { imageLoader } from '@/utils/image';
+import { useRouter } from 'next/navigation';
+
 import creator from '@/../public/svgs/creator.svg';
 import noImage from '@/../public/images/deafultProfile.png';
-import { useRouter } from 'next/navigation';
-import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
-import { Dispatch, SetStateAction } from 'react';
 
-interface IWorkspaceUserProps {
-  infoWorkUser: IWorker[];
-  setWorkout: Dispatch<SetStateAction<boolean>>;
-  workout: boolean;
-  achievementScore: number;
-}
+import { IWorker, IWorkspaceUserProps, THistoryType } from '@/types/workSpace';
+import { imageLoader } from '@/utils/image';
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 
 export default function WorkspaceUser({
   infoWorkUser,
