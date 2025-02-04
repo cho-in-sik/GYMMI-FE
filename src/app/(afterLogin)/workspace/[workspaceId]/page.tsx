@@ -12,10 +12,8 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import { infoWorkspace, leaveWorkspace, startWorkspace } from '@/api/workspace';
-import { workspace } from '@/constants/queryKey';
+import { leaveWorkspace, startWorkspace } from '@/api/workspace';
 
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
@@ -28,26 +26,28 @@ import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 import WorkspaceUser from './_components/WorkspaceUser';
+import { useWorkspaceInfoWork } from '@/hooks/workspace/react-query/useWorkspace';
+import { useAchievementScore } from '@/hooks/workspace/useAchievementScore';
 
 export default function Page() {
-  const workspaceId = useWorkoutIdFromParams();
-  const { updateStatus, clearData } = useWorkSpaceStatus();
-
   const router = useRouter();
-
   const [workout, setWorkout] = useState(false);
 
-  const { data: infoWork, isSuccess } = useQuery({
-    queryKey: [workspace.info, workspaceId, workout],
-    queryFn: () => infoWorkspace(workspaceId),
+  const workspaceId = useWorkoutIdFromParams();
+
+  const { infoWork, isSuccess } = useWorkspaceInfoWork({
+    workspaceId,
+    workout,
+  });
+  const achievementScore = infoWork?.data.achievementScore;
+  const goalScore = infoWork?.data.goalScore;
+
+  const achievementTotalScore = useAchievementScore({
+    achievementScore,
+    goalScore,
   });
 
-  let achievementScore =
-    (infoWork?.data.achievementScore / infoWork?.data.goalScore) * 100;
-
-  if (achievementScore > 100) {
-    achievementScore = 100;
-  }
+  const { updateStatus, clearData } = useWorkSpaceStatus();
 
   const handleStart = async () => {
     try {
@@ -94,7 +94,7 @@ export default function Page() {
         <div className={`flex justify-center items-end gap-x-6 h-48 mb-4 `}>
           <WorkspaceGimmi
             workout={workout}
-            achievementScore={achievementScore}
+            achievementScore={achievementTotalScore}
           />
         </div>
         {/* 회원 클릭 전 */}
@@ -104,7 +104,7 @@ export default function Page() {
             <Progress
               indicatorColor='bg-main'
               className='h-1.5 bg-[#ffff] mb-1'
-              value={achievementScore}
+              value={achievementTotalScore}
             />
             <div className='text-[10px] text-[#4B5563] text-right'>{`${infoWork?.data.achievementScore}/${infoWork?.data.goalScore}점`}</div>
           </div>
@@ -118,7 +118,7 @@ export default function Page() {
             infoWorkUser={infoWork?.data.workers}
             setWorkout={setWorkout}
             workout={workout}
-            achievementScore={achievementScore}
+            achievementScore={achievementTotalScore}
           />
         </div>
       </div>
