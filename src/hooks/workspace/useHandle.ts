@@ -1,5 +1,8 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 import { leaveWorkspace, startWorkspace } from '@/api/workspace';
-import { redirect } from 'next/navigation';
 
 export const useHandleStart = (workspaceId: number) => {
   return async () => {
@@ -16,12 +19,13 @@ export const useHandleStart = (workspaceId: number) => {
 };
 
 export const useHandleLeave = (workspaceId: number) => {
+  const router = useRouter();
   return async () => {
     try {
       const res = await leaveWorkspace(workspaceId);
 
       if (res.status === 200) {
-        redirect('/workspace-list/mygroup');
+        router.push('/workspace-list/mygroup');
       }
     } catch (error) {
       console.log(error);

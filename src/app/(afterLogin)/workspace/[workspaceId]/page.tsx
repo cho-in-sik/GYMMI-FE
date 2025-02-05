@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 import good from '@/../public/svgs/good.svg';
@@ -27,9 +26,9 @@ import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 import { useWorkspaceInfoWork } from '@/hooks/workspace/react-query/useWorkspace';
 import { useAchievementScore } from '@/hooks/workspace/useAchievementScore';
 import { useHandleLeave, useHandleStart } from '@/hooks/workspace/useHandle';
+import WorkspaceIsCreatorButton from './_components/WorkspaceIsCreatorButton';
 
 export default function Page() {
-  const router = useRouter();
   const [workout, setWorkout] = useState(false);
 
   const workspaceId = useWorkoutIdFromParams();
@@ -106,27 +105,28 @@ export default function Page() {
       {infoWork?.data.status === 'PREPARING' &&
         infoWork?.data.isCreator === true && (
           <div className='px-4 fixed bottom-11 left-0 w-full flex justify-between items-center'>
-            <div>
-              <button
-                disabled={infoWork?.data.workers.length === 1 ? true : false}
-                className={`w-[171px] py-2.5 bg-main text-white text-base rounded-lg ${
-                  infoWork?.data.workers.length === 1 && 'opacity-40'
-                }`}
-                onClick={() => handleStart()}
-              >
-                그룹 시작하기
-              </button>
+            <div
+              className={`${
+                infoWork?.data.workers.length === 1 && 'opacity-40'
+              }`}
+            >
+              <WorkspaceIsCreatorButton
+                workerLength={infoWork?.data.workers.length}
+                buttonStyle={'bg-main text-white'}
+                onClickFn={() => handleStart()}
+                buttonName={'그룹 시작하기'}
+              />
             </div>
-            <div>
-              <button
-                disabled={infoWork?.data.workers.length > 1 ? true : false}
-                className={`w-[171px] py-2.5 bg-[#ffffff] text-main text-base rounded-lg ${
-                  infoWork?.data.workers.length > 1 && 'opacity-60'
-                }`}
-                onClick={() => handleLeave()}
-              >
-                그룹 없애기
-              </button>
+
+            <div
+              className={`${infoWork?.data.workers.length > 1 && 'opacity-60'}`}
+            >
+              <WorkspaceIsCreatorButton
+                workerLength={infoWork?.data.workers.length}
+                buttonStyle={'bg-[#ffffff] text-main'}
+                onClickFn={() => handleLeave()}
+                buttonName={'그룹 없애기'}
+              />
             </div>
           </div>
         )}

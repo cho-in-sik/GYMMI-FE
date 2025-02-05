@@ -130,3 +130,10 @@ export interface IAllGroupeTabsDataProps {
   name: string;
   status: string;
 }
+
+export interface IWorkspaceIsCreatorButtonProps {
+  workerLength: number;
+  buttonStyle: string;
+  onClickFn: () => Promise<void>;
+  buttonName: string;
+}
