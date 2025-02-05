@@ -1,12 +1,5 @@
 'use client';
 
-import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
-import { useSearchParams } from 'next/navigation';
-
-import { workspaceHistoryDataConst } from '@/constants/queryKey';
-import { workspaceHistorys } from '@/api/workspace';
-
 import WorkspaceScoreBoard from './_components/WorkspaceScoreBoard';
 import WorkspaceGimmiTitle from './_components/WorkspaceGimmiTitle';
 import WorkHistoryList from './_components/WorkoutHistoryList';
@@ -14,44 +7,23 @@ import WorkHistoryList from './_components/WorkoutHistoryList';
 import useWorkoutHistoryIds from '@/hooks/workoutHistory/useWorkoutHistoryIds';
 import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 
-import type { THistorys, TQueryTypes } from '@/types/workspaceHistory';
+import type { THistorys } from '@/types/workspaceHistory';
 import NoDataUI from '../../_components/NoDataUI';
 import ScrollTop from '../workspaceConfirmation/_components/ScrollTop';
-
-function useUserInfo(): TQueryTypes {
-  const searchParams = useSearchParams();
-  const userId = parseInt(searchParams.get('userId') || '0', 10);
-  const workout = searchParams.get('workout') === 'false';
-  const achievementScore = parseInt(
-    searchParams.get('achievementScore') || '0',
-    10
-  );
-
-  return {
-    userId,
-    workout,
-    achievementScore,
-  };
-}
+import useUserInfoSearchParams from '@/hooks/workoutHistory/useUserInfoSearchParams';
+import { useWorkspaceHistoryQuery } from '@/hooks/workoutHistory/react-query/useWorkspaceHistory';
 
 function Page() {
   const workspaceId = useWorkoutIdFromParams();
-  const queryData = useUserInfo();
+
+  const queryData = useUserInfoSearchParams();
+  const queryDataUserId = queryData.userId;
+
   const { workoutHistoryIds, handleWorkoutHistory } = useWorkoutHistoryIds();
 
-  const { data: workspaceHistoryDatas } = useQuery({
-    queryKey: [
-      [
-        workspaceHistoryDataConst.workspaceHistoryData,
-        workspaceId,
-        queryData.userId,
-      ],
-    ],
-    queryFn: () =>
-      workspaceHistorys({
-        workspaceId,
-        userId: queryData.userId,
-      }),
+  const { workspaceHistoryDatas } = useWorkspaceHistoryQuery({
+    workspaceId,
+    queryDataUserId,
   });
 
   return (
@@ -86,7 +58,7 @@ function Page() {
                       workoutHistoryIds={workoutHistoryIds}
                       workspaceId={workspaceId}
                       workspaceHistoryData={workspaceHistoryData}
-                      userId={queryData.userId}
+                      userId={queryDataUserId}
                       workoutHistoriesLength={
                         workspaceHistoryDatas?.data.workoutHistories.length
                       }

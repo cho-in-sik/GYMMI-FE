@@ -29,10 +29,21 @@ type THistoryDetails = {
   details: TDetailHistorys[];
 };
 
+interface IWorkHistoryListProps {
+  index: number;
+  workspaceHistoryData: THistorys;
+  workoutHistoryIds: number[];
+  workspaceId: number;
+  userId: number;
+  workoutHistoriesLength: number;
+  handleWorkoutHistory: (id: number) => void;
+}
+
 export type {
   TScoreData,
   THistorys,
   TQueryTypes,
   TDetailHistorys,
   THistoryDetails,
+  IWorkHistoryListProps,
 };
