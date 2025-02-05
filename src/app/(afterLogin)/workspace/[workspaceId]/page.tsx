@@ -1,8 +1,10 @@
 'use client';
 
-import good from '@/../public/svgs/good.svg';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { Progress } from '@/components/ui/progress';
+import good from '@/../public/svgs/good.svg';
 
 import {
   Dialog,
@@ -11,23 +13,20 @@ import {
   DialogDescription,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
-import { leaveWorkspace, startWorkspace } from '@/api/workspace';
-
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-
+import { Progress } from '@/components/ui/progress';
 import WorkspaceTitle from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceTitle';
 import WorkspaceGimmi from '@/app/(afterLogin)/workspace/[workspaceId]/_components/WorkspaceGimmi';
 import ScrollTop from './workspaceConfirmation/_components/ScrollTop';
-import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
 import WorkspaceCompleteModal from './_components/WorkspaceCompleteModal';
-import { DialogTitle } from '@radix-ui/react-dialog';
-import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 import WorkspaceUser from './_components/WorkspaceUser';
+
+import useWorkoutIdFromParams from '@/hooks/workoutHistory/useWorkoutIdFromParams';
+import { useWorkSpaceStatus } from '@/hooks/useWorkSpaceStatus';
 import { useWorkspaceInfoWork } from '@/hooks/workspace/react-query/useWorkspace';
 import { useAchievementScore } from '@/hooks/workspace/useAchievementScore';
+import { useHandleLeave, useHandleStart } from '@/hooks/workspace/useHandle';
 
 export default function Page() {
   const router = useRouter();
@@ -49,28 +48,9 @@ export default function Page() {
 
   const { updateStatus, clearData } = useWorkSpaceStatus();
 
-  const handleStart = async () => {
-    try {
-      const res = await startWorkspace(workspaceId);
+  const handleStart = useHandleStart(workspaceId);
 
-      if (res.status === 200) {
-        window.location.replace(`/workspace/${workspaceId}`);
-      }
-    } catch (error: any) {
-      alert(error.response.data.message);
-    }
-  };
-  const handleLeave = async () => {
-    try {
-      const res = await leaveWorkspace(workspaceId);
-
-      if (res.status === 200) {
-        router.push('/workspace-list/mygroup');
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const handleLeave = useHandleLeave(workspaceId);
 
   useEffect(() => {
     if (isSuccess && infoWork?.data.status) {
@@ -128,12 +108,11 @@ export default function Page() {
           <div className='px-4 fixed bottom-11 left-0 w-full flex justify-between items-center'>
             <div>
               <button
-                // opacity & disabled
                 disabled={infoWork?.data.workers.length === 1 ? true : false}
                 className={`w-[171px] py-2.5 bg-main text-white text-base rounded-lg ${
                   infoWork?.data.workers.length === 1 && 'opacity-40'
                 }`}
-                onClick={handleStart}
+                onClick={() => handleStart()}
               >
                 그룹 시작하기
               </button>
@@ -144,7 +123,7 @@ export default function Page() {
                 className={`w-[171px] py-2.5 bg-[#ffffff] text-main text-base rounded-lg ${
                   infoWork?.data.workers.length > 1 && 'opacity-60'
                 }`}
-                onClick={handleLeave}
+                onClick={() => handleLeave()}
               >
                 그룹 없애기
               </button>
@@ -177,7 +156,7 @@ export default function Page() {
             </DialogClose>
             <span
               className='text-sm rounded-lg text-[#D1D5DB]'
-              onClick={handleLeave}
+              onClick={() => handleLeave()}
             >
               yes
             </span>
