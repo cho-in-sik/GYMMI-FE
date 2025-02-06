@@ -40,12 +40,10 @@ export default function WorkHistoryList({
   return (
     <div className={`${isLastIndex && 'pb-5'} flex`}>
       <span className='text-[#9C9EA3] text-[10px]'>
-        {workspaceHistoryData.createdAt[index] !==
-          workspaceHistoryData.createdAt &&
-          `${workspaceHistoryData.createdAt.substring(
-            5,
-            7
-          )}/${workspaceHistoryData.createdAt.substring(8, 10)}`}
+        {`${workspaceHistoryData.createdAt.substring(
+          5,
+          7
+        )}/${workspaceHistoryData.createdAt.substring(8, 10)}`}
       </span>
       <div className='flex flex-col items-center px-5'>
         <Image
