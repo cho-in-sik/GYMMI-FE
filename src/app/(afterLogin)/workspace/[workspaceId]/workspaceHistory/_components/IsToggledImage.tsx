@@ -11,9 +11,7 @@ interface IsToggledImageProps {
 function IsToggledImage({ isToggled, isLastIndex }: IsToggledImageProps) {
   return (
     <>
-      {isLastIndex ? (
-        <></>
-      ) : (
+      {!isLastIndex && (
         <div>
           {isToggled ? (
             <Image

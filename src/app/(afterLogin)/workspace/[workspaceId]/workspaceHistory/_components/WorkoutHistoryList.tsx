@@ -1,29 +1,20 @@
 'use client';
 
 import Image from 'next/image';
-import { useQuery } from '@tanstack/react-query';
 
 import radius from '@/../public/svgs/workspace/workspaceHistory/radius.svg';
 import radiusClicked from '@/../public/svgs/workspace/workspaceHistory/radiusClicked.svg';
 import arrow from '@/../public/svgs/workspace/workspaceHistory/arrow.svg';
 import detailHistoryRadius from '@/../public/svgs/workspace/workspaceHistory/detailHistoryRadius.svg';
 
-import { TDetailHistorys, THistorys } from '@/types/workspaceHistory';
-import { workspaceHistoryDataConst } from '@/constants/queryKey';
-import { historyDetails } from '@/api/workspace';
+import {
+  IWorkHistoryListProps,
+  TDetailHistorys,
+} from '@/types/workspaceHistory';
 
 import IsToggledImage from './IsToggledImage';
 import ApproveStatusMsg from './ApproveStatusMsg';
-
-interface WorkHistoryListProps {
-  index: number;
-  workspaceHistoryData: THistorys;
-  workoutHistoryIds: number[];
-  workspaceId: number;
-  userId: number;
-  workoutHistoriesLength: number;
-  handleWorkoutHistory: (id: number) => void;
-}
+import { useWorkspaceHistoryListQuery } from '@/hooks/workoutHistory/react-query/useWorkspaceHistory';
 
 export default function WorkHistoryList({
   index,
@@ -33,40 +24,26 @@ export default function WorkHistoryList({
   userId,
   workoutHistoriesLength,
   handleWorkoutHistory,
-}: WorkHistoryListProps) {
+}: IWorkHistoryListProps) {
   const isToggled = workoutHistoryIds.includes(workspaceHistoryData.id);
   const isLastIndex = index === workoutHistoriesLength - 1;
 
-  const { data: workoutHistorydetails } = useQuery({
-    queryKey: [
-      [
-        workspaceHistoryDataConst.workspaceHistoryDataDetail,
-        workspaceId,
-        userId,
-        workspaceHistoryData.id,
-      ],
-    ],
-    queryFn: () =>
-      historyDetails({
-        workspaceId,
-        userId,
-        workoutHistoryId: workspaceHistoryData.id,
-      }),
-    enabled: isToggled,
+  const workspaceHistoryDataId = workspaceHistoryData.id;
+
+  const { workoutHistorydetails } = useWorkspaceHistoryListQuery({
+    workspaceId,
+    userId,
+    workspaceHistoryDataId,
+    isToggled,
   });
 
   return (
     <div className={`${isLastIndex && 'pb-5'} flex`}>
       <span className='text-[#9C9EA3] text-[10px]'>
-        {workspaceHistoryData.createdAt[index] ===
-        workspaceHistoryData.createdAt ? (
-          <></>
-        ) : (
-          `${workspaceHistoryData.createdAt.substring(
-            5,
-            7
-          )}/${workspaceHistoryData.createdAt.substring(8, 10)}`
-        )}
+        {`${workspaceHistoryData.createdAt.substring(
+          5,
+          7
+        )}/${workspaceHistoryData.createdAt.substring(8, 10)}`}
       </span>
       <div className='flex flex-col items-center px-5'>
         <Image

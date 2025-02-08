@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 interface IMission {
   mission: string;
   score: number;
@@ -80,6 +82,20 @@ export interface IWorker {
   profileImage: string;
 }
 
+export interface IWorkspaceUserProps {
+  infoWorkUser: IWorker[];
+  setWorkout: Dispatch<SetStateAction<boolean>>;
+  workout: boolean;
+  achievementScore: number;
+}
+
+export type THistoryType = {
+  workspaceId: number;
+  userId: number;
+  workout: boolean;
+  achievementScore: number;
+};
+
 export interface IInfoWorkData {
   name: string;
   headCount: number;
@@ -105,3 +121,19 @@ export type TWorkspaceHistory = {
   gabScoreFromFirst: number;
   workoutHistories: TWorkoutHistory[];
 };
+
+export interface IAllGroupeTabsDataProps {
+  achievementScore: number;
+  createdAt: string;
+  goalScore: number;
+  id: number;
+  name: string;
+  status: string;
+}
+
+export interface IWorkspaceIsCreatorButtonProps {
+  workerLength: number;
+  buttonStyle: string;
+  onClickFn: () => Promise<void>;
+  buttonName: string;
+}
